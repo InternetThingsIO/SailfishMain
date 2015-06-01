@@ -1,0 +1,19 @@
+{
+  "name": "Notification Demo",
+  "version": "1.1",
+  "description":
+    "Shows off desktop notifications, which are \"toast\" windows that pop up on the desktop.",
+  "icons": {"16": "16.png", "48": "48.png", "128": "128.png"},
+  "permissions": [
+    "notifications",
+    "identity"
+  ],
+  "options_page": "options.html",
+  "background": { "scripts": ["socket.io-1.2.0.js", "background.js"] },
+  "manifest_version": 2,
+
+  // crbug.com/134315.  Only to use local resources.  Can use resources on WWW without this
+  "web_accessible_resources": [
+    "48.png"
+  ]
+}
