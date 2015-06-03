@@ -1,5 +1,13 @@
 package io.internetthings.sailfish;
 
+/*
+    Developer: Jason Maderski
+    Date: 6/2/2015
+    Project Name: Sailfish
+    Version: 0.1
+    Notes: Initial build of project, currently just display's login email in logcat
+
+ */
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
@@ -24,9 +32,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      */
     private boolean mIntentInProgress;
 
-    //Track whether the sign-in button has been clicked
-    private boolean mSignInClicked = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +49,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this);
     }
 
+    //Method runs when user is signed on
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.d("", "onConnected Success");
-        mSignInClicked = false;
         getProfileInformation();
     }
 
@@ -56,12 +61,13 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.connect();
     }
 
+    //When button any button is pushed "onClick() is displayed in logcat, this method associates
+    // buttons with actions
     @Override
     public void onClick(View v) {
         Log.d("", "onClick()");
         if(v.getId() == R.id.sign_in_button
             && !mGoogleApiClient.isConnecting()){
-            mSignInClicked = true;
             mGoogleApiClient.connect();
         }
 
@@ -81,6 +87,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+    //Runs when Google+ sign in fails
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.e("", "onConnectionFailed");
@@ -101,7 +108,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onActivityResult(int requestCode, int responseCode, Intent intent){
         if(requestCode == RC_SIGN_IN){
             if(responseCode != RESULT_OK){
-                mSignInClicked = false;
+
             }
 
             mIntentInProgress = false;
@@ -124,7 +131,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.disconnect();
     }
 
-    //Display's person email in Log cat if connected
+    //Display's person email in Logcat if connected
     private void getProfileInformation(){
         try{
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);  //.PeopleApi
