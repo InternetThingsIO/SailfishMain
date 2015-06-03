@@ -1,7 +1,7 @@
 package io.internetthings.sailfish;
 
 /*
-    Developer: Jason Maderski
+    Created by: Jason Maderski
     Date: 6/2/2015
     Project Name: Sailfish
     Version: 0.1
@@ -14,6 +14,7 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.provider.Settings;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,6 +38,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkNotificationAccess();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -47,6 +50,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this);
+
     }
 
     //Method runs when user is signed on
@@ -145,6 +149,18 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    //Checks whether or not the NoticeNotificationService has access
+    private void checkNotificationAccess(){
+        String enabledAppList = Settings.Secure.getString(
+                this.getContentResolver(), "enabled_notification_listeners");
+        boolean checkAppAccessFlag = enabledAppList.contains("NoticeNotificationService");
+
+        if (!checkAppAccessFlag) {
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            startActivity(intent);
         }
     }
 
