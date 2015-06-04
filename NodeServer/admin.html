@@ -35,8 +35,7 @@
       });
 
       socket.on('image', function(packageName, image){
-        $('#messages').append($('<li>').text('Image package: ' + packageName));
-        $('#messages').append($('<li>').text(image.length));
+        $('#messages').append($('<li>').text('Image package: ' + packageName + ' Size: ' + image.length));
       });
 
     </script>
