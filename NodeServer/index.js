@@ -21,7 +21,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('send image', function(roomID, packageName, image){
-    io.to(roomID).emit('image', packageName, msg);
+    io.to(roomID).emit('image', packageName, image);
   });
 
 });
