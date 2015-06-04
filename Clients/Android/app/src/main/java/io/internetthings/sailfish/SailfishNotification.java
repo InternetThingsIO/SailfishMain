@@ -7,10 +7,24 @@ import android.graphics.Bitmap;
  */
 public class SailfishNotification {
 
-    public Bitmap icon;
-    public String subject;
-    public String body;
-    public String packageName;
-    public long postTime;
+    private String nSubject;
+    private String nBody;
+    private String nPackageName;
+    private long nPostTime;
 
+
+    public SailfishNotification(String subjectInput, String bodyInput, String packageNameInput, long postTimeInput){
+
+        nSubject = subjectInput;
+        nBody = bodyInput;
+        nPackageName = packageNameInput;
+        nPostTime = postTimeInput;
+
+    }
+
+    @Override
+    public String toString(){
+        return "NotificationObject [Subject=" + nSubject + ", Body=" + nBody
+                + ", PackageName=" + nPackageName + ", PostTime=" + nPostTime + "]";
+    }
 }

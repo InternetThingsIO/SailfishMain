@@ -1,10 +1,16 @@
 package io.internetthings.sailfish;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 /*
@@ -81,9 +87,16 @@ public class SailfishNotificationService extends NotificationListenerService{
                 //+ "\n" + " getkey: " + sbn.getKey()
                 + "\n" + " getNumber: " + sbn.getNotification().number
         );
+        try {
+            Drawable icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
+            SailfishSocketIO.sendPackageImage(icon, sbn.getPackageName());
+        }catch (Exception e){}
 
-        //Gson gson = new Gson();
-        //String json = gson.toJson(sbn.getNotification());
+        SailfishNotification sn = new SailfishNotification("SubjectTEST", "BodyTEST", sbn.getPackageName(), sbn.getPostTime());
+        Gson gson = new Gson();
+        String json = gson.toJson(sn);
+
+        Log.i("JSONTest", json);
 
         getPrefAndConnect();
 
@@ -94,7 +107,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
 
         //if (NoticeSocketIO.SocketSingleton().connected())
-        SailfishSocketIO.attemptSend(email, " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
+        SailfishSocketIO.attemptSend(email, json);
 
         /*try {
             String pack = sbn.getPackageName();
@@ -112,6 +125,4 @@ public class SailfishNotificationService extends NotificationListenerService{
         Log.w(logTAG, "Notification REMOVED*************** " + "User: "
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
     }
-
-
 }
