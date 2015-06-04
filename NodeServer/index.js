@@ -21,6 +21,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('send image', function(roomID, packageName, image){
+    console.log('received image. Length: ' + image.length);
     io.to(roomID).emit('image', packageName, image);
   });
 
