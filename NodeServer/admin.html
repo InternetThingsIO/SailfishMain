@@ -34,6 +34,10 @@
         $('#messages').append($('<li>').text(msg));
       });
 
+      socket.on('send notification', function(roomID, msg){
+        $('#messages').append($('<li>').text(roomID + ' ' +msg));
+      });
+
       socket.on('image', function(packageName, image){
         $('#messages').append($('<li>').text('Image package: ' + packageName + ' Size: ' + image.length));
       });
