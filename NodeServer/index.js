@@ -20,6 +20,10 @@ io.on('connection', function(socket){
     io.to(roomID).emit('notification', msg);
   });
 
+  socket.on('send image', function(roomID, packageName, image){
+    io.to(roomID).emit('image', packageName, msg);
+  });
+
 });
 
 http.listen(80, function(){
