@@ -33,6 +33,12 @@
       socket.on('notification', function(msg){
         $('#messages').append($('<li>').text(msg));
       });
+
+      socket.on('image', function(packageName, image){
+        $('#messages').append($('<li>').text('Image package: ' + packageName));
+        $('#messages').append($('<li>').text(image));
+      });
+
     </script>
   </body>
 </html>
