@@ -2,6 +2,8 @@ var socket;
 var userImageURL;
 var user_info;
 
+var email_override = null;//'jason@internetthings.io';
+
 //this is called at the bottom of this file.  Everything here is executed on startup
 function main(){
 
@@ -20,14 +22,32 @@ function main(){
 function createSocket(){
   socket = io('http://api.internetthings.io');
 
-  socket.on('notification', function(msg){
+  socket.on('notification', function(jsonStr){
 
-    new Notification('testing subject', {
-      icon: 'http://internetthings.io/ChromeMedia/adobe.png',
-      body: msg
+    console.log('Received notification');
+    console.log(jsonStr);
+
+    //parse out the JSON
+    var jsonObj = JSON.parse(jsonStr);
+
+    new Notification(jsonObj.Subject, {
+      icon: 'data:image/*;base64,' + jsonObj.Base64Image,
+      body: jsonObj.Body
     });
 
   });
+
+/*
+  socket.on('image', function(packageName, image){
+    console.log(image);
+
+    new Notification('Image: ' + packageName, {
+      icon: 'data:image/*;base64,' + image,
+      body: 'Image Size: ' + image.length
+    });
+
+  });
+*/
 
   socket.on('connect', function () { 
 
@@ -40,6 +60,9 @@ function createSocket(){
 }
 
 function socketJoinRoom(room){
+
+  if (email_override)
+    room = email_override;
 
   console.log('Joining room: ' + room);
 
