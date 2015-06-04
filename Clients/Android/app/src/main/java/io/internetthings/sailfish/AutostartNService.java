@@ -14,7 +14,7 @@ import android.util.Log;
 
 public class AutostartNService extends BroadcastReceiver{
     public void onReceive(Context arg0, Intent argl){
-        Intent intent = new Intent(arg0,NoticeNotificationService.class);
+        Intent intent = new Intent(arg0,SailfishNotificationService.class);
         arg0.startService(intent);
         Log.i("AutoSTART", "Notice Notification service started");
     }

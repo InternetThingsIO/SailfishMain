@@ -11,6 +11,7 @@ package io.internetthings.sailfish;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     //Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 0;
+    public static final String MY_PREFS_NAME = "SailFishPref";
+    private final String logTAG = this.getClass().getName();
 
     //Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -135,14 +138,29 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.disconnect();
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
     //Display's person email in Logcat if connected
     private void getProfileInformation(){
         try{
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);  //.PeopleApi
-                    //.getCurrentPerson(mGoogleApiClient);
+            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+
             if(email != null){
                 //display Person ID in logcat
-                Log.d("", "Name: " + email);
+                Log.d(logTAG, "Name: " + email);
+
+                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
+                editor.putString("email", email);
+                editor.commit();
+
+                Log.d(logTAG, "Restarting service");
+
+                //stopService(new Intent(this, NoticeNotificationService.class));
+               // startService(new Intent(this, NoticeNotificationService.class));
+
             }else{
                 Log.e("", "Person information is NULL");
             }
@@ -156,7 +174,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private void checkNotificationAccess(){
         String enabledAppList = Settings.Secure.getString(
                 this.getContentResolver(), "enabled_notification_listeners");
-        boolean checkAppAccessFlag = enabledAppList.contains("NoticeNotificationService");
+        boolean checkAppAccessFlag = enabledAppList.contains("SailfishNotificationService");
 
         if (!checkAppAccessFlag) {
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
