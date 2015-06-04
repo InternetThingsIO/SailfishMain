@@ -17,6 +17,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('send notification', function(roomID, msg){
+    console.log('Emitting notification to: ' + roomID + 'Message: ' + msg);
     io.to(roomID).emit('notification', msg);
   });
 
