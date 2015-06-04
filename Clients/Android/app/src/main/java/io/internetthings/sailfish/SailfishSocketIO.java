@@ -12,8 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
+import java.io.ByteArrayOutputStream;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -26,6 +28,7 @@ public class SailfishSocketIO {
 
     private static Socket mSocket;
     private static String email;
+    private static final String logTAG = "SailfishSocketIO";
 
     public static Socket SocketSingleton(){
         if (mSocket == null) {
@@ -71,17 +74,6 @@ public class SailfishSocketIO {
     public static void attemptSend(String email, String message){
 
         mSocket.emit("send notification", email, message);
-    }
-
-    public static void sendPackageImage(Drawable icon, String packageName){
-
-        Bitmap bitmap = ((BitmapDrawable)icon).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bitmapdata = stream.toByteArray();
-        mSocket.emit("send image", email, packageName, bitmapdata);
-
-
     }
 
 

@@ -87,36 +87,26 @@ public class SailfishNotificationService extends NotificationListenerService{
                 //+ "\n" + " getkey: " + sbn.getKey()
                 + "\n" + " getNumber: " + sbn.getNotification().number
         );
-        try {
-            Drawable icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
-            SailfishSocketIO.sendPackageImage(icon, sbn.getPackageName());
+
+        getPrefAndConnect();
+
+       Drawable icon = null;
+       try {
+            icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
+            //SailfishSocketIO.sendPackageImage(icon, sbn.getPackageName());
         }catch (Exception e){}
 
-        SailfishNotification sn = new SailfishNotification("SubjectTEST", "BodyTEST", sbn.getPackageName(), sbn.getPostTime());
+        SailfishNotification sn = new SailfishNotification(icon,
+                sbn.getNotification().extras.getString("android.title"),
+                sbn.getNotification().extras.getCharSequence("android.text").toString(),
+                sbn.getPackageName(),
+                sbn.getPostTime());
         Gson gson = new Gson();
         String json = gson.toJson(sn);
 
         Log.i("JSONTest", json);
 
-        getPrefAndConnect();
-
-        //stop execution if this is a duplicate
-        //if (isDuplicate(sbn))
-       //    return;
-
-
-
-        //if (NoticeSocketIO.SocketSingleton().connected())
         SailfishSocketIO.attemptSend(email, json);
-
-        /*try {
-            String pack = sbn.getPackageName();
-            //        String ticker = sbn.getNotification().tickerText.toString();
-            Bundle extras = sbn.getNotification().extras;
-            String title = extras.getString("android.title");
-            String text = extras.getCharSequence("android.text").toString();
-            NoticeSocketIO.attemptSend(title);
-        }catch (Exception ex){}*/
     }
 
     //Displays notification that has been removed in the logcat window

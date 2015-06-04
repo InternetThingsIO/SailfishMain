@@ -1,30 +1,54 @@
 package io.internetthings.sailfish;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Base64;
+import android.util.Log;
 
-/**
- * Created by Dev on 6/3/2015.
- */
+import java.io.ByteArrayOutputStream;
+
+/*
+        Created by: Jason Maderski
+        Date: 6/4/2015
+
+        Notes: Data model used for JSON string
+*/
+
 public class SailfishNotification {
 
-    private String nSubject;
-    private String nBody;
-    private String nPackageName;
-    private long nPostTime;
+    private String Base64Image;
+    private String Subject;
+    private String Body;
+    private String PackageName;
+    private long PostTime;
 
 
-    public SailfishNotification(String subjectInput, String bodyInput, String packageNameInput, long postTimeInput){
+    public SailfishNotification(Drawable icon, String subjectInput, String bodyInput, String packageNameInput, long postTimeInput){
 
-        nSubject = subjectInput;
-        nBody = bodyInput;
-        nPackageName = packageNameInput;
-        nPostTime = postTimeInput;
+        Base64Image = drawableToBase64(icon);
+        Subject = subjectInput;
+        Body = bodyInput;
+        PackageName = packageNameInput;
+        PostTime = postTimeInput;
+
+
 
     }
 
     @Override
     public String toString(){
-        return "NotificationObject [Subject=" + nSubject + ", Body=" + nBody
-                + ", PackageName=" + nPackageName + ", PostTime=" + nPostTime + "]";
+        return "NotificationObject [Subject=" + Subject + ", Body=" + Body
+                + ", PackageName=" + PackageName + ", PostTime=" + PostTime + ", Base64Image=" + Base64Image + "]";
+    }
+
+    private String drawableToBase64(Drawable icon){
+        Bitmap bitmap = ((BitmapDrawable)icon).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bitmapdata = stream.toByteArray();
+        //Convert bitArray data to Base64
+        return Base64.encodeToString(bitmapdata, Base64.DEFAULT);
+
     }
 }
