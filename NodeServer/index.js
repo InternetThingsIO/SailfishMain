@@ -16,6 +16,10 @@ io.on('connection', function(socket){
     socket.join(roomID);
   });
 
+  socket.on('leave room', function(roomID){
+    socket.leave(roomID);
+  });
+
   socket.on('send notification', function(roomID, msg){
     console.log('Emitting notification to: ' + roomID + 'Message: ' + msg);
     io.to(roomID).emit('notification', msg);
