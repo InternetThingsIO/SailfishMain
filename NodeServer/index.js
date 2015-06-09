@@ -20,9 +20,9 @@ io.on('connection', function(socket){
     socket.leave(roomID);
   });
 
-  socket.on('send notification', function(roomID, msg){
-    console.log('Emitting notification to: ' + roomID + 'Message: ' + msg);
-    io.to(roomID).emit('notification', msg);
+  socket.on('send message', function(roomID, msg){
+    console.log('Emitting message to: ' + roomID + 'Message: ' + msg);
+    io.to(roomID).emit('message', msg);
   });
 
 /*
