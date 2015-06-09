@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 
@@ -12,10 +11,10 @@ import java.io.ByteArrayOutputStream;
         Created by: Jason Maderski
         Date: 6/4/2015
 
-        Notes: Data model used for JSON string
+        Notes: Data model used for JSON string, also converts drawable to BASE64
 */
 
-public class SailfishNotification {
+public class SailfishNotification extends SailfishMessage{
 
     private String Base64Image;
     private String Subject;
