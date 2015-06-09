@@ -1,13 +1,21 @@
 var socket;
 var userImageURL;
 var user_info;
+var currentState;
 
-var email_override = null;//'jason@internetthings.io';
+var ACTION_POST = 'POST_NOTIFICATION';
+var ACTION_REMOVE = 'REMOVE_NOTIFICATION';
 
 //this is called at the bottom of this file.  Everything here is executed on startup
 function main(){
 
   console.log('Notice Chrome Extension');
+
+  //setup idle / active detection so that we only issue notifications when the user is active on their computer
+  //chrome.idle.queryState(integer detectionIntervalInSeconds, function callback);
+  //if we have been idle for an hour, we are idle hour = 3600 seconds
+  chrome.idle.setDetectionInterval(15);
+  chrome.idle.onStateChanged.addListener(chromeStateListener);
 
   createSocket();
 
@@ -19,21 +27,56 @@ function main(){
 
 }
 
+function chromeStateListener(newState){
+
+  currentState = newState;
+
+  //if we are idle, leave the room
+  if (isComputerIdle(currentState)){
+      console.log('Computer is idle, leaving room');
+      socketLeaveRoom(user_info.emails[0].value);
+  }else
+  {
+    //if we are not idle join the room
+    if (user_info != null){
+      console.log('Computer is no longer idle, joining room');
+      socketJoinRoom(user_info.emails[0].value);
+    }
+  }
+
+}
+
 function createSocket(){
+
   socket = io('http://api.internetthings.io');
 
-  socket.on('notification', function(jsonStr){
+  socket.on('message', function(jsonStr){
 
-    console.log('Received notification');
+    console.log('Received message');
     console.log(jsonStr);
 
-    //parse out the JSON
-    var jsonObj = JSON.parse(jsonStr);
+    var jsonObj = isJSON(jsonStr);
 
-    new Notification(jsonObj.Subject, {
-      icon: 'data:image/*;base64,' + jsonObj.Base64Image,
-      body: jsonObj.Body
-    });
+    //parse out the JSON
+    if (jsonObj == false)
+    {
+
+      new Notification('raw string', {
+        icon: '48.png',
+        body: jsonStr
+      });
+
+    }else{
+
+      if (jsonObj.Action == ACTION_POST){
+        
+        new Notification(jsonObj.Subject, {
+          icon: 'data:image/*;base64,' + jsonObj.Base64Image,
+          body: jsonObj.Body
+        });
+
+      }
+    }
 
   });
 
@@ -59,16 +102,56 @@ function createSocket(){
 
 }
 
+function isJSON(jsonString){
+
+  try {
+        var o = JSON.parse(jsonString);
+
+        // Handle non-exception-throwing cases:
+        // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+        // but... JSON.parse(null) returns 'null', and typeof null === "object", 
+        // so we must check for that, too.
+        if (o && typeof o === "object" && o !== null) {
+            return o;
+        }
+    }
+    catch (e) { }
+
+    return false;
+
+}
+
+function isComputerIdle(state){
+
+  if (state != null && (state == 'locked' || state == 'idle'))
+    return true;
+
+  return false;
+}
+
 function socketJoinRoom(room){
 
-  if (email_override)
-    room = email_override;
+  //bail if we are idle, but only if the currentState has been set
+  if (isComputerIdle(currentState)){
+    console.log('Can not join room when idle');
+    return;
+  }
 
   console.log('Joining room: ' + room);
 
   socket.emit('join room', room);
 
   showSimpleNotification('Subscribed', userImageURL, 'Subscribed to your feed ' + room);
+
+}
+
+function socketLeaveRoom(room){
+
+  console.log('Leaving room: ' + room);
+
+  socket.emit('leave room', room);
+
+  showSimpleNotification('Un-Subscribed', userImageURL, 'Computer is idle, not displaying notifications');
 
 }
 
