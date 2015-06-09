@@ -14,7 +14,7 @@ function main(){
   //setup idle / active detection so that we only issue notifications when the user is active on their computer
   //chrome.idle.queryState(integer detectionIntervalInSeconds, function callback);
   //if we have been idle for an hour, we are idle hour = 3600 seconds
-  chrome.idle.setDetectionInterval(15);
+  chrome.idle.setDetectionInterval(3600);
   chrome.idle.onStateChanged.addListener(chromeStateListener);
 
   createSocket();
@@ -69,7 +69,7 @@ function createSocket(){
     }else{
 
       if (jsonObj.Action == ACTION_POST){
-        
+
         new Notification(jsonObj.Subject, {
           icon: 'data:image/*;base64,' + jsonObj.Base64Image,
           body: jsonObj.Body
