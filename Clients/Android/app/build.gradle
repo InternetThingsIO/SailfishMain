@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'android'
 
 android {
     compileSdkVersion 21
@@ -22,6 +23,9 @@ android {
 
 repositories {
     mavenCentral()
+    maven{
+        url "https://mint.splunk.com/gradle/"
+    }
 }
 
 dependencies {
@@ -31,4 +35,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-plus:7.5.0'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.splunk.mint:mint:4.2.1'
 }

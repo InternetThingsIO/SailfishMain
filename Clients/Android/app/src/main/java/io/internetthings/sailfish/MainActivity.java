@@ -20,6 +20,7 @@ import android.provider.Settings;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.splunk.mint.Mint;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -39,8 +40,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        //Line of code to add Splunk Mint to the project
+        Mint.initAndStartSession(MainActivity.this, "50573816");
+
+        setContentView(R.layout.activity_main);
+      
         checkNotificationAccess();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
