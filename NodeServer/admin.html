@@ -26,13 +26,18 @@
       var socket = io();
       $('form').submit(function(){
       	socket.emit('join room', $('#room').val());
-      	socket.emit('send notification', $('#room').val(), $('#msg').val());
+      	socket.emit('send message', $('#room').val(), $('#msg').val());
         $('#msg').val('');
         return false;
       });
-      socket.on('notification', function(msg){
+      socket.on('message', function(msg){
         $('#messages').append($('<li>').text(msg));
       });
+
+      socket.on('image', function(packageName, image){
+        $('#messages').append($('<li>').text('Image package: ' + packageName + ' Size: ' + image.length));
+      });
+
     </script>
   </body>
 </html>

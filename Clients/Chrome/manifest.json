@@ -1,8 +1,9 @@
 {
-  "name": "Notification Demo",
-  "version": "1.1",
+  "name": "Notice",
+  "version": "0.8",
+  "offline_enabled": false,
   "description":
-    "Shows off desktop notifications, which are \"toast\" windows that pop up on the desktop.",
+    "Turns your phone notifications into smart notifications.  Why just get the information?  Do something useful with it.",
   "icons": {"16": "16.png", "48": "48.png", "128": "128.png"},
   "permissions": [
     "notifications",
@@ -11,9 +12,17 @@
   "options_page": "options.html",
   "background": { "scripts": ["socket.io-1.2.0.js", "background.js"] },
   "manifest_version": 2,
-
+  "minimum_chrome_version": "29",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsKQsAwpxR9/muFLa6ihDzHa/Ji7dQIHoJw1ByNkHcbXzhKEDIFFeMs/uLuQEzw23+HNsoY1RX33EuJ1Vg1rc2x/jMkZd7LFgKu8ZgZL2u7y5JeRdKvd8wxPDiihU7TbtVDImHB2iggVQmyNsn8fyNqOkcHNkwUtELamGYCrE7GWckj3dCCAnRrzuClOdOLyntqZj/XnAGlMfWrqoP3qm+Hz7jWN9yvN0ZOLgfwXzfexFx1rc2nzu2l1dCmIMjjqOAi4R8DSzRQ2Le6QN1CxRu0FznSCS2AtzOEtMeeMKJ69bpnSDT5wl6N84/wR0jMT54qYTfsb2ZwPRgCO/khaGLwIDAQAB",
+  "oauth2": {
+    "client_id": "1093471737235-944flu3gaeh5o6ghnrl28kt3081b5vb6.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  },
   // crbug.com/134315.  Only to use local resources.  Can use resources on WWW without this
   "web_accessible_resources": [
-    "48.png"
+    "48.png",
+    "notificon.jpg"
   ]
 }
