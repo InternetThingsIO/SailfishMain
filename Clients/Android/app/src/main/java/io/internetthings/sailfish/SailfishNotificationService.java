@@ -93,7 +93,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(icon,
                 sbn.getNotification().extras.getString("android.title"),
-                sbn.getNotification().extras.getCharSequence("android.text").toString(),
+                getBodyOfMessage(sbn),//sbn.getNotification().extras.getCharSequence("android.text").toString(),
                 sbn.getPackageName(),
                 sbn.getPostTime());
 
@@ -101,6 +101,16 @@ public class SailfishNotificationService extends NotificationListenerService{
         sn.ID = getMessageID(sbn);
         sendMessage(sn);
 
+    }
+
+    private String getBodyOfMessage(StatusBarNotification sbn){
+        String bom2String;
+        CharSequence bodyOfMessage = sbn.getNotification().extras.getCharSequence("android.text");
+
+        if(bodyOfMessage != null)
+            return bom2String = bodyOfMessage.toString();
+        else
+            return "Message is empty";
     }
 
     private String getMessageID(StatusBarNotification sbn){

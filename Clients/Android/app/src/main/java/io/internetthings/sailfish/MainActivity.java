@@ -172,6 +172,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     //Checks whether or not the NoticeNotificationService has access
     private void checkNotificationAccess(){
+
         String enabledAppList = Settings.Secure.getString(
                 this.getContentResolver(), "enabled_notification_listeners");
         boolean checkAppAccessFlag = enabledAppList.contains("SailfishNotificationService");
