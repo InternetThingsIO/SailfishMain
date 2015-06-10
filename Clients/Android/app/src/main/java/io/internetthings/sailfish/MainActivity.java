@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         Mint.initAndStartSession(MainActivity.this, "50573816");
 
         setContentView(R.layout.activity_main);
-      
+
         checkNotificationAccess();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -157,14 +157,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
 
-                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
+                SharedPreferences.Editor editor =
+                        getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
                 editor.putString("email", email);
                 editor.commit();
 
                 Log.d(logTAG, "Restarting service");
-
-                //stopService(new Intent(this, NoticeNotificationService.class));
-               // startService(new Intent(this, NoticeNotificationService.class));
 
             }else{
                 Log.e("", "Person information is NULL");
@@ -178,8 +176,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     //Checks whether or not the NoticeNotificationService has access
     private void checkNotificationAccess(){
 
-        String enabledAppList = Settings.Secure.getString(
-                this.getContentResolver(), "enabled_notification_listeners");
+        String enabledAppList = Settings.Secure.getString(this.getContentResolver(),
+                "enabled_notification_listeners");
+        if(enabledAppList == null)
+            enabledAppList = "None";
+
         boolean checkAppAccessFlag = enabledAppList.contains("SailfishNotificationService");
 
         if (!checkAppAccessFlag) {
