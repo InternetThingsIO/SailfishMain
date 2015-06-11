@@ -7,7 +7,8 @@
   "icons": {"16": "16.png", "48": "48.png", "128": "128.png"},
   "permissions": [
     "notifications",
-    "identity"
+    "identity",
+    "idle"
   ],
   "options_page": "options.html",
   "background": { "scripts": ["socket.io-1.2.0.js", "background.js"] },
