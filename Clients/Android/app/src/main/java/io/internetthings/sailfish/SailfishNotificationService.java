@@ -110,7 +110,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         if(bodyOfMessage != null)
             return bom2String = bodyOfMessage.toString();
         else
-            return "Message is empty";
+            return "Message is NULL";
     }
 
     private String getMessageID(StatusBarNotification sbn){
