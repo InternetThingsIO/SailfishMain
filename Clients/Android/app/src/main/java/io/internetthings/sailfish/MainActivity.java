@@ -12,10 +12,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.View;
 import android.provider.Settings;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,6 +39,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
        us from starting further intents.
      */
     private boolean mIntentInProgress;
+
+    private TextView connectionStatusColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +191,20 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         if (!checkAppAccessFlag) {
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
+        }
+    }
+
+    //Changes the Connection UI text
+    private void connectionStatus(){
+        Log.i(logTAG, "connectionStatus");
+        connectionStatusColor = (TextView)findViewById(R.id.status);
+        if(SailfishSocketIO.SocketSingleton().connected()) {
+            connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
+            connectionStatusColor.setText("Connected!");
+            connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+        }else{
+            connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
+            connectionStatusColor.setText("Not Connected");
         }
     }
 

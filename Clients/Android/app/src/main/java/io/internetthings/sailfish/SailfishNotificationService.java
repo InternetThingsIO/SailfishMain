@@ -9,8 +9,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
 /*
     Created by: Jason Maderski
     Date: 6/2/2015
