@@ -64,7 +64,8 @@ public class SailfishSocketIO {
 
     public static void attemptSend(String email, String message){
 
-        mSocket.emit("send message", email, message);
+        if(mSocket != null)
+            mSocket.emit("send message", email, message);
     }
 
 

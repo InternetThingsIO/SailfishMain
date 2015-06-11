@@ -27,27 +27,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private String email;
 
-    private List<Object> recentNotifications = new ArrayList<Object>();
-
     public SailfishNotificationService(){}
-
-    /*private boolean isDuplicate(){
-
-        //if this notification is active it's a duplicate and we return true
-        if (recentNotifications.contains(getActiveNotifications())) {
-            Log.i(logTAG, "is Duplicate");
-            return true;
-        }else {
-            recentNotifications.add(getActiveNotifications());
-            //recentNotifications.add(notif.getNotification().hashCode());
-
-        if(recentNotifications.size()>1000){
-            recentNotifications.remove(0);
-            Log.i(logTAG, "size()>1 notification removed");
-        }
-            return false;
-        }
-    }*/
 
     private void getPrefAndConnect() {
 
@@ -67,6 +47,11 @@ public class SailfishNotificationService extends NotificationListenerService{
         if (email != null) {
             Log.e(logTAG, "Started service, found email: " + email);
             SailfishSocketIO.connect(email);
+        }else{
+            Log.e(logTAG, "Email is NULL");
+        }
+
+        while(!SailfishSocketIO.SocketSingleton().connected()){
         }
 
     }

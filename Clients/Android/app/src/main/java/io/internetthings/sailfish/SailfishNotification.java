@@ -44,7 +44,7 @@ public class SailfishNotification extends SailfishMessage{
     private String drawableToBase64(Drawable icon){
         Bitmap bitmap = ((BitmapDrawable)icon).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
         byte[] bitmapdata = stream.toByteArray();
         //Convert bitArray data to Base64
         return Base64.encodeToString(bitmapdata, Base64.DEFAULT);
