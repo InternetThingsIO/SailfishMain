@@ -27,8 +27,8 @@ public class SplashScreen extends Activity {
 
             Intent i = new Intent(SplashScreen.this, MainActivity.class);
                 startActivity(i);
-
                 finish();
+                overridePendingTransition(0, R.animator.fadeout);
 
             }
         }, SPLASHSCREEN_TIME_OUT);
