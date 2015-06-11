@@ -1,5 +1,5 @@
 <resources>
-
+    <!-- Material design style -->
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Material.Light">
         <!-- Customize your theme here. -->
