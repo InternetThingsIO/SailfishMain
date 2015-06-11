@@ -70,20 +70,15 @@ function createSocket(){
 
       if (jsonObj.Action == ACTION_POST){
 
-        var options =  new NotificationOptions();
 
-        options.iconUrl = 'data:image/*;base64,' + jsonObj.Base64Image;
-        options.title = jsonObj.Subject;
-        options.message = jsonObj.Body;
-        options.eventTime = jsonObj.PostTime;
+        chrome.notifications.create(jsonObj.ID, {   
+          type: 'basic', 
+          iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
+          title: jsonObj.Subject, 
+          message: jsonObj.Body,
+          eventTime: jsonObj.PostTime
+        });
 
-
-        chrome.notifications.create(jsonObj.ID, options);
-
-        /*new Notification(jsonObj.Subject, {
-          icon: ,
-          body: jsonObj.Body
-        });*/
 
       }else if (jsonObj.Action == ACTION_REMOVE) {
 
