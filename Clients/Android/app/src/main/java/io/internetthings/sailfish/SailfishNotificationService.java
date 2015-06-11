@@ -69,6 +69,10 @@ public class SailfishNotificationService extends NotificationListenerService{
                 + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
+        //don't send ongoing notifications as they are annoying :-)
+        if (sbn.isOngoing())
+            return;
+
         getPrefAndConnect();
 
         Drawable icon = null;
