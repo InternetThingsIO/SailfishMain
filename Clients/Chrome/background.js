@@ -52,54 +52,9 @@ function createSocket(){
 
   socket.on('message', function(jsonStr){
 
-    console.log('Received message');
-    console.log(jsonStr);
-
-    var jsonObj = isJSON(jsonStr);
-
-    //parse out the JSON
-    if (jsonObj == false)
-    {
-
-      new Notification('raw string', {
-        icon: '48.png',
-        body: jsonStr
-      });
-
-    }else{
-
-      if (jsonObj.Action == ACTION_POST){
-
-
-        chrome.notifications.create(jsonObj.ID, {   
-          type: 'basic', 
-          iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
-          title: jsonObj.Subject, 
-          message: jsonObj.Body,
-          eventTime: jsonObj.PostTime
-        });
-
-
-      }else if (jsonObj.Action == ACTION_REMOVE) {
-
-        chrome.notifications.clear(jsonObj.ID);
-
-      }
-    }
+    handleMessage(jsonStr);
 
   });
-
-/*
-  socket.on('image', function(packageName, image){
-    console.log(image);
-
-    new Notification('Image: ' + packageName, {
-      icon: 'data:image/*;base64,' + image,
-      body: 'Image Size: ' + image.length
-    });
-
-  });
-*/
 
   socket.on('connect', function () { 
 
@@ -109,6 +64,56 @@ function createSocket(){
 
   });
 
+}
+
+//this function parses out messages we receive from the server
+function handleMessage(jsonStr){
+
+  console.log('Received message');
+  console.log(jsonStr);
+
+  var jsonObj = isJSON(jsonStr);
+
+  //parse out the JSON
+  if (jsonObj == false)
+  {
+    //print out a test notification
+    new Notification('raw string', {
+      icon: '48.png',
+      body: jsonStr
+    });
+
+  }else{
+
+    determineActions(jsonObj);
+
+  }
+}
+
+//this function determines what actions to take based upon JSON
+function determineActions(jsonObj){
+
+    if (jsonObj.Action == ACTION_POST){
+
+      createBasicNotif(jsonObj);
+
+    }else if (jsonObj.Action == ACTION_REMOVE) {
+
+      chrome.notifications.clear(jsonObj.ID);
+
+    }
+
+}
+
+//creates a basic notification. other types to come
+function createBasicNotif(jsonObj){
+  chrome.notifications.create(jsonObj.ID, {
+    type: 'basic', 
+    iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
+    title: jsonObj.Subject, 
+    message: jsonObj.Body,
+    eventTime: jsonObj.PostTime
+  });
 }
 
 function isJSON(jsonString){
@@ -159,8 +164,6 @@ function socketLeaveRoom(room){
   console.log('Leaving room: ' + room);
 
   socket.emit('leave room', room);
-
-  showSimpleNotification('Un-Subscribed', userImageURL, 'Computer is idle, not displaying notifications');
 
 }
 
@@ -226,6 +229,7 @@ function onUserInfoFetched(error, status, response) {
     console.log('Using email: ' + user_info.emails[0].value);
 
     if (user_info.image && user_info.image.url)
+        //TODO: eventually need to save the userImageURL to prefs instead of relying on the JSON having it everytime
       userImageURL = user_info.image.url;
     socketJoinRoom(user_info.emails[0].value);
 
