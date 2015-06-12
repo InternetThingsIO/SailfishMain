@@ -25,7 +25,10 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private String email;
 
-    public SailfishNotificationService(){}
+    public SailfishNotificationService(){
+    }
+
+
 
     private void getPrefAndConnect() {
 
@@ -66,6 +69,10 @@ public class SailfishNotificationService extends NotificationListenerService{
                 + "\n" + " getNumber: " + sbn.getNotification().number
                 + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
+
+        //don't post ongoing notifications
+        if (sbn.isOngoing())
+            return;
 
         getPrefAndConnect();
 

@@ -161,12 +161,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
 
+                //tell mint who we are
+                Mint.setUserIdentifier(email);
+
                 SharedPreferences.Editor editor =
                         getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
                 editor.putString("email", email);
                 editor.commit();
 
-                Log.d(logTAG, "Restarting service");
+                Log.d(logTAG, "Got email successfully");
 
             }else{
                 Log.e("", "Person information is NULL");
@@ -196,6 +199,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     //Changes the Connection UI text
     private void UpdateConnectionStatusTxt(){
+
         Log.i(logTAG, "UpdateConnectionStatusTxt()");
         connectionStatusColor = (TextView)findViewById(R.id.status);
         if(SailfishSocketIO.SocketSingleton().connected()) {
