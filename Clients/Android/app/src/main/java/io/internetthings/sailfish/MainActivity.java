@@ -14,7 +14,6 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.View;
 import android.provider.Settings;
@@ -194,9 +193,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+
     //Changes the Connection UI text
-    private void connectionStatus(){
-        Log.i(logTAG, "connectionStatus");
+    private void UpdateConnectionStatusTxt(){
+        Log.i(logTAG, "UpdateConnectionStatusTxt()");
         connectionStatusColor = (TextView)findViewById(R.id.status);
         if(SailfishSocketIO.SocketSingleton().connected()) {
             connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
