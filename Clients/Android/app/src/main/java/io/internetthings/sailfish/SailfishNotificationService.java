@@ -47,7 +47,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         //connect if we got an email
         if (email != null) {
             Log.e(logTAG, "Started service, found email: " + email);
-            SailfishSocketIO.connect(email);
+            SailfishSocketIO.connect(email, getApplicationContext());
         }else{
             Log.e(logTAG, "Email is NULL");
         }
