@@ -3,6 +3,41 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var XMLHttpRequest = require('xhr2');
 
+function main(){
+
+  app.get('/', function(req, res){
+    res.sendFile(__dirname + '/admin.html');
+  });
+
+  io.on('connection', function(socket){
+
+    socket.on('join room', function(token, email){
+      checkToken(token, email, socket, joinRoom);
+    });
+
+    socket.on('leave room', function(token, email){
+      checkToken(token, email, socket, leaveRoom);
+    });
+
+    socket.on('send message', function(roomID, msg){
+      console.log('Emitting message to: ' + roomID);
+      io.to(roomID).emit('message', msg);
+    });
+
+  /*
+    socket.on('send image', function(roomID, packageName, image){
+      console.log('received image. Length: ' + image.length);
+      io.to(roomID).emit('image', packageName, image);
+    });
+  */
+  });
+
+  http.listen(80, function(){
+    console.log('listening on *:80');
+  });
+
+}
+
 //gets user's info
 function checkToken(access_token, email, socket, callback) {
 
@@ -48,33 +83,5 @@ function leaveRoom(email, socket){
   socket.leave(email);
 }
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/admin.html');
-});
-
-io.on('connection', function(socket){
-
-  socket.on('join room', function(token, email){
-    checkToken(token, email, socket, joinRoom);
-  });
-
-  socket.on('leave room', function(token, email){
-    checkToken(token, email, socket, leaveRoom);
-  });
-
-  socket.on('send message', function(roomID, msg){
-    console.log('Emitting message to: ' + roomID);
-    io.to(roomID).emit('message', msg);
-  });
-
-/*
-  socket.on('send image', function(roomID, packageName, image){
-    console.log('received image. Length: ' + image.length);
-    io.to(roomID).emit('image', packageName, image);
-  });
-*/
-});
-
-http.listen(80, function(){
-  console.log('listening on *:80');
-});
+//run the main function at the end
+main();
