@@ -39,9 +39,11 @@ function checkToken(access_token, email, socket, callback) {
 }
 
 function joinRoom(email, socket) {
-  console.log('Successfully authed and joining room');
   socket.join(email);
+}
 
+function leaveRoom(email, socket){
+  socket.leave(email);
 }
 
 app.get('/', function(req, res){
@@ -51,17 +53,15 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
 
   socket.on('join room', function(token, email){
-    console.log('Trying to join room with token');
     checkToken(token, email, socket, joinRoom);
-
   });
 
-  socket.on('leave room', function(token, roomID){
-    socket.leave(roomID);
+  socket.on('leave room', function(token, email){
+    checkToken(token, email, socket, leaveRoom);
   });
 
   socket.on('send message', function(roomID, msg){
-    console.log('Emitting message to: ' + roomID + 'Message: ' + msg);
+    console.log('Emitting message to: ' + roomID);
     io.to(roomID).emit('message', msg);
   });
 
