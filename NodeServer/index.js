@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var XMLHttpRequest = require('xhr2');
 
 //gets user's info
-function checkToken(access_token, email, callback) {
+function checkToken(access_token, email, socket, callback) {
 
 
   requestStart();
@@ -24,9 +24,9 @@ function checkToken(access_token, email, callback) {
 
       //check to see if an email in the list matches the one that was sent
       user_info.emails.forEach(function(item){
-          console.log(item.value + ' ' + email);
+
           if (item.value == email)
-            callback(email);
+            callback(email, socket);
 
       });
 
@@ -38,9 +38,9 @@ function checkToken(access_token, email, callback) {
   }
 }
 
-function joinRoom(email) {
+function joinRoom(email, socket) {
   console.log('Successfully authed and joining room');
-  io.join(email);
+  socket.join(email);
 
 }
 
@@ -52,7 +52,7 @@ io.on('connection', function(socket){
 
   socket.on('join room', function(token, email){
     console.log('Trying to join room with token');
-    checkToken(token, email, joinRoom);
+    checkToken(token, email, socket, joinRoom);
 
   });
 
