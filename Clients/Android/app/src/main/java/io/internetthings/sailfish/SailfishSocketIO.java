@@ -1,5 +1,8 @@
 package io.internetthings.sailfish;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.github.nkzawa.socketio.client.IO;
@@ -38,7 +41,7 @@ public class SailfishSocketIO {
 
     }
 
-    public static void connect(String emailIn){
+    public static void connect(String emailIn, final Context context){
 
         email = emailIn;
 
@@ -49,11 +52,24 @@ public class SailfishSocketIO {
             @Override
             public void call(final Object... args) {
                 Log.i("NoticeSocketIO", "NoticeSocketIO onConnect");
-                //mSocket.emit("join room", email);
+                Intent intent = new Intent("onSocketConnect");
+
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
             }
         };
         mSocket.on("connect", onConnect);
+
+        Emitter.Listener onDisconnect = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                Log.i(logTAG, "onDisconnect Listener");
+                Intent intent = new Intent("onSocketDisconnect");
+
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+        };
+        mSocket.on("disconnect", onDisconnect);
         mSocket.connect();
     }
 
@@ -67,6 +83,5 @@ public class SailfishSocketIO {
         if(mSocket != null)
             mSocket.emit("send message", email, message);
     }
-
 
 }

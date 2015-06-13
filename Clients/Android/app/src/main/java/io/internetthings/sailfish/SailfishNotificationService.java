@@ -9,8 +9,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
 /*
     Created by: Jason Maderski
     Date: 6/2/2015
@@ -27,7 +25,10 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private String email;
 
-    public SailfishNotificationService(){}
+    public SailfishNotificationService(){
+    }
+
+
 
     private void getPrefAndConnect() {
 
@@ -46,7 +47,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         //connect if we got an email
         if (email != null) {
             Log.e(logTAG, "Started service, found email: " + email);
-            SailfishSocketIO.connect(email);
+            SailfishSocketIO.connect(email, getApplicationContext());
         }else{
             Log.e(logTAG, "Email is NULL");
         }
@@ -69,7 +70,7 @@ public class SailfishNotificationService extends NotificationListenerService{
                 + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
-        //don't send ongoing notifications as they are annoying :-)
+        //don't post ongoing notifications
         if (sbn.isOngoing())
             return;
 
