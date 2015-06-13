@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var XMLHttpRequest = require('xhr2');
 
 //gets user's info
-function checkToken(access_token, callback) {
+function checkToken(access_token, email, callback) {
 
 
   requestStart();
@@ -19,12 +19,19 @@ function checkToken(access_token, callback) {
 
   function requestComplete() {
     if (this.status == 200) {
-      console.log('Success ' + this.response);
-      //var user_info = JSON.parse(this.response);
 
+      var user_info = JSON.parse(this.response);
 
+      //check to see if an email in the list matches the one that was sent
+      user_info.emails.forEach(function(item){
 
-      //callback(null, this.status, this.response);
+          if (item.value == email)
+            callback(email);
+
+      });
+
+      
+
     }else{
       console.log('(maybe token is bad?) Auth failed with status: ' + this.status + 'response: ' + this.response);
     }
@@ -32,7 +39,7 @@ function checkToken(access_token, callback) {
 }
 
 function joinRoom(email) {
-
+  console.log('Successfully authed and joining room');
   socket.join(roomID);
 
 }
@@ -42,14 +49,10 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
- 
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
 
-  socket.on('join room', function(token){
-    console.log('Trying to join room, token: ' + token);
-    checkToken(token, joinRoom);
+  socket.on('join room', function(token, email){
+    console.log('Trying to join room with token');
+    checkToken(token, email, joinRoom);
 
   });
 
