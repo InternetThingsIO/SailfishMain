@@ -39,10 +39,12 @@ function checkToken(access_token, email, socket, callback) {
 }
 
 function joinRoom(email, socket) {
+  console.log('join a room');
   socket.join(email);
 }
 
 function leaveRoom(email, socket){
+  console.log('leave a room');
   socket.leave(email);
 }
 
