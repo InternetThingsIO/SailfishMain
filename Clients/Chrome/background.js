@@ -19,6 +19,8 @@ function main(){
 
   createSocket();
 
+  alert('On the next screen, we will sign in to google so that we can sync with your device.  You may be prompted to authorize this');
+
   xhrWithAuth('GET',
                 'https://www.googleapis.com/plus/v1/people/me',
                 true,
@@ -145,6 +147,7 @@ function isComputerIdle(state){
 
 function socketJoinRoom(room){
 
+
   //bail if we are idle, but only if the currentState has been set
   if (isComputerIdle(currentState)){
     console.log('Can not join room when idle');
@@ -153,7 +156,7 @@ function socketJoinRoom(room){
 
   console.log('Joining room: ' + room);
 
-  socket.emit('join room', room);
+  emitSocket('join room', null);
 
   showSimpleNotification('Subscribed', userImageURL, 'Subscribed to your feed ' + room);
 
@@ -163,7 +166,21 @@ function socketLeaveRoom(room){
 
   console.log('Leaving room: ' + room);
 
-  socket.emit('leave room', room);
+  emitSocket('leave room', [room]);
+
+}
+
+//Emits to the socket with a token
+function emitSocket(name, args){
+
+  chrome.identity.getAuthToken({ interactive: false }, function(token) {
+    //socket.emit(name, args);  
+    if (args)
+      socket.emit(name, token, args);
+    else
+      socket.emit(name, token);
+
+  });
 
 }
 
@@ -223,6 +240,7 @@ function xhrWithAuth(method, url, interactive, callback) {
 function onUserInfoFetched(error, status, response) {
   if (!error && status == 200) {
     //changeState(STATE_AUTHTOKEN_ACQUIRED);
+    console.log('User Info Fetched');
     console.log(response);
     user_info = JSON.parse(response);
     
