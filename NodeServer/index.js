@@ -24,7 +24,7 @@ function checkToken(access_token, email, callback) {
 
       //check to see if an email in the list matches the one that was sent
       user_info.emails.forEach(function(item){
-          console.log(item.value);
+          console.log(item.value + ' ' + email);
           if (item.value == email)
             callback(email);
 
