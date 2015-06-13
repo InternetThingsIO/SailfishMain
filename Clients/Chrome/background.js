@@ -156,7 +156,7 @@ function socketJoinRoom(room){
 
   console.log('Joining room: ' + room);
 
-  emitSocket('join room', null);
+  emitSocket('join room', room);
 
   showSimpleNotification('Subscribed', userImageURL, 'Subscribed to your feed ' + room);
 
@@ -166,19 +166,17 @@ function socketLeaveRoom(room){
 
   console.log('Leaving room: ' + room);
 
-  emitSocket('leave room', [room]);
+  emitSocket('leave room', room);
 
 }
 
 //Emits to the socket with a token
-function emitSocket(name, args){
+function emitSocket(name, arg1, arg2){
 
   chrome.identity.getAuthToken({ interactive: false }, function(token) {
-    //socket.emit(name, args);  
-    if (args)
-      socket.emit(name, token, args);
-    else
-      socket.emit(name, token);
+
+    socket.emit(name, token, arg1, arg2);
+  
 
   });
 
