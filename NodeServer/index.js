@@ -40,7 +40,7 @@ function checkToken(access_token, email, callback) {
 
 function joinRoom(email) {
   console.log('Successfully authed and joining room');
-  socket.join(roomID);
+  io.join(email);
 
 }
 
