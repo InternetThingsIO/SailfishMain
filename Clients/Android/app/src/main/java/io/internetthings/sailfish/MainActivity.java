@@ -17,10 +17,12 @@ import android.util.Log;
 import android.view.View;
 import android.provider.Settings;
 
-import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.*;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.splunk.mint.Mint;
+import com.google.android.gms.auth.GoogleAuthUtil;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -44,6 +46,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         //Line of code to add Splunk Mint to the project
         Mint.initAndStartSession(MainActivity.this, "50573816");
 
+
         setContentView(R.layout.activity_main);
 
         checkNotificationAccess();
@@ -53,6 +56,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
                 .build();
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -65,7 +70,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.d("", "onConnected Success");
-        getProfileInformation();
+        setProfileInformation();
     }
 
     @Override
@@ -149,20 +154,25 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     //Display's person email in Logcat if connected
-    private void getProfileInformation(){
+    private void setProfileInformation(){
         try{
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
-            if(email != null){
+            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            if(email != null && accountName != null){
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
+
+                //setup user identification for splunk mint
+                Mint.setUserIdentifier(email);
 
                 SharedPreferences.Editor editor =
                         getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
                 editor.putString("email", email);
+                editor.putString("accountName", accountName);
                 editor.commit();
 
-                Log.d(logTAG, "Restarting service");
+                Log.i(logTAG, "Successfully got user info");
 
             }else{
                 Log.e("", "Person information is NULL");
