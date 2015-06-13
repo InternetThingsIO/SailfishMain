@@ -68,7 +68,7 @@ function checkToken(access_token, callback) {
   }
 }
 
-function joinRoomfunction(email) {{
+function joinRoomfunction(email) {
 
   socket.join(roomID);
 
