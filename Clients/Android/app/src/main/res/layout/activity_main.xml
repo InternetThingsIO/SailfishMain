@@ -50,7 +50,15 @@
         android:text="Not Connected"
         android:id="@+id/status"
         android:textColor="#ffff000e"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/programName" />
+        android:layout_below="@+id/programName"
+        android:layout_alignStart="@+id/programName"
+        android:layout_marginTop="83dp" />
+
+    <fragment
+        class="io.internetthings.sailfish.Tabs"
+        android:id="@+id/tabs_fragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
 
 </RelativeLayout>

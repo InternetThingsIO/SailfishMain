@@ -4,4 +4,11 @@
     <string name="action_settings">Settings</string>
     <string name="notification_service_name">Notice Notification Service</string>
 
+    <!--Tab UI Labels-->
+    <string name="tab_ignore_apps">"Ignore Apps"</string>
+    <string name="tab_purchase_features">"Buy"</string>
+    <string name="tab_switch_email">"Switch Email"</string>
+    <string name="tab_help">"Help"</string>
+
+
 </resources>
