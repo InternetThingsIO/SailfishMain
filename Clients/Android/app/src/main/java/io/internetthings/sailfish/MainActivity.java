@@ -9,20 +9,25 @@ package io.internetthings.sailfish;
 
  */
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.provider.Settings;
+import android.widget.TextView;
 
-import com.google.android.gms.common.*;
+import com.github.nkzawa.emitter.Emitter;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.splunk.mint.Mint;
-import com.google.android.gms.auth.GoogleAuthUtil;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -39,13 +44,17 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      */
     private boolean mIntentInProgress;
 
+    private TextView connectionStatusColor;
+
+    BroadcastReceiver onSocketConnectReceiver;
+    BroadcastReceiver onSocketDisconnectReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Line of code to add Splunk Mint to the project
         Mint.initAndStartSession(MainActivity.this, "50573816");
-
 
         setContentView(R.layout.activity_main);
 
@@ -56,21 +65,48 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
                 .build();
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this);
 
+        setupBroadcastManagers();
     }
 
+    private void setupBroadcastManagers(){
+        onSocketConnectReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
+                connectionStatusColor.setText("Connected!");
+                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+        };
+
+        onSocketDisconnectReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
+                connectionStatusColor.setText("Disconnected!");
+                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+        };
+
+        connectionStatusColor = (TextView)findViewById(R.id.status);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(onSocketConnectReceiver,
+                new IntentFilter("onSocketConnect"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(onSocketDisconnectReceiver,
+                new IntentFilter("onSocketDisconnect"));
+
+    }
     //Method runs when user is signed on
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.d("", "onConnected Success");
-        setProfileInformation();
+        getProfileInformation();
     }
 
     @Override
@@ -140,6 +176,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onStart(){
         super.onStart();
         mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -150,29 +187,32 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     @Override
     protected void onDestroy(){
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
         super.onDestroy();
+
     }
 
     //Display's person email in Logcat if connected
-    private void setProfileInformation(){
+    private void getProfileInformation(){
         try{
-
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            if(email != null && accountName != null){
+
+            if(email != null){
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
+                //TextView emailUITxt = (TextView)findViewById(R.id.emailDisplayed);
+                //emailUITxt.setText(email);
 
-                //setup user identification for splunk mint
+                //tell mint who we are
                 Mint.setUserIdentifier(email);
 
                 SharedPreferences.Editor editor =
                         getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
                 editor.putString("email", email);
-                editor.putString("accountName", accountName);
                 editor.commit();
 
-                Log.i(logTAG, "Successfully got user info");
+                Log.d(logTAG, "Got email successfully");
 
             }else{
                 Log.e("", "Person information is NULL");
