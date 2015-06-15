@@ -45,6 +45,7 @@ function checkToken(access_token, email, socket, callback, args) {
   requestStart();
 
   function requestStart() {
+    console.log('Making request with token: ' + access_token);
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://www.googleapis.com/plus/v1/people/me');
     xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
