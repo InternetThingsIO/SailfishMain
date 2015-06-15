@@ -7,7 +7,12 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
+
+import java.io.IOException;
 
 /*
     Created by: Jason Maderski
@@ -71,7 +76,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         );
 
         //don't post ongoing notifications
-        if (sbn.isOngoing())
+        if (!sbn.isClearable())
             return;
 
         getPrefAndConnect();
@@ -119,7 +124,29 @@ public class SailfishNotificationService extends NotificationListenerService{
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
 
-        SailfishSocketIO.attemptSend(email, json);
+        String token = getToken();
+
+        if (!TextUtils.isEmpty(token))
+            SailfishSocketIO.attemptSend(token, email, json);
+        else
+            Log.e(logTAG, "Token came back empty on sendMessage");
+    }
+
+    private String getToken(){
+        String scopes = "oauth2:profile email";
+        String token = null;
+        try {
+            token = GoogleAuthUtil.getToken(getApplicationContext(), email, scopes);
+        } catch (IOException e) {
+            Log.e(logTAG, e.getMessage());
+        } catch (UserRecoverableAuthException e) {
+            //startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
+        } catch (GoogleAuthException e) {
+            switch (Log.e(logTAG, e.getMessage())) {
+            }
+        }
+        return token;
+
     }
 
     //Displays notification that has been removed in the logcat window

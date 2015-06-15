@@ -8,6 +8,7 @@ import android.util.Log;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.github.nkzawa.emitter.Emitter;
+import com.google.android.gms.auth.GoogleAuthUtil;
 
 import java.net.URISyntaxException;
 
@@ -78,10 +79,13 @@ public class SailfishSocketIO {
 
     }
 
-    public static void attemptSend(String email, String message){
+    public static void attemptSend(String token, String email, String message){
 
-        if(mSocket != null)
-            mSocket.emit("send message", email, message);
+        if(mSocket != null) {
+            mSocket.emit("send message", token, email, message);
+        }else{
+            Log.e(logTAG, "mSocket was null for some reason in attemptSend");
+        }
     }
 
 }

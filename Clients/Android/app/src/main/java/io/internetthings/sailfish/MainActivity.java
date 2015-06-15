@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -24,12 +25,20 @@ import android.provider.Settings;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.splunk.mint.Mint;
 
+import java.io.IOException;
+
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+
+    private static final int REQ_SIGN_IN_REQUIRED = 55664;
 
     //Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 0;
@@ -65,6 +74,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -204,6 +214,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //TextView emailUITxt = (TextView)findViewById(R.id.emailDisplayed);
                 //emailUITxt.setText(email);
 
+                //get the token here in case we need to provide extra permissions to do it
+                new RetrieveTokenTask().execute(email);
+
                 //tell mint who we are
                 Mint.setUserIdentifier(email);
 
@@ -239,4 +252,32 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+    private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String accountName = params[0];
+            String scopes = "oauth2:profile email";
+            String token = null;
+            try {
+                token = GoogleAuthUtil.getToken(getApplicationContext(), accountName, scopes);
+            } catch (IOException e) {
+                Log.e(logTAG, e.getMessage());
+            } catch (UserRecoverableAuthException e) {
+                startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
+            } catch (GoogleAuthException e) {
+                switch (Log.e(logTAG, e.getMessage())) {
+                }
+            }
+            return token;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.e(logTAG, "Token Value: " + s);
+        }
+    }
+
 }
+
