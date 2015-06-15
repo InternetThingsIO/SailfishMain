@@ -38,8 +38,6 @@ import java.io.IOException;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    private static final int REQ_SIGN_IN_REQUIRED = 55664;
-
     //Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 0;
     public static final String MY_PREFS_NAME = "SailFishPref";
@@ -67,14 +65,16 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         setContentView(R.layout.activity_main);
 
-        checkNotificationAccess();
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_PROFILE)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                //.addScope(Plus.SCOPE_PLUS_PROFILE)
+                //.addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
+
                 .build();
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -253,18 +253,23 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
+        private static final int REQ_SIGN_IN_REQUIRED = 55664;
+        boolean retry = true;
 
         @Override
         protected String doInBackground(String... params) {
             String accountName = params[0];
-            String scopes = "oauth2:profile email";
+            String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
             String token = null;
             try {
                 token = GoogleAuthUtil.getToken(getApplicationContext(), accountName, scopes);
             } catch (IOException e) {
                 Log.e(logTAG, e.getMessage());
             } catch (UserRecoverableAuthException e) {
-                startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
+                if (retry) {
+                    retry = false;
+                    startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
+                }
             } catch (GoogleAuthException e) {
                 switch (Log.e(logTAG, e.getMessage())) {
                 }
@@ -276,6 +281,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.e(logTAG, "Token Value: " + s);
+
+            //get notification access after everything else works
+            checkNotificationAccess();
         }
     }
 
