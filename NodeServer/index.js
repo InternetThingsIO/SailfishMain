@@ -12,16 +12,16 @@ function main(){
   io.on('connection', function(socket){
 
     socket.on('join room', function(token, email){
-      checkToken(token, email, socket, joinRoom);
+      checkToken(token, email, socket, joinRoom, null);
     });
 
     socket.on('leave room', function(token, email){
-      checkToken(token, email, socket, leaveRoom);
+      checkToken(token, email, socket, leaveRoom, null);
     });
 
-    socket.on('send message', function(roomID, msg){
-      console.log('Emitting message to: ' + roomID);
-      io.to(roomID).emit('message', msg);
+    socket.on('send message', function(token, email, msg){
+      checkToken(token, email, socket, messageToClient, [msg]);
+      
     });
 
   /*
@@ -39,7 +39,7 @@ function main(){
 }
 
 //gets user's info
-function checkToken(access_token, email, socket, callback) {
+function checkToken(access_token, email, socket, callback, args) {
 
 
   requestStart();
@@ -61,7 +61,7 @@ function checkToken(access_token, email, socket, callback) {
       user_info.emails.forEach(function(item){
 
           if (item.value == email)
-            callback(email, socket);
+            callback(email, socket, args);
 
       });
 
@@ -73,14 +73,19 @@ function checkToken(access_token, email, socket, callback) {
   }
 }
 
-function joinRoom(email, socket) {
+function joinRoom(email, socket, args) {
   console.log('join a room');
   socket.join(email);
 }
 
-function leaveRoom(email, socket){
+function leaveRoom(email, socket, args){
   console.log('leave a room');
   socket.leave(email);
+}
+
+function messageToClient(email, socket, args){
+  console.log('Emitting message to: ' + email);
+  io.to(email).emit('message', args[0]);
 }
 
 //run the main function at the end
