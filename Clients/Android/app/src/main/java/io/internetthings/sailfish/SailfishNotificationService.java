@@ -12,7 +12,15 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
 
 /*
     Created by: Jason Maderski
@@ -133,7 +141,7 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private String getToken(){
-        String scopes = "oauth2:profile email";
+        String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
         String token = null;
         try {
             token = GoogleAuthUtil.getToken(getApplicationContext(), email, scopes);
@@ -145,8 +153,62 @@ public class SailfishNotificationService extends NotificationListenerService{
             switch (Log.e(logTAG, e.getMessage())) {
             }
         }
+
+        //make a request with the token
+
+        BufferedReader in = null;
+        String data = null;
+
+        try{
+            HttpClient httpclient = new DefaultHttpClient();
+
+            HttpGet request = new HttpGet();
+            URI website = new URI("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" + token);
+            request.setURI(website);
+            HttpResponse response = httpclient.execute(request);
+            in = new BufferedReader(new InputStreamReader(
+                    response.getEntity().getContent()));
+
+            // NEW CODE
+            String line = ReadBigStringIn(in);
+
+            Log.e(logTAG, "return: " + line);
+
+        }catch(Exception e){
+            Log.e("log_tag", "Error in http connection "+e.toString());
+        }
+
+        try{
+            HttpClient httpclient = new DefaultHttpClient();
+
+            HttpGet request = new HttpGet();
+            request.setHeader("Authorization", "Bearer " + token);
+            URI website = new URI("https://www.googleapis.com/plus/v1/people/me");
+            request.setURI(website);
+            HttpResponse response = httpclient.execute(request);
+            in = new BufferedReader(new InputStreamReader(
+                    response.getEntity().getContent()));
+
+            // NEW CODE
+            String line = ReadBigStringIn(in);
+
+            Log.e(logTAG, "return: " + line);
+
+        }catch(Exception e){
+            Log.e("log_tag", "Error in http connection "+e.toString());
+        }
+
         return token;
 
+    }
+
+    public String ReadBigStringIn(BufferedReader buffIn) throws IOException {
+        StringBuilder everything = new StringBuilder();
+        String line;
+        while( (line = buffIn.readLine()) != null) {
+            everything.append(line);
+        }
+        return everything.toString();
     }
 
     //Displays notification that has been removed in the logcat window

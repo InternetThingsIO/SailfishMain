@@ -284,6 +284,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             //get notification access after everything else works
             checkNotificationAccess();
+
         }
     }
 
