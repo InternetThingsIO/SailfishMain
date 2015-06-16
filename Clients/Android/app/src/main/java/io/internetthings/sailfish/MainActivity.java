@@ -9,14 +9,21 @@ package io.internetthings.sailfish;
 
  */
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.provider.Settings;
+import android.widget.TextView;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
@@ -36,6 +43,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
        us from starting further intents.
      */
     private boolean mIntentInProgress;
+
+    private TextView connectionStatusColor;
+
+    BroadcastReceiver onSocketConnectReceiver;
+    BroadcastReceiver onSocketDisconnectReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +71,37 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this);
 
+        setupBroadcastManagers();
     }
 
+    private void setupBroadcastManagers(){
+        onSocketConnectReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
+                connectionStatusColor.setText("Connected!");
+                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+        };
+
+        onSocketDisconnectReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
+                connectionStatusColor.setText("Disconnected!");
+                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+        };
+
+        connectionStatusColor = (TextView)findViewById(R.id.status);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(onSocketConnectReceiver,
+                new IntentFilter("onSocketConnect"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(onSocketDisconnectReceiver,
+                new IntentFilter("onSocketDisconnect"));
+
+    }
     //Method runs when user is signed on
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -135,6 +176,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onStart(){
         super.onStart();
         mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -145,7 +187,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     @Override
     protected void onDestroy(){
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
         super.onDestroy();
+
     }
 
     //Display's person email in Logcat if connected
@@ -156,13 +201,18 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             if(email != null){
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
+                //TextView emailUITxt = (TextView)findViewById(R.id.emailDisplayed);
+                //emailUITxt.setText(email);
+
+                //tell mint who we are
+                Mint.setUserIdentifier(email);
 
                 SharedPreferences.Editor editor =
                         getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
                 editor.putString("email", email);
                 editor.commit();
 
-                Log.d(logTAG, "Restarting service");
+                Log.d(logTAG, "Got email successfully");
 
             }else{
                 Log.e("", "Person information is NULL");
