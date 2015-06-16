@@ -7,7 +7,7 @@ android {
         config {
             keyAlias 'InternetThings'
             keyPassword 'JTG020714'
-            storeFile file('C:/ITkeystore/ITPRODkeystore')
+            storeFile file('key/ITPRODkeystore')
             storePassword 'GeoJasTer3'
         }
     }
