@@ -1,5 +1,6 @@
 package io.internetthings.sailfish;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
@@ -12,15 +13,8 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
 
 /*
     Created by: Jason Maderski
@@ -41,7 +35,11 @@ public class SailfishNotificationService extends NotificationListenerService{
     public SailfishNotificationService(){
     }
 
-
+    //start sticky so it restarts on crash :-)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
 
     private void getPrefAndConnect() {
 
@@ -182,4 +180,5 @@ public class SailfishNotificationService extends NotificationListenerService{
         sm.ID = getMessageID(sbn);
         sendMessage(sm);
     }
+
 }
