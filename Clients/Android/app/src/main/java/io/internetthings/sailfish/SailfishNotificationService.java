@@ -159,45 +159,6 @@ public class SailfishNotificationService extends NotificationListenerService{
         BufferedReader in = null;
         String data = null;
 
-        try{
-            HttpClient httpclient = new DefaultHttpClient();
-
-            HttpGet request = new HttpGet();
-            URI website = new URI("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" + token);
-            request.setURI(website);
-            HttpResponse response = httpclient.execute(request);
-            in = new BufferedReader(new InputStreamReader(
-                    response.getEntity().getContent()));
-
-            // NEW CODE
-            String line = ReadBigStringIn(in);
-
-            Log.e(logTAG, "return: " + line);
-
-        }catch(Exception e){
-            Log.e("log_tag", "Error in http connection "+e.toString());
-        }
-
-        try{
-            HttpClient httpclient = new DefaultHttpClient();
-
-            HttpGet request = new HttpGet();
-            request.setHeader("Authorization", "Bearer " + token);
-            URI website = new URI("https://www.googleapis.com/plus/v1/people/me");
-            request.setURI(website);
-            HttpResponse response = httpclient.execute(request);
-            in = new BufferedReader(new InputStreamReader(
-                    response.getEntity().getContent()));
-
-            // NEW CODE
-            String line = ReadBigStringIn(in);
-
-            Log.e(logTAG, "return: " + line);
-
-        }catch(Exception e){
-            Log.e("log_tag", "Error in http connection "+e.toString());
-        }
-
         return token;
 
     }
