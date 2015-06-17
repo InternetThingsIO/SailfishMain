@@ -241,7 +241,7 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
   console.log('Notification Icon: ' + inIcon);
 
   var unixTime = new Date().getTime();
-
+  //download the user's icon so that we 
   chrome.notifications.create(unixTime.toString(), {
     type: 'basic', 
     iconUrl: '128.png', 
