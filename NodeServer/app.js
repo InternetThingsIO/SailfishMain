@@ -36,6 +36,8 @@ function main(){
       
     });
 
+  });
+
 }
 
 //gets user's info
