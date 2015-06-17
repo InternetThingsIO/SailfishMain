@@ -1,20 +1,28 @@
-const crypto = require('crypto'),
-  app = require('express')(),
-  http = require('http').Server(app),
-  io = require('socket.io')(http),
+var express = require('express')(),
+  https = require('https'),
+  sio = require('socket.io')(http),
   fs = require("fs"),
   XMLHttpRequest = require('xhr2');
 
-var privateKey = fs.readFileSync('/etc/ssl/certs/privatekey.pem').toString();
-var certificate = fs.readFileSync('/etc/ssl/certs/certificate.pem').toString();
+var options = {
+  key: fs.readFileSync('/etc/ssl/certs/privatekey.pem'),
+  cert: fs.readFileSync('/etc/ssl/certs/certificate.pem'),
+  ca: fs.readFileSync('/etc/ssl/certs/intermediate.pem')
+};
 
-var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
+var app = express.createServer(options);
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/admin.html');
+});
+
+app.listen(443, function(){
+  console.log('listening on *:443');
+});
+
+var io = sio.listen(app,options);
 
 function main(){
-
-  app.get('/', function(req, res){
-    res.sendFile(__dirname + '/admin.html');
-  });
 
   io.on('connection', function(socket){
 
@@ -31,17 +39,6 @@ function main(){
       
     });
 
-  /*
-    socket.on('send image', function(roomID, packageName, image){
-      console.log('received image. Length: ' + image.length);
-      io.to(roomID).emit('image', packageName, image);
-    });
-  */
-  });
-
-  http.setSecure(credentials);
-  http.listen(80, function(){
-    console.log('listening on *:80');
   });
 
 }
