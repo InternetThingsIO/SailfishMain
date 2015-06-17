@@ -1,7 +1,13 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var XMLHttpRequest = require('xhr2');
+const crypto = require('crypto'),
+  app = require('express')(),
+  http = require('http').Server(app),
+  io = require('socket.io')(http),
+  XMLHttpRequest = require('xhr2');
+
+var privateKey = fs.readFileSync('/etc/ssl/certs/privatekey.pem').toString();
+var certificate = fs.readFileSync('/etc/ssl/certs/certificate.pem').toString();
+
+var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
 
 function main(){
 
@@ -24,17 +30,12 @@ function main(){
       
     });
 
-  /*
-    socket.on('send image', function(roomID, packageName, image){
-      console.log('received image. Length: ' + image.length);
-      io.to(roomID).emit('image', packageName, image);
-    });
-  */
   });
 
-  http.listen(80, function(){
-    console.log('listening on *:80');
-  });
+  var server = http.createServer();
+  server.setSecure(credentials);
+  server.addListener("request", handler);
+  server.listen(80);
 
 }
 
