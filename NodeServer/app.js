@@ -1,6 +1,6 @@
-var express = require('express')(),
+var express = require('express'),
   https = require('https'),
-  sio = require('socket.io')(http),
+  sio = require('socket.io'),
   fs = require("fs"),
   XMLHttpRequest = require('xhr2');
 
