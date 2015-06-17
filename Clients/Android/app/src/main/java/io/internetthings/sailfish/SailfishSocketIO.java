@@ -29,7 +29,7 @@ public class SailfishSocketIO {
         if (mSocket == null) {
 
             try{
-                mSocket = IO.socket("http://api.internetthings.io");
+                mSocket = IO.socket("https://api.internetthings.io");
             }catch (URISyntaxException e){}
 
             if (!mSocket.connected()) {
