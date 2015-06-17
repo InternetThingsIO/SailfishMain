@@ -2,6 +2,7 @@ const crypto = require('crypto'),
   app = require('express')(),
   http = require('http').Server(app),
   io = require('socket.io')(http),
+  fs = require("fs"),
   XMLHttpRequest = require('xhr2');
 
 var privateKey = fs.readFileSync('/etc/ssl/certs/privatekey.pem').toString();
