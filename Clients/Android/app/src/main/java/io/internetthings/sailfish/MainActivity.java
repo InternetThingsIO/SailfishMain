@@ -76,10 +76,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
 
                 .build();
-
+       /*
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this);
+        findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this); */
 
         setupBroadcastManagers();
     }
@@ -124,30 +124,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.connect();
     }
 
-    //When button any button is pushed "onClick() is displayed in logcat, this method associates
-    // buttons with actions
     @Override
     public void onClick(View v) {
-        Log.d("", "onClick()");
-        if(v.getId() == R.id.sign_in_button
-            && !mGoogleApiClient.isConnecting()){
-            mGoogleApiClient.connect();
-        }
 
-        else if(v.getId() == R.id.sign_out_button){
-            if(mGoogleApiClient.isConnected()){
-                Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                mGoogleApiClient.disconnect();
-                Log.d("", "User signed out");
-            }
-        }
-
-        else if(v.getId() == R.id.sign_out_and_sign_in) {
-            if(mGoogleApiClient.isConnected()){
-                Log.d("", "User signed out");
-                mGoogleApiClient.clearDefaultAccountAndReconnect();
-            }
-        }
     }
 
     //Runs when Google+ sign in fails

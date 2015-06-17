@@ -54,9 +54,8 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
     private void setupTabs(){
         mTabHost.setup(); //must be called before adding the tabs!
         mTabHost.addTab(newTab(TAB_IGNORE_APPS, R.string.tab_ignore_apps, R.id.tab_1));
-        mTabHost.addTab(newTab(TAB_PURCHASE_FEATURES, R.string.tab_purchase_features, R.id.tab_2));
-        mTabHost.addTab(newTab(TAB_SWITCH_EMAIL, R.string.tab_switch_email, R.id.tab_3));
-        mTabHost.addTab(newTab(TAB_HELP, R.string.tab_help, R.id.tab_4));
+                mTabHost.addTab(newTab(TAB_SWITCH_EMAIL, R.string.tab_switch_email, R.id.tab_2));
+        mTabHost.addTab(newTab(TAB_HELP, R.string.tab_help, R.id.tab_3));
     }
 
     private TabHost.TabSpec newTab(String tag, int labelId, int tabContentId){
@@ -81,19 +80,14 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
             mCurrentTab = 0;
             return;
         }
-        if (TAB_PURCHASE_FEATURES.equals(tabId)) {
+        if (TAB_SWITCH_EMAIL.equals(tabId)) {
             updateTab(tabId, R.id.tab_2);
             mCurrentTab = 1;
             return;
         }
-        if (TAB_SWITCH_EMAIL.equals(tabId)) {
+        if (TAB_HELP.equals(tabId)) {
             updateTab(tabId, R.id.tab_3);
             mCurrentTab = 2;
-            return;
-        }
-        if (TAB_HELP.equals(tabId)) {
-            updateTab(tabId, R.id.tab_4);
-            mCurrentTab = 3;
             return;
         }
     }

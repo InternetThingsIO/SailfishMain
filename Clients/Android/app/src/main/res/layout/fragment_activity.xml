@@ -35,13 +35,7 @@
             <FrameLayout
                 android:id="@+id/tab_3"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <FrameLayout
-                    android:id="@+id/tab_4"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"></FrameLayout>
-            </FrameLayout>
+                android:layout_height="fill_parent" />
 
         </FrameLayout>
     </RelativeLayout>
