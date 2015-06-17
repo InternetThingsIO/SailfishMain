@@ -1,7 +1,19 @@
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var https = require('https');
+var fs = require('fs');
 var XMLHttpRequest = require('xhr2');
+
+
+var options = {
+  key: fs.readFileSync('/etc/ssl/certs/privatekey.pem'),
+  cert: fs.readFileSync('/etc/ssl/certs/certificate.pem'),
+  ca: fs.readFileSync('/etc/ssl/certs/intermediate.pem')
+};
+
+var server = https.createServer(options, app);
+var io = require('socket.io').listen(server);
+
+server.listen(443);
 
 function main(){
 
