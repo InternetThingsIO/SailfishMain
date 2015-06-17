@@ -50,7 +50,7 @@ function chromeStateListener(newState){
 
 function createSocket(){
 
-  socket = io('http://api.internetthings.io');
+  socket = io('https://api.internetthings.io');
 
   socket.on('message', function(jsonStr){
 
