@@ -1,27 +1,10 @@
-function main(){
-
-  document.getElementById('authorize').addEventListener('click',
-    authorizeInteractive);
-
-}
-
-function authorizeInteractive(){
-
-  localStorage["authorized"] = "false";
+function authorizeInteractive(callback){
 
   xhrWithAuth('GET',
               'https://www.googleapis.com/plus/v1/people/me',
               true,
               callback);
 
-}
-
-function callback(error, status, response) {
-  if (!error && status == 200) {
-    localStorage["authorized"] = "true";
-  } else {
-    console.log('Failed to make request with error: ' + error + ' status: ' + status);
-  }
 }
 
 //logs into the google identity service and clears any expired tokens.  Also makes a request :-)
@@ -63,5 +46,3 @@ function xhrWithAuth(method, url, interactive, callback) {
     }
   }
 }
-
-main();

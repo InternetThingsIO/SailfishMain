@@ -1,10 +1,11 @@
 var socket;
-var userImageURL;
 var user_info;
 var currentState;
 
 var ACTION_POST = 'POST_NOTIFICATION';
 var ACTION_REMOVE = 'REMOVE_NOTIFICATION';
+
+var authIntervalID;
 
 //this is called at the bottom of this file.  Everything here is executed on startup
 function main(){
@@ -19,12 +20,30 @@ function main(){
 
   createSocket();
 
-  alert('On the next screen, we will sign in to google so that we can sync with your device.  You may be prompted to authorize this');
-
   xhrWithAuth('GET',
                 'https://www.googleapis.com/plus/v1/people/me',
-                true,
+                false,
                 onUserInfoFetched);
+
+}
+
+function tryGoogleAuthorization(){
+
+  var authorized  = localStorage["authorized"];
+
+  console.log('Storage Authorized value: ' + localStorage["authorized"]);
+
+  if (authorized != null && authorized == "true"){
+
+    xhrWithAuth('GET',
+                'https://www.googleapis.com/plus/v1/people/me',
+                false,
+                onUserInfoFetched);
+
+    if (authIntervalID)
+      clearInterval(authIntervalID);
+
+  }
 
 
 }
@@ -46,6 +65,36 @@ function chromeStateListener(newState){
     }
   }
 
+}
+
+function onUserInfoFetched(error, status, response) {
+  if (!error && status == 200) {
+
+    localStorage["authorized"] = "true";
+
+    console.log('User Info Fetched');
+    console.log(response);
+    user_info = JSON.parse(response);
+    
+    console.log('Using email: ' + user_info.emails[0].value);
+
+    if (user_info.image && user_info.image.url)
+      localStorage["userImageURL"] = user_info.image.url;
+
+    socketJoinRoom(user_info.emails[0].value);
+
+  } else {
+
+    console.log('Failed to make request with error: ' + error + ' status: ' + status);
+
+    //set interval to pickup auth once user has finished with settings
+    authIntervalID = setInterval(tryGoogleAuthorization, 2000);
+
+    //we need to re-authorize this junk
+    localStorage["authorized"] = "false";
+    chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+
+  }
 }
 
 function createSocket(){
@@ -158,7 +207,7 @@ function socketJoinRoom(room){
 
   emitSocket('join room', room);
 
-  showSimpleNotification('Subscribed', userImageURL, 'Subscribed to your feed ' + room);
+  showSimpleNotification('Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
 
 }
 
@@ -188,70 +237,18 @@ function emitSocket(name, arg1, arg2){
   "Notification.requestPermission" beforehand).
 */
 function showSimpleNotification(inTitle, inIcon, inBody) {
-  new Notification(inTitle, {
-    icon: inIcon,
-    body: inBody
+
+  console.log('Notification Icon: ' + inIcon);
+
+  var unixTime = new Date().getTime();
+
+  chrome.notifications.create(unixTime.toString(), {
+    type: 'basic', 
+    iconUrl: '128.png', 
+    title: inTitle, 
+    message: inBody,
+    eventTime: unixTime
   });
-}
-
-//logs into the google identity service and clears any expired tokens.  Also makes a request :-)
-// @corecode_begin getProtectedData
-function xhrWithAuth(method, url, interactive, callback) {
-  var access_token;
-
-  var retry = true;
-
-  getToken();
-
-  function getToken() {
-    chrome.identity.getAuthToken({ interactive: interactive }, function(token) {
-      if (chrome.runtime.lastError) {
-        callback(chrome.runtime.lastError);
-        return;
-      }
-
-      access_token = token;
-      requestStart();
-    });
-  }
-
-  function requestStart() {
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
-    xhr.onload = requestComplete;
-    xhr.send();
-  }
-
-  function requestComplete() {
-    if (this.status == 401 && retry) {
-      retry = false;
-      chrome.identity.removeCachedAuthToken({ token: access_token },
-                                            getToken);
-    } else {
-      callback(null, this.status, this.response);
-    }
-  }
-}
-
-
-function onUserInfoFetched(error, status, response) {
-  if (!error && status == 200) {
-    //changeState(STATE_AUTHTOKEN_ACQUIRED);
-    console.log('User Info Fetched');
-    console.log(response);
-    user_info = JSON.parse(response);
-    
-    console.log('Using email: ' + user_info.emails[0].value);
-
-    if (user_info.image && user_info.image.url)
-        //TODO: eventually need to save the userImageURL to prefs instead of relying on the JSON having it everytime
-      userImageURL = user_info.image.url;
-    socketJoinRoom(user_info.emails[0].value);
-
-  } else {
-    console.log('Failed to make request with error: ' + error + ' status: ' + status);
-  }
 }
 
 
