@@ -36,18 +36,6 @@ function main(){
       
     });
 
-  /*
-    socket.on('send image', function(roomID, packageName, image){
-      console.log('received image. Length: ' + image.length);
-      io.to(roomID).emit('image', packageName, image);
-    });
-  */
-  });
-
-  http.listen(80, function(){
-    console.log('listening on *:80');
-  });
-
 }
 
 //gets user's info
