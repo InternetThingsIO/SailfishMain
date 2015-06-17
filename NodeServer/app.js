@@ -31,12 +31,18 @@ function main(){
       
     });
 
+  /*
+    socket.on('send image', function(roomID, packageName, image){
+      console.log('received image. Length: ' + image.length);
+      io.to(roomID).emit('image', packageName, image);
+    });
+  */
   });
 
-  var server = http.createServer();
-  server.setSecure(credentials);
-  server.addListener("request", handler);
-  server.listen(80);
+  http.setSecure(credentials);
+  http.listen(80, function(){
+    console.log('listening on *:80');
+  });
 
 }
 
