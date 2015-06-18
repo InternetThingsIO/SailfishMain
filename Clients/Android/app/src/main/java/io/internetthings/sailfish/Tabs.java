@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.content.Context;
 
 /**
  * Created by Dev on 6/14/2015.
@@ -76,17 +77,19 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
     @Override
     public void onTabChanged(String tabId) {
         Log.d(TAG, "onTabChanged(): tabId=" + tabId);
-        if (TAB_IGNORED_APPS.equals(tabId)) {
+        if (TAB_HOME.equals(tabId)) {
             updateTab(tabId, R.id.tab_HOME);
             mCurrentTab = 0;
             return;
         }
-        if (TAB_SWITCH_EMAIL.equals(tabId)) {
+        if (TAB_IGNORED_APPS.equals(tabId)) {
             updateTab(tabId, R.id.tab_IGNOREDAPPS);
+            Intent intent = new Intent().setClass(getActivity(), IgnoredApps.class);
+            startActivity(intent);
             mCurrentTab = 1;
             return;
         }
-        if (TAB_HELP.equals(tabId)) {
+        if (TAB_SWITCH_EMAIL.equals(tabId)) {
             updateTab(tabId, R.id.tab_SWITCHEMAIL);
             mCurrentTab = 2;
             return;

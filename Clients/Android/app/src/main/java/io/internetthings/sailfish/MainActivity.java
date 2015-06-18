@@ -64,16 +64,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         setContentView(R.layout.activity_main);
 
-
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
-                //.addScope(Plus.SCOPE_PLUS_PROFILE)
-                //.addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
-
                 .build();
 
         setupBroadcastManagers();
@@ -184,8 +179,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //display Person ID on Home screen
                 loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
                 loggedInEmail.setText(email);
-                //TextView emailUITxt = (TextView)findViewById(R.id.emailDisplayed);
-                //emailUITxt.setText(email);
 
                 //get the token here in case we need to provide extra permissions to do it
                 new RetrieveTokenTask().execute(email);
