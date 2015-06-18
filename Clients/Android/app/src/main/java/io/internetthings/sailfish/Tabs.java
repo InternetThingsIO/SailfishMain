@@ -17,14 +17,13 @@ import android.widget.TextView;
 public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
 
     private static final String TAG = "FragmentTabs";
-    public static final String TAB_IGNORE_APPS = "Ignore Apps";
-    public static final String TAB_PURCHASE_FEATURES = "Purchase Features";
+    public static final String TAB_IGNORED_APPS = "Ignored Apps";
     public static final String TAB_SWITCH_EMAIL = "Switch Email";
     public static final String TAB_HELP = "Help";
 
     private View mRoot;
     private TabHost mTabHost;
-    private int mCurrentTab;
+    private int mCurrentTab = 0;
 
     @Override
     public void onAttach(Activity activity){
@@ -47,14 +46,13 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
 
         mTabHost.setOnTabChangedListener(this);
         mTabHost.setCurrentTab(mCurrentTab);
-        // manually start loading stuff in the first tab
-        updateTab(TAB_IGNORE_APPS, R.id.tab_1);
+
     }
 
     private void setupTabs(){
-        mTabHost.setup(); //must be called before adding the tabs!
-        mTabHost.addTab(newTab(TAB_IGNORE_APPS, R.string.tab_ignore_apps, R.id.tab_1));
-                mTabHost.addTab(newTab(TAB_SWITCH_EMAIL, R.string.tab_switch_email, R.id.tab_2));
+        mTabHost.setup();//must be called before adding the tabs!
+        mTabHost.addTab(newTab(TAB_IGNORED_APPS, R.string.tab_ignore_apps, R.id.tab_1));
+        mTabHost.addTab(newTab(TAB_SWITCH_EMAIL, R.string.tab_switch_email, R.id.tab_2));
         mTabHost.addTab(newTab(TAB_HELP, R.string.tab_help, R.id.tab_3));
     }
 
@@ -75,7 +73,7 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
     @Override
     public void onTabChanged(String tabId) {
         Log.d(TAG, "onTabChanged(): tabId=" + tabId);
-        if (TAB_IGNORE_APPS.equals(tabId)) {
+        if (TAB_IGNORED_APPS.equals(tabId)) {
             updateTab(tabId, R.id.tab_1);
             mCurrentTab = 0;
             return;
