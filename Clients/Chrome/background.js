@@ -12,9 +12,7 @@ function main(){
 
   console.log('Notice Chrome Extension');
 
-  //setup idle / active detection so that we only issue notifications when the user is active on their computer
-  //chrome.idle.queryState(integer detectionIntervalInSeconds, function callback);
-  //if we have been idle for an hour, we are idle hour = 3600 seconds
+  //if we have been idle for an hour, we are idle hour = 3600 seconds. Also idle on computer locked
   chrome.idle.setDetectionInterval(3600);
   chrome.idle.onStateChanged.addListener(chromeStateListener);
 
@@ -78,8 +76,9 @@ function onUserInfoFetched(error, status, response) {
     
     console.log('Using email: ' + user_info.emails[0].value);
 
-    if (user_info.image && user_info.image.url)
+    if (user_info.image && user_info.image.url){
       localStorage["userImageURL"] = user_info.image.url;
+    }
 
     socketJoinRoom(user_info.emails[0].value);
 
@@ -231,24 +230,44 @@ function emitSocket(name, arg1, arg2){
 
 }
 
-/*
-  Displays a notification with the current time. Requires "notifications"
-  permission in the manifest file (or calling
-  "Notification.requestPermission" beforehand).
-*/
 function showSimpleNotification(inTitle, inIcon, inBody) {
+
+  //set change the size of the image returned by google
+  inIcon = updateQueryStringParameter(inIcon, 'sz', '80');
 
   console.log('Notification Icon: ' + inIcon);
 
-  var unixTime = new Date().getTime();
-  //download the user's icon so that we 
-  chrome.notifications.create(unixTime.toString(), {
-    type: 'basic', 
-    iconUrl: '128.png', 
-    title: inTitle, 
-    message: inBody,
-    eventTime: unixTime
-  });
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", inIcon);
+  xhr.responseType = "blob";
+  xhr.onload = function(){
+
+    var blob = this.response;
+
+    var unixTime = new Date().getTime();
+    //download the user's icon so that we 
+    chrome.notifications.create(unixTime.toString(), {
+      type: 'basic', 
+      iconUrl: window.URL.createObjectURL(blob), 
+      title: inTitle, 
+      message: inBody,
+      eventTime: unixTime
+    });
+
+  };
+  xhr.send(null);
+
+}
+
+function updateQueryStringParameter(uri, key, value) {
+  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+  var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+  if (uri.match(re)) {
+    return uri.replace(re, '$1' + key + "=" + value + '$2');
+  }
+  else {
+    return uri + separator + key + "=" + value;
+  }
 }
 
 
