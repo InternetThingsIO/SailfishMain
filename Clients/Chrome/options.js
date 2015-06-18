@@ -19,8 +19,14 @@ function authorizeInteractive(){
 function callback(error, status, response) {
   if (!error && status == 200) {
     localStorage["authorized"] = "true";
+
+    document.getElementById('lblresult').style.color = 'green';
+    document.getElementById('lblresult').innerHTML = 'Authorization successful. <br /> You can now close this window. Thanks!';
   } else {
     console.log('Failed to make request with error: ' + error + ' status: ' + status);
+    
+    document.getElementById('lblresult').style.color = 'red';
+    document.getElementById('lblresult').innerHTML = 'Authorization failed.  <br /> Please try again and click the accept button';
   }
 }
 
