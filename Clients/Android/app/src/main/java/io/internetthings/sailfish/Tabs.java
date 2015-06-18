@@ -83,7 +83,6 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
         }
         if (TAB_SWITCH_EMAIL.equals(tabId)) {
             updateTab(tabId, R.id.tab_IGNOREDAPPS);
-            //Intent intent = new Intent(
             mCurrentTab = 1;
             return;
         }

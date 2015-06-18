@@ -94,7 +94,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(icon,
                 sbn.getNotification().extras.getString("android.title"),
-                getBodyOfMessage(sbn),//sbn.getNotification().extras.getCharSequence("android.text").toString(),
+                getBodyOfMessage(sbn),
                 sbn.getPackageName(),
                 sbn.getPostTime());
 

@@ -20,11 +20,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 import android.provider.Settings;
 import android.widget.TextView;
 
-import com.github.nkzawa.emitter.Emitter;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -36,7 +34,7 @@ import com.splunk.mint.Mint;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     //Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 0;
@@ -52,6 +50,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private boolean mIntentInProgress;
 
     private TextView connectionStatusColor;
+    private TextView loggedInEmail;
 
     BroadcastReceiver onSocketConnectReceiver;
     BroadcastReceiver onSocketDisconnectReceiver;
@@ -76,10 +75,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
 
                 .build();
-       /*
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this); */
 
         setupBroadcastManagers();
     }
@@ -124,10 +119,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.connect();
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 
     //Runs when Google+ sign in fails
     @Override
@@ -190,6 +181,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             if(email != null){
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
+                //display Person ID on Home screen
+                loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
+                loggedInEmail.setText(email);
                 //TextView emailUITxt = (TextView)findViewById(R.id.emailDisplayed);
                 //emailUITxt.setText(email);
 
