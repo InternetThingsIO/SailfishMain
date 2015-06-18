@@ -5,8 +5,12 @@
     <string name="notification_service_name">Notice Notification Service</string>
 
     <!--Tab UI Labels-->
-    <string name="tab_ignore_apps">"Ignored Apps"</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_ignored_apps">"Ignored Apps"</string>
     <string name="tab_switch_email">"Switch Email"</string>
     <string name="tab_help">"Help"</string>
+    <string name="title_activity_ignored_apps">IgnoredApps</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

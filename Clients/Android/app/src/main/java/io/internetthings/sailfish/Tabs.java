@@ -3,6 +3,7 @@ package io.internetthings.sailfish;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,9 @@ import android.widget.TextView;
 public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
 
     private static final String TAG = "FragmentTabs";
-    public static final String TAB_IGNORED_APPS = "Ignored Apps";
-    public static final String TAB_SWITCH_EMAIL = "Switch Email";
+    public static final String TAB_HOME = "Home";
+    public static final String TAB_IGNORED_APPS = "IgnoredApps";
+    public static final String TAB_SWITCH_EMAIL = "SwitchEmail";
     public static final String TAB_HELP = "Help";
 
     private View mRoot;
@@ -51,9 +53,10 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
 
     private void setupTabs(){
         mTabHost.setup();//must be called before adding the tabs!
-        mTabHost.addTab(newTab(TAB_IGNORED_APPS, R.string.tab_ignore_apps, R.id.tab_1));
-        mTabHost.addTab(newTab(TAB_SWITCH_EMAIL, R.string.tab_switch_email, R.id.tab_2));
-        mTabHost.addTab(newTab(TAB_HELP, R.string.tab_help, R.id.tab_3));
+        mTabHost.addTab(newTab(TAB_HOME,R.string.tab_home, R.id.tab_HOME));
+        mTabHost.addTab(newTab(TAB_IGNORED_APPS, R.string.tab_ignored_apps, R.id.tab_IGNOREDAPPS));
+        mTabHost.addTab(newTab(TAB_SWITCH_EMAIL, R.string.tab_switch_email, R.id.tab_SWITCHEMAIL));
+        mTabHost.addTab(newTab(TAB_HELP, R.string.tab_help, R.id.tab_HELP));
     }
 
     private TabHost.TabSpec newTab(String tag, int labelId, int tabContentId){
@@ -74,28 +77,35 @@ public class Tabs extends Fragment implements TabHost.OnTabChangeListener {
     public void onTabChanged(String tabId) {
         Log.d(TAG, "onTabChanged(): tabId=" + tabId);
         if (TAB_IGNORED_APPS.equals(tabId)) {
-            updateTab(tabId, R.id.tab_1);
+            updateTab(tabId, R.id.tab_HOME);
             mCurrentTab = 0;
             return;
         }
         if (TAB_SWITCH_EMAIL.equals(tabId)) {
-            updateTab(tabId, R.id.tab_2);
+            updateTab(tabId, R.id.tab_IGNOREDAPPS);
+            //Intent intent = new Intent(
             mCurrentTab = 1;
             return;
         }
         if (TAB_HELP.equals(tabId)) {
-            updateTab(tabId, R.id.tab_3);
+            updateTab(tabId, R.id.tab_SWITCHEMAIL);
             mCurrentTab = 2;
+            return;
+        }
+        if (TAB_HELP.equals(tabId)) {
+            updateTab(tabId, R.id.tab_HELP);
+            mCurrentTab = 3;
             return;
         }
     }
 
     private void updateTab(String tabId, int placeholder) {
-       /* FragmentManager fm = getFragmentManager();
-        if (fm.findFragmentByTag(tabId) == null) {
+
+       FragmentManager fm = getFragmentManager();
+        /*if (fm.findFragmentByTag(tabId) == null) {
             fm.beginTransaction()
                     .replace(placeholder, new MyListFragment(tabId), tabId)
                     .commit();
-        }*/  //commented out cause MyListFragment is what the example used...not going to create this class
+        }*/
     }
 }
