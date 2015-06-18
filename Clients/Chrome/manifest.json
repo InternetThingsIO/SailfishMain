@@ -10,7 +10,6 @@
     "identity",
     "idle"
   ],
-  "content_security_policy": "img-src 'self' https://*.googleusercontent.com/; object-src 'self'; script-src 'self'",
   "options_page": "options.html",
   "background": { "scripts": ["xhrGoogleAPI.js", "socket.io-1.2.0.js", "background.js"] },
   "manifest_version": 2,
