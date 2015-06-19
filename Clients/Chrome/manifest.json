@@ -24,6 +24,7 @@
   // crbug.com/134315.  Only to use local resources.  Can use resources on WWW without this
   "web_accessible_resources": [
     "48.png",
+    "128.png",
     "options.js",
     "notificon.jpg",
     "userIcon.*"
