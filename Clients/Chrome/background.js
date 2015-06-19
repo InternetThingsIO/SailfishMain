@@ -256,16 +256,21 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
       var blob = this.response;
       options.iconUrl = window.URL.createObjectURL(blob);
 
+      //issue the notification
+      chrome.notifications.create(unixTime.toString(), options);
+
     };
     xhr.send(null);
 
   }else{
     //set default icon here
     options.iconUrl = '128.png';
+
+    //issue the notification
+  chrome.notifications.create(unixTime.toString(), options);
   }
 
-  //issue the notification
-  chrome.notifications.create(unixTime.toString(), options);
+  
 
 
 
