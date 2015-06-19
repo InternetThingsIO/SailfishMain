@@ -4,6 +4,9 @@
     <string name="action_settings">Settings</string>
     <string name="notification_service_name">Notice Notification Service</string>
     <string name="loggedInEmail">Not Logged in</string>
+    <string name="title_activity_start_up">StartUP</string>
+
+    <string name="hello_world">Hello world!</string>
 
 
 </resources>
