@@ -84,7 +84,7 @@ public class SplashScreen extends Activity {
 
                     //start FTUE here
 
-                    newActivity = MainActivity.class;
+                    newActivity = FTUE.class;
                 }
 
                 Intent i = new Intent(SplashScreen.this, newActivity);
