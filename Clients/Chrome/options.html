@@ -12,19 +12,36 @@
   <head>
     <title>Notification Demo</title>
     <link href="style.css" rel="stylesheet" type="text/css">
-    <script src="options.js"></script>
   </head>
   <body>
-    <h1>
-      <img src="64.png" alt="Toast">
-      Notification Demo
-    </h1>
-    <h2>Options</h2>
-    <form id="options">
-      <input type="button" value="Authorize" />
-      <br />
-      Authorize Notice to use your email address.  This allows us to sync chrome with your devices.  We won't send you spam
+
+    <h2>Setup</h2>
+
+    <br />
+    
+    <div id="section">
+
+      <p align="center">Welcome.  Let's take a few seconds to setup notice</p>
       
-    </form>
+      <br />
+
+      <p align="center">Authorize notice to see your email address so that we can synchronize your devices with chrome
+
+      <br />
+      <br/>
+
+      <button id="authorize" style="width:128px;height:64px; font-weight:bold; font-size:large;">Authorize</button>
+      
+      <br/>
+      <br />
+      <label id="lblresult"></label>
+      
+      </p>
+  
+
+    </div>
+    
+    <script src="options.js"></script>
+      
   </body>
 </html>

@@ -1,33 +1,10 @@
-function main(){
-
-  document.getElementById('authorize').addEventListener('click',
-    authorizeInteractive);
-
-}
-
-function authorizeInteractive(){
-
-  localStorage["authorized"] = "false";
+function authorizeInteractive(callback){
 
   xhrWithAuth('GET',
               'https://www.googleapis.com/plus/v1/people/me',
               true,
               callback);
 
-}
-
-function callback(error, status, response) {
-  if (!error && status == 200) {
-    localStorage["authorized"] = "true";
-
-    document.getElementById('lblresult').style.color = 'green';
-    document.getElementById('lblresult').innerHTML = 'Authorization successful. <br /> You can now close this window. Thanks!';
-  } else {
-    console.log('Failed to make request with error: ' + error + ' status: ' + status);
-    
-    document.getElementById('lblresult').style.color = 'red';
-    document.getElementById('lblresult').innerHTML = 'Authorization failed.  <br /> Please try again and click the accept button';
-  }
 }
 
 //logs into the google identity service and clears any expired tokens.  Also makes a request :-)
@@ -69,5 +46,3 @@ function xhrWithAuth(method, url, interactive, callback) {
     }
   }
 }
-
-main();
