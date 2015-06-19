@@ -21,17 +21,80 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splashscreen);
 
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        //starts everything we need to do before the app finishes loading
+        doStartupTasks();
+        /*
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
-            Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                startActivity(i);
+                finish();
+                overridePendingTransition(0, R.animator.fadeout);
+            }
+        }, SPLASHSCREEN_TIME_OUT);
+        */
+
+}
+
+    private void doStartupTasks(){
+
+        //do not access the Android UI toolkit from outside the UI thread. that means below!!!!
+        new Thread(new Runnable() {
+
+            public void run() {
+
+                startupTasks();
+
+                //unnecessary delay, delete later
+                try {
+                    Thread.sleep(500);
+                }catch(Exception ex){}
+
+                endStartup();
+
+            }
+
+            //put startup tasks here
+            private void startupTasks(){
+                
+            }
+
+            private void endStartup(){
+
+                boolean FTUECompleted =
+                        SailfishPreferences.reader(getApplicationContext())
+                                .getBoolean(SailfishPreferences
+                                        .FTUECompletedKey, false);
+
+                Class newActivity;
+
+                if (FTUECompleted){
+
+                    newActivity = MainActivity.class;
+
+                }else{
+
+                    //start FTUE here
+
+                    newActivity = MainActivity.class;
+                }
+
+                Intent i = new Intent(SplashScreen.this, newActivity);
                 startActivity(i);
                 finish();
                 overridePendingTransition(0, R.animator.fadeout);
 
             }
-        }, SPLASHSCREEN_TIME_OUT);
+
+        }).start();
 
     }
 

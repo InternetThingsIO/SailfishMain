@@ -47,13 +47,7 @@ public class SailfishNotificationService extends NotificationListenerService{
             return;
 
         //get preferences
-        try {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS);
-            this.email = prefs.getString("email", null);
-        }catch(Exception ex){
-            Log.e(logTAG, "Failed to get preferences");
-            //throw ex;
-        }
+        this.email = SailfishPreferences.reader(this).getString("email", null);
 
         //connect if we got an email
         if (email != null) {

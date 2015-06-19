@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     //Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 0;
-    public static final String MY_PREFS_NAME = "SailFishPref";
+
     private final String logTAG = this.getClass().getName();
 
     //Client used to interact with Google APIs.
@@ -187,10 +187,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //tell mint who we are
                 Mint.setUserIdentifier(email);
 
-                SharedPreferences.Editor editor =
-                        getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
-                editor.putString("email", email);
-                editor.commit();
+                SailfishPreferences.editor(this).putString("email", email);
+                SailfishPreferences.editor(this).commit();
 
                 Log.d(logTAG, "Got email successfully");
 
