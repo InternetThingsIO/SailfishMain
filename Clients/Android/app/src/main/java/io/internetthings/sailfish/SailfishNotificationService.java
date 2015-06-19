@@ -30,7 +30,7 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
     public static final String MY_PREFS_NAME = "SailFishPref";
 
-    private String email = "Empty";
+    private String email;
 
     public SailfishNotificationService(){
     }

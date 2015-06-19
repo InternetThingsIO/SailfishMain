@@ -48,6 +48,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
        us from starting further intents.
      */
     private boolean mIntentInProgress;
+    private boolean nAccessEnabled;
 
     private TextView connectionStatusColor;
     private TextView loggedInEmail;
@@ -216,6 +217,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivity(intent);
         }
+    }
+
+    //Sends Notice created text message
+    private void send1stMSG(){
+        SendNotification sn = new SendNotification(this);
+        sn.SendMSG("Hello there Stranger!");
     }
 
     private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
