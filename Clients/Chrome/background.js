@@ -232,30 +232,42 @@ function emitSocket(name, arg1, arg2){
 
 function showSimpleNotification(inTitle, inIcon, inBody) {
 
+  var options = {
+        type: 'basic', 
+        title: inTitle, 
+        message: inBody,
+        eventTime: unixTime
+      };
+
+  var unixTime = new Date().getTime();
+
   //set change the size of the image returned by google
-  inIcon = updateQueryStringParameter(inIcon, 'sz', '80');
+  if (inIcon){
+    inIcon = updateQueryStringParameter(inIcon, 'sz', '80');
+  
 
-  console.log('Notification Icon: ' + inIcon);
+    console.log('Notification Icon: ' + inIcon);
 
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", inIcon);
-  xhr.responseType = "blob";
-  xhr.onload = function(){
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", inIcon);
+    xhr.responseType = "blob";
+    xhr.onload = function(){
 
-    var blob = this.response;
+      var blob = this.response;
+      options.iconUrl = window.URL.createObjectURL(blob);
 
-    var unixTime = new Date().getTime();
-    //download the user's icon so that we 
-    chrome.notifications.create(unixTime.toString(), {
-      type: 'basic', 
-      iconUrl: window.URL.createObjectURL(blob), 
-      title: inTitle, 
-      message: inBody,
-      eventTime: unixTime
-    });
+    };
+    xhr.send(null);
 
-  };
-  xhr.send(null);
+  }else{
+    //set default icon here
+    options.iconUrl = '128.png';
+  }
+
+  //issue the notification
+  chrome.notifications.create(unixTime.toString(), options);
+
+
 
 }
 
