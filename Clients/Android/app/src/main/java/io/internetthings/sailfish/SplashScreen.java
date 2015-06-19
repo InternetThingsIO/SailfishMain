@@ -64,7 +64,7 @@ public class SplashScreen extends Activity {
 
             //put startup tasks here
             private void startupTasks(){
-                
+
             }
 
             private void endStartup(){

@@ -70,6 +70,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                //.setAccountName("george@internetthings.io")
                 .build();
 
         setupBroadcastManagers();
