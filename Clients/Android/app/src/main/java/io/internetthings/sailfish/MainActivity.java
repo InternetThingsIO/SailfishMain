@@ -16,20 +16,25 @@ import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 import android.provider.Settings;
 import android.widget.TextView;
 
-import com.github.nkzawa.emitter.Emitter;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.splunk.mint.Mint;
 
-public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+import java.io.IOException;
+
+public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     //Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 0;
@@ -45,6 +50,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private boolean mIntentInProgress;
 
     private TextView connectionStatusColor;
+    private TextView loggedInEmail;
 
     BroadcastReceiver onSocketConnectReceiver;
     BroadcastReceiver onSocketDisconnectReceiver;
@@ -58,18 +64,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         setContentView(R.layout.activity_main);
 
-        checkNotificationAccess();
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_PROFILE)
+                .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
                 .build();
-
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_and_sign_in).setOnClickListener(this);
 
         setupBroadcastManagers();
     }
@@ -114,31 +114,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mGoogleApiClient.connect();
     }
 
-    //When button any button is pushed "onClick() is displayed in logcat, this method associates
-    // buttons with actions
-    @Override
-    public void onClick(View v) {
-        Log.d("", "onClick()");
-        if(v.getId() == R.id.sign_in_button
-            && !mGoogleApiClient.isConnecting()){
-            mGoogleApiClient.connect();
-        }
-
-        else if(v.getId() == R.id.sign_out_button){
-            if(mGoogleApiClient.isConnected()){
-                Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                mGoogleApiClient.disconnect();
-                Log.d("", "User signed out");
-            }
-        }
-
-        else if(v.getId() == R.id.sign_out_and_sign_in) {
-            if(mGoogleApiClient.isConnected()){
-                Log.d("", "User signed out");
-                mGoogleApiClient.clearDefaultAccountAndReconnect();
-            }
-        }
-    }
 
     //Runs when Google+ sign in fails
     @Override
@@ -201,8 +176,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             if(email != null){
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
-                //TextView emailUITxt = (TextView)findViewById(R.id.emailDisplayed);
-                //emailUITxt.setText(email);
+                //display Person ID on Home screen
+                loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
+                loggedInEmail.setText(email);
+
+                //get the token here in case we need to provide extra permissions to do it
+                new RetrieveTokenTask().execute(email);
 
                 //tell mint who we are
                 Mint.setUserIdentifier(email);
@@ -239,4 +218,41 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+    private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
+        private static final int REQ_SIGN_IN_REQUIRED = 55664;
+        boolean retry = true;
+
+        @Override
+        protected String doInBackground(String... params) {
+            String accountName = params[0];
+            String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
+            String token = null;
+            try {
+                token = GoogleAuthUtil.getToken(getApplicationContext(), accountName, scopes);
+            } catch (IOException e) {
+                Log.e(logTAG, e.getMessage());
+            } catch (UserRecoverableAuthException e) {
+                if (retry) {
+                    retry = false;
+                    startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
+                }
+            } catch (GoogleAuthException e) {
+                switch (Log.e(logTAG, e.getMessage())) {
+                }
+            }
+            return token;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.e(logTAG, "Token Value: " + s);
+
+            //get notification access after everything else works
+            checkNotificationAccess();
+
+        }
+    }
+
 }
+

@@ -5,34 +5,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"/>
-
-    <Button
-        android:id="@+id/sign_out_button"
-        android:text="Sign Out"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_in_button"
-        android:layout_alignLeft="@+id/sign_in_button"
-        android:layout_alignRight="@+id/sign_in_button"
-        />
-
-    <Button
-        android:id="@+id/sign_out_and_sign_in"
-        android:text="Sign Out and Sign In"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_out_button"
-        android:layout_alignLeft="@+id/sign_out_button"
-        android:layout_alignRight="@+id/sign_out_button"
-        />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +22,24 @@
         android:text="Not Connected"
         android:id="@+id/status"
         android:textColor="#ffff000e"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/programName" />
+        android:layout_below="@+id/programName"
+        android:layout_alignStart="@+id/programName"
+        android:layout_marginTop="83dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/loggedInEmail"
+        android:id="@+id/emailTxtView"
+        android:layout_above="@+id/programName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="81dp" />
+
+    <fragment
+        class="io.internetthings.sailfish.Tabs"
+        android:id="@+id/tabs_fragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
 </RelativeLayout>

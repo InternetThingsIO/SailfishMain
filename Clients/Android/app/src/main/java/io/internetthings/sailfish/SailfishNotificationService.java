@@ -1,5 +1,6 @@
 package io.internetthings.sailfish;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
@@ -7,7 +8,13 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /*
     Created by: Jason Maderski
@@ -23,12 +30,16 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
     public static final String MY_PREFS_NAME = "SailFishPref";
 
-    private String email;
+    private String email = "Empty";
 
     public SailfishNotificationService(){
     }
 
-
+    //start sticky so it restarts on crash :-)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
 
     private void getPrefAndConnect() {
 
@@ -71,7 +82,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         );
 
         //don't post ongoing notifications
-        if (sbn.isOngoing())
+        if (!sbn.isClearable())
             return;
 
         getPrefAndConnect();
@@ -83,7 +94,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(icon,
                 sbn.getNotification().extras.getString("android.title"),
-                getBodyOfMessage(sbn),//sbn.getNotification().extras.getCharSequence("android.text").toString(),
+                getBodyOfMessage(sbn),
                 sbn.getPackageName(),
                 sbn.getPostTime());
 
@@ -119,7 +130,44 @@ public class SailfishNotificationService extends NotificationListenerService{
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
 
-        SailfishSocketIO.attemptSend(email, json);
+        String token = getToken();
+
+        if (!TextUtils.isEmpty(token))
+            SailfishSocketIO.attemptSend(token, email, json);
+        else
+            Log.e(logTAG, "Token came back empty on sendMessage");
+    }
+
+    private String getToken(){
+        String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
+        String token = null;
+        try {
+            token = GoogleAuthUtil.getToken(getApplicationContext(), email, scopes);
+        } catch (IOException e) {
+            Log.e(logTAG, e.getMessage());
+        } catch (UserRecoverableAuthException e) {
+            //startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
+        } catch (GoogleAuthException e) {
+            switch (Log.e(logTAG, e.getMessage())) {
+            }
+        }
+
+        //make a request with the token
+
+        BufferedReader in = null;
+        String data = null;
+
+        return token;
+
+    }
+
+    public String ReadBigStringIn(BufferedReader buffIn) throws IOException {
+        StringBuilder everything = new StringBuilder();
+        String line;
+        while( (line = buffIn.readLine()) != null) {
+            everything.append(line);
+        }
+        return everything.toString();
     }
 
     //Displays notification that has been removed in the logcat window
@@ -132,4 +180,5 @@ public class SailfishNotificationService extends NotificationListenerService{
         sm.ID = getMessageID(sbn);
         sendMessage(sm);
     }
+
 }
