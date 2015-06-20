@@ -3,7 +3,6 @@ package io.internetthings.sailfish;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 
 /*
         Created by: Jason Maderski
@@ -72,7 +71,7 @@ public class SplashScreen extends Activity {
                 boolean FTUECompleted =
                         SailfishPreferences.reader(getApplicationContext())
                                 .getBoolean(SailfishPreferences
-                                        .FTUECompletedKey, false);
+                                        .FTUE_COMPLETED_KEY, false);
 
                 Class newActivity;
 

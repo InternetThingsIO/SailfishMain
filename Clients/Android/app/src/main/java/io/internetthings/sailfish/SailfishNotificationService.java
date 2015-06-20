@@ -1,7 +1,6 @@
 package io.internetthings.sailfish;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -38,6 +37,7 @@ public class SailfishNotificationService extends NotificationListenerService{
     //start sticky so it restarts on crash :-)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        getPrefAndConnect();
         return START_STICKY;
     }
 
@@ -47,7 +47,7 @@ public class SailfishNotificationService extends NotificationListenerService{
             return;
 
         //get preferences
-        this.email = SailfishPreferences.reader(this).getString("email", null);
+        this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
         //connect if we got an email
         if (email != null) {

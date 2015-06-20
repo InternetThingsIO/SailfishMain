@@ -13,8 +13,8 @@ public class SailfishPreferences {
 
     public static final String MY_PREFS_NAME = "SailFishPref";
 
-    public static final String emailKey = "email";
-    public static final String FTUECompletedKey = "FTUECompleted";
+    public static final String EMAIL_KEY = "email";
+    public static final String FTUE_COMPLETED_KEY = "FTUECompleted";
 
     public static SharedPreferences.Editor editor(Context context){
 
