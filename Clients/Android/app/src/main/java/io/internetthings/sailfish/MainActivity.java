@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -189,7 +188,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //tell mint who we are
                 Mint.setUserIdentifier(email);
 
-                SailfishPreferences.editor(this).putString("email", email);
+                SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, email);
                 SailfishPreferences.editor(this).commit();
 
                 Log.d(logTAG, "Got email successfully");
