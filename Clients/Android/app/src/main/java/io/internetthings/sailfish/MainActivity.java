@@ -109,6 +109,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public void onConnected(Bundle connectionHint) {
         Log.d("", "onConnected Success");
         getProfileInformation();
+
+
     }
 
     @Override
@@ -191,6 +193,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, email);
                 SailfishPreferences.editor(this).commit();
 
+                startNotificationService();
+
                 Log.d(logTAG, "Got email successfully");
 
             }else{
@@ -222,6 +226,13 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private void send1stMSG(){
         SendNotification sn = new SendNotification(this);
         sn.SendMSG("Hello there Stranger!");
+    }
+
+    private void startNotificationService(){
+
+        Intent i = new Intent(this, SailfishNotificationService.class);
+        this.startService(i);
+
     }
 
     private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
