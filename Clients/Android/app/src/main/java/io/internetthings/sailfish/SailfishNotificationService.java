@@ -11,6 +11,7 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
+import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +38,13 @@ public class SailfishNotificationService extends NotificationListenerService{
     //start sticky so it restarts on crash :-)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.i(logTAG, "SailfishNotificationService starting");
+
+        Mint.initAndStartSession(this, "50573816");
+
         getPrefAndConnect();
+
         return START_STICKY;
     }
 
@@ -53,6 +60,9 @@ public class SailfishNotificationService extends NotificationListenerService{
         if (email != null) {
             Log.e(logTAG, "Started service, found email: " + email);
             SailfishSocketIO.connect(email, getApplicationContext());
+
+            Mint.setUserIdentifier(email);
+
         }else{
             Log.e(logTAG, "Email is NULL");
         }
