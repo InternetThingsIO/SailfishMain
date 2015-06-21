@@ -49,7 +49,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         //get preferences
         this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
-        //connect if we got an email
+        //connect if we have an email
         if (email != null) {
             Log.e(logTAG, "Started service, found email: " + email);
             SailfishSocketIO.connect(email, getApplicationContext());
@@ -57,8 +57,8 @@ public class SailfishNotificationService extends NotificationListenerService{
             Log.e(logTAG, "Email is NULL");
         }
 
-        while(!SailfishSocketIO.SocketSingleton().connected()){
-        }
+        //wait until we are connected
+        while(!SailfishSocketIO.SocketSingleton().connected()){}
 
     }
 
