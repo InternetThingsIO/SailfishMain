@@ -76,17 +76,24 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         setupBroadcastManagers();
     }
-
+    //Changes Connection status text to "Connected", sets text color to green and
+    //changes the typeface to BOLD
     private void setConnectedText(){
         connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
         connectionStatusColor.setText("Connected!");
         connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
     }
-
+    //Changes Connection status text to "Disconnected", sets text color to red and
+    //changes typeface to BOLD
     private void setDisconnectedText(){
         connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
         connectionStatusColor.setText("Disconnected!");
         connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+    }
+    //Shows users logged in email on main_Activity
+    private void setLoggedInEmailText(String email){
+        loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
+        loggedInEmail.setText(email);
     }
 
     private void setupBroadcastManagers(){
@@ -217,8 +224,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
                 //display Person ID on Home screen
-                loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
-                loggedInEmail.setText(email);
+                setLoggedInEmailText(email);
 
                 //get the token here in case we need to provide extra permissions to do it
                 new RetrieveTokenTask().execute(email);
