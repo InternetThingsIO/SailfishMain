@@ -18,7 +18,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.provider.Settings;
 import android.view.MotionEvent;
@@ -243,28 +242,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    //Checks whether or not the NoticeNotificationService has access
-    private void checkNotificationAccess(){
-
-        String enabledAppList = Settings.Secure.getString(this.getContentResolver(),
-                "enabled_notification_listeners");
-        if(enabledAppList == null)
-            enabledAppList = "None";
-
-        boolean checkAppAccessFlag = enabledAppList.contains("SailfishNotificationService");
-
-        if (!checkAppAccessFlag) {
-            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            startActivity(intent);
-        }
-    }
-
-    //Sends Notice created text message
-    private void send1stMSG(){
-        SendNotification sn = new SendNotification(this);
-        sn.SendMSG("Hello there Stranger!");
-    }
-
     private void startNotificationService(){
 
         Intent i = new Intent(this, SailfishNotificationService.class);
@@ -303,7 +280,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Log.e(logTAG, "Token Value: " + s);
 
             //get notification access after everything else works
-            checkNotificationAccess();
+            NotificationActions na = new NotificationActions();
+            na.checkNotificationAccess(getApplication());
 
         }
     }
