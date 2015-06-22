@@ -59,7 +59,7 @@ public class SailfishSocketIO {
 
             }
         };
-        mSocket.on("connect", onConnect);
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
 
         Emitter.Listener onDisconnect = new Emitter.Listener() {
             @Override
@@ -70,7 +70,7 @@ public class SailfishSocketIO {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
         };
-        mSocket.on("disconnect", onDisconnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.connect();
     }
 
