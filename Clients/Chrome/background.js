@@ -158,6 +158,8 @@ function determineActions(jsonObj){
 //creates a basic notification. other types to come
 function createBasicNotif(jsonObj){
 
+  
+  
   chrome.notifications.clear(jsonObj.ID);
 
   chrome.notifications.create(jsonObj.ID, {
@@ -209,7 +211,9 @@ function socketJoinRoom(room){
 
   emitSocket('join room', room);
 
-  showSimpleNotification('Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
+  console.trace();
+
+  showSimpleNotification('subscribe','Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
 
 }
 
@@ -233,7 +237,9 @@ function emitSocket(name, arg1, arg2){
 
 }
 
-function showSimpleNotification(inTitle, inIcon, inBody) {
+function showSimpleNotification(id, inTitle, inIcon, inBody) {
+
+  var unixTime = new Date().getTime();
 
   var options = {
         type: 'basic', 
@@ -241,8 +247,6 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
         message: inBody,
         eventTime: unixTime
       };
-
-  var unixTime = new Date().getTime();
 
   //set change the size of the image returned by google
   if (inIcon){
@@ -260,7 +264,7 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
       options.iconUrl = window.URL.createObjectURL(blob);
 
       //issue the notification
-      chrome.notifications.create(unixTime.toString(), options);
+      chrome.notifications.create(id, options);
 
     };
     xhr.send(null);
@@ -270,7 +274,7 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
     options.iconUrl = '128.png';
 
     //issue the notification
-  chrome.notifications.create(unixTime.toString(), options);
+  chrome.notifications.create(id, options);
   }
 
   
