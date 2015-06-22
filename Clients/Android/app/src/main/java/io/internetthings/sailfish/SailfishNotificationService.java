@@ -76,17 +76,18 @@ public class SailfishNotificationService extends NotificationListenerService{
     @Override
     public void onNotificationPosted(StatusBarNotification sbn){
         Log.w("checkingOUT", "Notification POSTED " + "\n"
-                + " Package Name: " + sbn.getPackageName()
-                + "\n" + " ID: " + sbn.getId()
-                + "\n" + " Tag: " + sbn.getTag()
-                + "\n" + " onGoing: " + sbn.isOngoing()
-                + "\n" + " isClearable: " + sbn.isClearable()
-                + "\n" + " getNumber: " + sbn.getNotification().number
-                + "\n" + " getActiveNotifications: " + getActiveNotifications().length
+            + " Package Name: " + sbn.getPackageName()
+            + "\n" + " ID: " + sbn.getId()
+            + "\n" + " Tag: " + sbn.getTag()
+            + "\n" + " onGoing: " + sbn.isOngoing()
+            + "\n" + " isClearable: " + sbn.isClearable()
+            + "\n" + " getNumber: " + sbn.getNotification().number
+            + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
-        //don't post ongoing notifications
-        if (!sbn.isClearable())
+        //if we have no body, don't send notifications.
+        //this rids us of grouped notifications also
+        if (getBodyOfMessage(sbn) == null)
             return;
 
         getPrefAndConnect();
@@ -115,7 +116,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         if(bodyOfMessage != null)
             return bom2String = bodyOfMessage.toString();
         else
-            return "Message is NULL";
+            return null;
     }
 
     private String getMessageID(StatusBarNotification sbn){
