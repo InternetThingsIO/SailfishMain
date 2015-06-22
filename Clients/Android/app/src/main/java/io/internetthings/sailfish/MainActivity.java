@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstanceState);
 
         //Line of code to add Splunk Mint to the project
-        Mint.initAndStartSession(MainActivity.this, "50573816");
+        Mint.initAndStartSession(MainActivity.this, Constants.MINT_API_KEY);
 
         setContentView(R.layout.activity_main);
 

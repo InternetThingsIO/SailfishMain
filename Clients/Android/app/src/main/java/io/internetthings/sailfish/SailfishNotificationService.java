@@ -41,7 +41,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         Log.i(logTAG, "SailfishNotificationService starting");
 
-        Mint.initAndStartSession(this, "50573816");
+        Mint.initAndStartSession(this, Constants.MINT_API_KEY);
 
         getPrefAndConnect();
 
