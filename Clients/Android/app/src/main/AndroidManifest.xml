@@ -61,6 +61,14 @@
             android:name=".FTUE"
             android:label="@string/title_activity_ftue" >
         </activity>
+        <activity
+            android:name=".DebugActivity"
+            android:label="@string/title_activity_debug"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.internetthings.sailfish.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

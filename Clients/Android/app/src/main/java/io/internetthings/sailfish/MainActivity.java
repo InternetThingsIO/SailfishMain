@@ -18,8 +18,10 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -170,6 +172,20 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
         super.onDestroy();
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        if (event.getPointerCount() == 4){
+            Log.i(logTAG, "Entering debug menu");
+
+            Intent i = new Intent(this, DebugActivity.class);
+            startActivity(i);
+
+        }
+
+        return true;
     }
 
     //Display's person email in Logcat if connected
