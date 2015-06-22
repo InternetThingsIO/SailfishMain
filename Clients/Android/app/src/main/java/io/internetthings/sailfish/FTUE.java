@@ -3,19 +3,17 @@ package io.internetthings.sailfish;
 import android.accounts.AccountManager;
 import android.accounts.Account;
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 public class FTUE extends Activity {
+
+    public static String selectedEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,39 +24,24 @@ public class FTUE extends Activity {
 
         addRadioButtons(accounts);
 
-        setupNextButton();
-
     }
 
-    private void setupNextButton(){
-        Button btnNext = (Button) findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    public void emailSelectedNext(View view){
+        RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
 
-                RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
-
-                if(rdoEmails.getCheckedRadioButtonId()!=-1){
-                    int id = rdoEmails.getCheckedRadioButtonId();
-                    RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
-                    String selectedEmail = (String) radioButton.getText();
-                    Log.i("Email:", selectedEmail + "\n" + "RadioButton ID: " + String.valueOf(id));
-                }
-                
-            }
-        });
-
+        if(rdoEmails.getCheckedRadioButtonId()!=-1){
+            int id = rdoEmails.getCheckedRadioButtonId();
+            RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
+            selectedEmail = (String) radioButton.getText();
+            Log.i("Email:", selectedEmail + "\n" + "RadioButton ID: " + String.valueOf(id));
+        }
+        backToMainActivity();
     }
 
 
     private void addRadioButtons(Account[] accounts){
 
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
-
-        //TextView title = new TextView(this);
-        //title.setText("Select Email:");
-        //title.setTextColor(Color.RED);
-        //ll.addView(title);
 
         RadioButton rdoButton;
 
@@ -68,7 +51,10 @@ public class FTUE extends Activity {
             rdoEmails.addView(rdoButton);
         }
 
-        //ll.addView(rdoEmails);
+    }
 
+    private void backToMainActivity(){
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 }

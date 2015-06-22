@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addApi(Plus.API)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
                 //.addScope(Plus.SCOPE_PLUS_LOGIN)
-                //.setAccountName("george@internetthings.io")
+                .setAccountName(FTUE.selectedEmail)
                 .build();
 
         setupBroadcastManagers();
