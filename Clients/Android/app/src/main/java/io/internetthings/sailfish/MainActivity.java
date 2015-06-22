@@ -78,22 +78,30 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         setupBroadcastManagers();
     }
 
+    private void setConnectedText(){
+        connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
+        connectionStatusColor.setText("Connected!");
+        connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+    }
+
+    private void setDisconnectedText(){
+        connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
+        connectionStatusColor.setText("Disconnected!");
+        connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+    }
+
     private void setupBroadcastManagers(){
         onSocketConnectReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
-                connectionStatusColor.setText("Connected!");
-                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+                setConnectedText();
             }
         };
 
         onSocketDisconnectReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
-                connectionStatusColor.setText("Disconnected!");
-                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+                setDisconnectedText();
             }
         };
 
@@ -167,6 +175,18 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+
+        //get current socket status
+        if (SailfishSocketIO.SocketSingleton().connected())
+            setConnectedText();
+        else
+            setDisconnectedText();
+
+    }
+
+    @Override
     protected void onDestroy(){
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
@@ -177,6 +197,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
+        //if 4 fingers touch at once, open debug menu
         if (event.getPointerCount() == 4){
             Log.i(logTAG, "Entering debug menu");
 
@@ -188,7 +209,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         return true;
     }
 
-    //Display's person email in Logcat if connected
+    //Displays person email in Logcat if connected
     private void getProfileInformation(){
         try{
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
