@@ -2,11 +2,15 @@ package io.internetthings.sailfish;
 
 import android.accounts.AccountManager;
 import android.accounts.Account;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -24,7 +28,7 @@ public class FTUE extends Activity {
         addRadioButtons(accounts);
 
     }
-
+    //Sets selected email and launches MainActivity when Next button is clicked
     public void emailSelectedNext(View view){
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
 
@@ -37,7 +41,7 @@ public class FTUE extends Activity {
         backToMainActivity();
     }
 
-
+    //dynamically adds radiobuttons for email selection
     private void addRadioButtons(Account[] accounts){
 
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
@@ -51,7 +55,7 @@ public class FTUE extends Activity {
         }
 
     }
-
+    //Sends user back to Main Activity
     private void backToMainActivity(){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
