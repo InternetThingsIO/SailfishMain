@@ -4,49 +4,89 @@
  * found in the LICENSE file.
  */
 
+/* CSS Reset */
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
 /* Clone the look and feel of "chrome://" pages. */
 body {
-  margin: 10px;
-  font: 84% Arial, sans-serif
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f9f9f9;
+  margin: 1%;
 }
 
-h1 { font-size: 156% }
+h1 { 
+  font-size: 156%;
+  font-weight: lighter;
+  font-style: normal;
 
-h1 img {
-  margin: 1px 5px 0 1px;
-  vertical-align: middle
+  color: #ffffff;
+
+  background-color: #03A9F4;
+
+  padding: 50px 10%;
 }
 
 h2 {
-  border-top: 1px solid #9cc2ef;
-  background-color: #ebeff9;
-  padding: 3px 5px;
-  font-size: 100%
+  font-size: 100%;
+  line-height: 20px;
+
+  background-color: #81D4FA;
+  color: #01579B;
+  
+  padding: 20px 10%;
 }
 
-#header {
-    background-color:black;
-    color:white;
-    text-align:center;
-    padding:5px;
+p {
+  padding: 40px 10%;
+
+  line-height: 20px;
 }
-#nav {
-    line-height:30px;
-    background-color:#eeeeee;
-    height:300px;
-    width:100px;
-    float:left;
-    padding:5px; 
+
+.container_ {
+  margin: 0 1% 1% 1%;
+  padding: 2% 10%;
+
+  background-color: #fffff;
 }
-#section {
-    width:350px;
-    float:left;
-    padding:10px; 
+
+button {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: lighter;
+  font-style: normal;
 }
-#footer {
-    background-color:black;
-    color:white;
-    clear:both;
-    text-align:center;
-    padding:5px; 
+
+.btn {
+  border-radius: 5px;
+  border: none;
+
+  position: relative;
+  display: inline-block;
+
+  padding: 15px 25px;
+  margin-left: 10%;
+
+  font-size: 22px;
+
+  text-decoration: none;
+  color: #fff;
+  outline: none;
 }
+
+.btn:active {
+  transform: translate(0px, 5px);
+  -webkit-transform: translate(0px, 5px);
+  box-shadow: 0px 1px 0px 0px;
+}
+
+.green {
+  background-color: #2ecc71;
+  box-shadow: 0px 5px 0px 0px #15B358;
+}
+
+.green:hover {
+  background-color: #48E68B;
+}
+
+
+
+

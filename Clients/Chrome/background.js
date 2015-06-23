@@ -158,9 +158,7 @@ function determineActions(jsonObj){
 //creates a basic notification. other types to come
 function createBasicNotif(jsonObj){
 
-  
-  
-  chrome.notifications.clear(jsonObj.ID);
+  //chrome.notifications.clear(jsonObj.ID);
 
   chrome.notifications.create(jsonObj.ID, {
     type: 'basic', 
