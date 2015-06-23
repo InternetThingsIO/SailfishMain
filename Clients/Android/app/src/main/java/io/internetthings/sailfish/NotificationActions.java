@@ -14,14 +14,13 @@ import android.support.v4.app.NotificationCompat;
  */
 public class NotificationActions {
 
-    private int nID;
-    private String sTAG = this.getClass().getName();
+    private static final String sTAG = "NotificationActions";
 
     //Send Text Message from Notice
-    public void SendMSG(Context context, String Message){
+    public static void SendMSG(Context context, String Message){
         NotificationManager nManager = (NotificationManager)context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        nID = Math.abs((int)System.currentTimeMillis());
+        int nID = Math.abs((int)System.currentTimeMillis());
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
             .setContentTitle("Notice Message")
             .setContentText(Message + "\n" + "Test Notification ID: " + nID)
@@ -31,7 +30,7 @@ public class NotificationActions {
     }
 
     //Checks whether or not the NoticeNotificationService has access
-    public void checkNotificationAccess(Context context){
+    public static void checkNotificationAccess(Context context){
 
         String enabledAppList = Settings.Secure.getString(context.getContentResolver(),
                 "enabled_notification_listeners");

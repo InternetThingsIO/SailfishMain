@@ -19,7 +19,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.provider.Settings;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -70,8 +69,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
-                //.addScope(Plus.SCOPE_PLUS_LOGIN)
-                .setAccountName(FTUE.selectedEmail)
+                .setAccountName(SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null))
                 .build();
 
         setupBroadcastManagers();
@@ -286,8 +284,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Log.e(logTAG, "Token Value: " + s);
 
             //get notification access after everything else works
-            NotificationActions na = new NotificationActions();
-            na.checkNotificationAccess(getApplication());
+            NotificationActions.checkNotificationAccess(getApplication());
 
         }
     }

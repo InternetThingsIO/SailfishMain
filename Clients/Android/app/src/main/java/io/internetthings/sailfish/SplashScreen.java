@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import io.internetthings.sailfish.ftue.SelectEmail;
+
 /*
         Created by: Jason Maderski
         Date: 6/10/2015
@@ -83,7 +85,7 @@ public class SplashScreen extends Activity {
 
                     //start FTUE here
 
-                    newActivity = FTUE.class;
+                    newActivity = SelectEmail.class;
                 }
 
                 Intent i = new Intent(SplashScreen.this, newActivity);

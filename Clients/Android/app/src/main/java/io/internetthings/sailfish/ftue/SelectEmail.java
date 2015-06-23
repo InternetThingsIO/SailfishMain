@@ -1,27 +1,25 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.ftue;
 
 import android.accounts.AccountManager;
 import android.accounts.Account;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class FTUE extends Activity {
+import io.internetthings.sailfish.MainActivity;
+import io.internetthings.sailfish.R;
+import io.internetthings.sailfish.SailfishPreferences;
 
-    public static String selectedEmail;
+public class SelectEmail extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ftue);
+        setContentView(R.layout.activity_select_email);
 
         Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
 
@@ -29,16 +27,19 @@ public class FTUE extends Activity {
 
     }
     //Sets selected email and launches MainActivity when Next button is clicked
-    public void emailSelectedNext(View view){
+    public void onClickNext(View view){
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
 
         if(rdoEmails.getCheckedRadioButtonId()!=-1){
             int id = rdoEmails.getCheckedRadioButtonId();
             RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
-            selectedEmail = (String) radioButton.getText();
-            Log.i("Email:", selectedEmail + "\n" + "RadioButton ID: " + String.valueOf(id));
+            SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, (String) radioButton.getText());
+
+            //Log.i("Email:", selectedEmail + "\n" + "RadioButton ID: " + String.valueOf(id));
         }
-        backToMainActivity();
+
+        Intent i = new Intent(this, ConfigureChromeActivity.class);
+        startActivity(i);
     }
 
     //dynamically adds radiobuttons for email selection

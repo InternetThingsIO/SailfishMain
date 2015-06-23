@@ -8,9 +8,12 @@
 
     <string name="hello_world">Hello world!</string>
 
-    <string name="title_activity_ftue">FTUE</string>
+    <string name="title_activity_ftue">SelectEmail</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_debug">DebugActivity</string>
+    <string name="title_activity_notification_access">NotificationAccessActivity</string>
+    <string name="title_activity_configure_chrome">ConfigureChromeActivity</string>
+    <string name="title_activity_check_list">CheckListActivity</string>
 
 </resources>

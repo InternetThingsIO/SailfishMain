@@ -58,7 +58,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".FTUE"
+            android:name=".ftue.SelectEmail"
             android:label="@string/title_activity_ftue" >
         </activity>
         <activity
@@ -68,6 +68,18 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.internetthings.sailfish.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ftue.NotificationAccessActivity"
+            android:label="@string/title_activity_notification_access" >
+        </activity>
+        <activity
+            android:name=".ftue.ConfigureChromeActivity"
+            android:label="@string/title_activity_configure_chrome" >
+        </activity>
+        <activity
+            android:name=".ftue.CheckListActivity"
+            android:label="@string/title_activity_check_list" >
         </activity>
     </application>
 
