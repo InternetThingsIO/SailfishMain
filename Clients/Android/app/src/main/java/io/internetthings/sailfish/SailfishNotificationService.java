@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -112,19 +113,32 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private String getMessageID(StatusBarNotification sbn){
-
         StringBuilder sb = new StringBuilder();
 
-        String text = getBodyText(sbn);
+        sb.append(sbn.getPackageName());
 
-        if (text != null) {
-            int maxLength = (text.length() < 50) ? text.length() : 50;
-            sb.append(text.substring(0, maxLength - 1));
+        if(!TextUtils.isEmpty(sbn.getTag()))
+            sb.append(sbn.getTag());
+
+        //if(!TextUtils.isEmpty(String.valueOf(sbn.getId())))
+        //    sb.append(sbn.getId());
+
+        String body = getBodyText(sbn);
+        if (body != null) {
+            String trimmed = body.substring(0, Math.min(body.length(), 50));
+            sb.append(trimmed);
         }
 
-        sb.append(sbn.getNotification().extras.getString("android.title"));
+        return sb.toString();
+    }
 
-        return String.valueOf(sb.toString().hashCode());
+    private String toBase64(String str){
+        try {
+            byte[] data = str.getBytes("UTF-8");
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        }catch(Exception ex){
+            return str;
+        }
     }
 
     private String getBodyText(StatusBarNotification sbn){
