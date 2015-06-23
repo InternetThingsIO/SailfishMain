@@ -68,6 +68,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
                 .setAccountName(SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null))
                 .build();
