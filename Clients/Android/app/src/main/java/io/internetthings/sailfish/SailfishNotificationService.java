@@ -85,9 +85,11 @@ public class SailfishNotificationService extends NotificationListenerService{
             + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
+        String bodyText = getBodyText(sbn);
+
         //if we have no body, don't send notifications.
         //this rids us of grouped notifications also
-        if (sbn.getNotification().extras.getString("android.text") == null)
+        if (bodyText == null)
             return;
 
         getPrefAndConnect();
@@ -99,7 +101,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(icon,
                 sbn.getNotification().extras.getString("android.title"),
-                sbn.getNotification().extras.getString("android.text"),
+                bodyText,
                 sbn.getPackageName(),
                 sbn.getPostTime());
 
@@ -111,14 +113,29 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private String getMessageID(StatusBarNotification sbn){
 
-        String text = sbn.getNotification().extras.getString("android.text");
-        int maxLength = (text.length() < 50)?text.length():50;
-
         StringBuilder sb = new StringBuilder();
+
+        String text = getBodyText(sbn);
+
+        if (text != null) {
+            int maxLength = (text.length() < 50) ? text.length() : 50;
+            sb.append(text.substring(0, maxLength - 1));
+        }
+
         sb.append(sbn.getNotification().extras.getString("android.title"));
-        sb.append(text.substring(0, maxLength-1));
 
         return String.valueOf(sb.toString().hashCode());
+    }
+
+    private String getBodyText(StatusBarNotification sbn){
+
+        CharSequence body = sbn.getNotification().extras.getCharSequence("android.text");
+        if (body != null)
+            return body.toString();
+        else
+            return null;
+
+
     }
 
     private void sendMessage(SailfishMessage sm){
