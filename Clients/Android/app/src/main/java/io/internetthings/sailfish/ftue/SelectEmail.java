@@ -34,7 +34,7 @@ public class SelectEmail extends Activity {
             int id = rdoEmails.getCheckedRadioButtonId();
             RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
             SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, (String) radioButton.getText());
-
+            SailfishPreferences.editor(this).commit();
             //Log.i("Email:", selectedEmail + "\n" + "RadioButton ID: " + String.valueOf(id));
         }
 
