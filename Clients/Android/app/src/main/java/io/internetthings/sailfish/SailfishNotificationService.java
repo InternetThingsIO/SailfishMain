@@ -87,7 +87,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         //if we have no body, don't send notifications.
         //this rids us of grouped notifications also
-        if (getBodyOfMessage(sbn) == null)
+        if (sbn.getNotification().extras.getString("android.text") == null)
             return;
 
         getPrefAndConnect();
@@ -99,7 +99,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(icon,
                 sbn.getNotification().extras.getString("android.title"),
-                getBodyOfMessage(sbn),
+                sbn.getNotification().extras.getString("android.text"),
                 sbn.getPackageName(),
                 sbn.getPostTime());
 
@@ -109,25 +109,16 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
-    private String getBodyOfMessage(StatusBarNotification sbn){
-        String bom2String;
-        CharSequence bodyOfMessage = sbn.getNotification().extras.getCharSequence("android.text");
-
-        if(bodyOfMessage != null)
-            return bom2String = bodyOfMessage.toString();
-        else
-            return null;
-    }
-
     private String getMessageID(StatusBarNotification sbn){
-        StringBuilder sb = new StringBuilder();
-        sb.append(sbn.getPackageName());
-        if(!TextUtils.isEmpty(sbn.getTag()))
-            sb.append(sbn.getTag());
-        if(!TextUtils.isEmpty(String.valueOf(sbn.getId())))
-            sb.append(sbn.getId());
 
-        return sb.toString();
+        String text = sbn.getNotification().extras.getString("android.text");
+        int maxLength = (text.length() < 50)?text.length():50;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(sbn.getNotification().extras.getString("android.title"));
+        sb.append(text.substring(0, maxLength-1));
+
+        return String.valueOf(sb.toString().hashCode());
     }
 
     private void sendMessage(SailfishMessage sm){
