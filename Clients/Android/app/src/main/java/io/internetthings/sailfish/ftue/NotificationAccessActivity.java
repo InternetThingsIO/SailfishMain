@@ -50,12 +50,13 @@ public class NotificationAccessActivity extends Activity {
 
     public void onClickNext(View view){
 
-        //check for notification access and ask for it if we don't have it
-        NotificationActions.checkNotificationAccess(getApplication());
-
         //load next activity
         Intent i = new Intent(this, CheckListActivity.class);
         startActivity(i);
+
+        this.finish();
+        //check for notification access and ask for it if we don't have it
+        NotificationActions.checkNotificationAccess(getApplication());
 
     }
 }

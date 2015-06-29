@@ -13,27 +13,57 @@
         android:id="@+id/btnFinished"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="onClickFinished" />
+        android:onClick="onClickFinished"
+        android:paddingRight="40dp"
+        android:paddingLeft="40dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Checlist of steps we completed"
-        android:id="@+id/textView7"
-        android:layout_marginTop="158dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:text="Checklist of steps we completed:"
+        android:id="@+id/checklist"
+        android:layout_above="@+id/emailSelected"
+        android:layout_alignEnd="@+id/NAgranted"
+        android:paddingBottom="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="You are done!"
-        android:id="@+id/textView8"
-        android:layout_alignParentTop="true"
+        android:id="@+id/doneTxt"
+        android:textSize="32dp"
+        android:layout_alignBottom="@+id/checklist"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:textSize="32dp" />
+        android:layout_marginBottom="42dp"
+        android:paddingBottom="50dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected Email"
+        android:id="@+id/emailSelected"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:checked="false" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configured Chrome"
+        android:id="@+id/configuredChrome"
+        android:layout_below="@+id/emailSelected"
+        android:layout_alignStart="@+id/emailSelected"
+        android:checked="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notice has Notification Access"
+        android:id="@+id/NAgranted"
+        android:layout_below="@+id/configuredChrome"
+        android:layout_alignStart="@+id/configuredChrome"
+        android:checked="false" />
 
 </RelativeLayout>

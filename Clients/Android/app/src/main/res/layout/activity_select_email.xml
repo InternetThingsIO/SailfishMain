@@ -10,31 +10,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Hello"
-        android:id="@+id/textView"
+        android:text="Let&apos;s setup Notice"
+        android:id="@+id/Hello"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="94dp"
-        android:textSize="48dp" />
+        android:textSize="36dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
+        android:text="Use this email"
         android:id="@+id/btnNext"
+        android:onClick="onClickNext"
+        android:gravity="center"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textView"
-        android:onClick="onClickNext"/>
+        android:layout_centerHorizontal="true" />
 
     <RadioGroup
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/rdoEmails"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/textView"
-        android:focusableInTouchMode="false">
+        android:focusableInTouchMode="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/SetupMSG"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp">
 
     </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Your email address is used to synchronize your devices with chrome\n\n\n"
+        android:id="@+id/SetupMSG"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:paddingTop="60dp"
+        android:layout_below="@+id/Hello"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Please select email:"
+        android:id="@+id/PlsSelectEml"
+        android:layout_above="@+id/rdoEmails"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

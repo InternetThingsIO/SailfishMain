@@ -6,44 +6,53 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 
 import io.internetthings.sailfish.MainActivity;
+import io.internetthings.sailfish.NotificationActions;
 import io.internetthings.sailfish.R;
+import io.internetthings.sailfish.SailfishPreferences;
 
 public class CheckListActivity extends Activity {
+
+    //boolean emailCHECK = false;
+    //boolean NAccessCHECK = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_list);
+        checkSelectedEmail();
+        checkNAccess();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_check_list, menu);
-        return true;
+    private void checkSelectedEmail(){
+        //String check = "";
+        //check = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+
+        //if(check != null){
+            CheckBox cb = (CheckBox) findViewById(R.id.emailSelected);
+            cb.setChecked(true);
+            //emailCHECK = true;
+        //}
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private void checkNAccess(){
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+            CheckBox cb = (CheckBox) findViewById(R.id.NAgranted);
+            cb.setChecked(true);
+            //NAccessCHECK = true;
 
-        return super.onOptionsItemSelected(item);
     }
 
-    public void onClickFinished(View veiw){
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
+    public void onClickFinished(View view){
+        //if(emailCHECK && NAccessCHECK) {
 
-        this.finish();
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+
+            this.finish();
+        //}
     }
 }

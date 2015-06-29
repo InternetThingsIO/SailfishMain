@@ -10,12 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Configure Chrome"
+        android:text="Configure\nChrome"
         android:id="@+id/txtTitle"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="52dp"
-        android:textSize="32dp" />
+        android:textSize="32dp"
+        android:layout_alignTop="@+id/chromeicon"
+        android:layout_toEndOf="@+id/chromeicon"
+        android:textStyle="bold"
+        android:paddingLeft="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,46 +24,58 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Next we need to configure your Chrome browser to receive notifications"
         android:id="@+id/textView3"
+        android:gravity="center_horizontal"
         android:layout_below="@+id/txtTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="47dp" />
+        android:layout_alignParentEnd="true"
+        android:paddingTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="We&apos;ve sent you an email to explain"
+        android:text="We&apos;ve sent instructions"
         android:id="@+id/textView4"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="76dp" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="gmail icon"
-        android:id="@+id/textView5"
+        android:text="Email Not found"
+        android:id="@+id/FTUEEmail"
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="To: email we used"
-        android:id="@+id/textView6"
-        android:layout_below="@+id/textView5"
-        android:layout_centerHorizontal="true" />
+        android:paddingTop="10dp"
+        android:textStyle="bold" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I&apos;ve completed this step"
+        android:text="I have configured chrome"
         android:id="@+id/btnCompletedStep"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="onClickCompletedButton" />
+        android:onClick="onClickCompletedButton"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gmailicon"
+        android:src="@drawable/googlemail"
+        android:layout_below="@+id/FTUEEmail"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chromeicon"
+        android:src="@drawable/chrome"
+        android:layout_marginTop="58dp"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/gmailicon" />
+
 
 </RelativeLayout>
