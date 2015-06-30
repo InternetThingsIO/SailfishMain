@@ -138,17 +138,10 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
-    private Boolean shouldIssueNotif(StatusBarNotification sbn){
+    private Boolean shouldIssueNotif(StatusBarNotification sbn) {
 
-        //String notifID = getMessageID(sbn);
-
-        //if (IssuedNotifications.contains(notifID)) {
-        //    Log.i(logTAG, "Notification already was issued, we will not issue it again");
-            //set back to false when ready
-        //    return false;
-        //}
-
-        //IssuedNotifications.add(notifID);
+        if (email == null || email.length() == 0)
+            return false;
 
         return true;
     }
