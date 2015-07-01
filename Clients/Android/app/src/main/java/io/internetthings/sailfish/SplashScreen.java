@@ -56,7 +56,7 @@ public class SplashScreen extends Activity {
 
                 //unnecessary delay, delete later
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                 }catch(Exception ex){}
 
                 endStartup();
