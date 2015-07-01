@@ -58,7 +58,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ftue.SelectEmail"
+            android:name=".ftue.SelectEmailActivity"
             android:label="@string/title_activity_ftue" >
         </activity>
         <activity
