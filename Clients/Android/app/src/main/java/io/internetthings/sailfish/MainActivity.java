@@ -125,7 +125,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         Log.d("", "onConnected Success");
         getProfileInformation();
 
-
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.lang.Math;
 import android.content.Intent;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 
 /**
@@ -17,7 +18,7 @@ public class NotificationActions {
     private static final String sTAG = "NotificationActions";
 
     //Send Text Message from Notice
-    public static void SendMSG(Context context, String Message){
+    public static void sendMSG(Context context, String Message){
         NotificationManager nManager = (NotificationManager)context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         int nID = Math.abs((int)System.currentTimeMillis());
@@ -46,4 +47,10 @@ public class NotificationActions {
         }
     }
 
+    public static void toastMSG(Context context, CharSequence message){
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
+    }
 }

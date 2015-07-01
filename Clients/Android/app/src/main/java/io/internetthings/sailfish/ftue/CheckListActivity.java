@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.NotificationActions;
@@ -15,8 +16,8 @@ import io.internetthings.sailfish.SailfishPreferences;
 
 public class CheckListActivity extends Activity {
 
-    //boolean emailCHECK = false;
-    //boolean NAccessCHECK = false;
+    boolean emailCHECK = false;
+    boolean NAccessCHECK = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +28,14 @@ public class CheckListActivity extends Activity {
     }
 
     private void checkSelectedEmail(){
-        //String check = "";
-        //check = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        String check = "";
+        check = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
-        //if(check != null){
+        if(check != null){
             CheckBox cb = (CheckBox) findViewById(R.id.emailSelected);
             cb.setChecked(true);
-            //emailCHECK = true;
-        //}
+            emailCHECK = true;
+        }
 
     }
 
@@ -42,17 +43,21 @@ public class CheckListActivity extends Activity {
 
             CheckBox cb = (CheckBox) findViewById(R.id.NAgranted);
             cb.setChecked(true);
-            //NAccessCHECK = true;
+            NAccessCHECK = true;
 
     }
 
     public void onClickFinished(View view){
-        //if(emailCHECK && NAccessCHECK) {
+
 
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
 
+            NotificationActions.sendMSG(this, "Hello, Notice has been successfully setup");
+            NotificationActions.toastMSG(this, "Notice Test Message Sent");
             this.finish();
-        //}
+
+
+
     }
 }
