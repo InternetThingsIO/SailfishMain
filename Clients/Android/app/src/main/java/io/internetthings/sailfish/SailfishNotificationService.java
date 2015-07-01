@@ -1,17 +1,18 @@
 package io.internetthings.sailfish;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
+import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +39,13 @@ public class SailfishNotificationService extends NotificationListenerService{
     //start sticky so it restarts on crash :-)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.i(logTAG, "SailfishNotificationService starting");
+
+        Mint.initAndStartSession(this, Constants.MINT_API_KEY);
+
+        getPrefAndConnect();
+
         return START_STICKY;
     }
 
@@ -47,43 +55,46 @@ public class SailfishNotificationService extends NotificationListenerService{
             return;
 
         //get preferences
-        try {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS);
-            this.email = prefs.getString("email", null);
-        }catch(Exception ex){
-            Log.e(logTAG, "Failed to get preferences");
-            //throw ex;
-        }
+        this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
-        //connect if we got an email
+        //connect if we have an email
         if (email != null) {
             Log.e(logTAG, "Started service, found email: " + email);
             SailfishSocketIO.connect(email, getApplicationContext());
+
+            Mint.setUserIdentifier(email);
+
         }else{
             Log.e(logTAG, "Email is NULL");
         }
 
-        while(!SailfishSocketIO.SocketSingleton().connected()){
-        }
+        //wait until we are connected
+        while(!SailfishSocketIO.SocketSingleton().connected()){}
 
     }
 
     //Displays notification posted with the ID in the logcat window
     @Override
     public void onNotificationPosted(StatusBarNotification sbn){
+
+        //bail if this isn't a valid notification
+        if (!isNotifValid(sbn))
+            return;
+
         Log.w("checkingOUT", "Notification POSTED " + "\n"
-                + " Package Name: " + sbn.getPackageName()
-                + "\n" + " ID: " + sbn.getId()
-                + "\n" + " Tag: " + sbn.getTag()
-                + "\n" + " onGoing: " + sbn.isOngoing()
-                + "\n" + " isClearable: " + sbn.isClearable()
-                + "\n" + " getNumber: " + sbn.getNotification().number
-                + "\n" + " getActiveNotifications: " + getActiveNotifications().length
+                        + " Package Name: " + sbn.getPackageName()
+                        + "\n" + " ID: " + sbn.getId()
+                        + "\n" + " Tag: " + sbn.getTag()
+                        + "\n" + " onGoing: " + sbn.isOngoing()
+                        + "\n" + " isClearable: " + sbn.isClearable()
+                        + "\n" + " getNumber: " + sbn.getNotification().number
+                        + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
-        //don't post ongoing notifications
-        if (!sbn.isClearable())
+        //don't issue this notification if it shouldn't be issued
+        if (!canUseNotif(sbn))
             return;
+
 
         getPrefAndConnect();
 
@@ -92,11 +103,14 @@ public class SailfishNotificationService extends NotificationListenerService{
             icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
         }catch (Exception e){}
 
+        String bodyText = getBodyText(sbn);
+
         SailfishNotification sn = new SailfishNotification(icon,
                 sbn.getNotification().extras.getString("android.title"),
-                getBodyOfMessage(sbn),
+                bodyText,
                 sbn.getPackageName(),
-                sbn.getPostTime());
+                sbn.getPostTime(),
+                sbn.getNotification().priority);
 
         sn.Action = MessageActions.POST_NOTIFICATION;
         sn.ID = getMessageID(sbn);
@@ -104,25 +118,67 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
-    private String getBodyOfMessage(StatusBarNotification sbn){
-        String bom2String;
-        CharSequence bodyOfMessage = sbn.getNotification().extras.getCharSequence("android.text");
+    private Boolean isNotifValid(StatusBarNotification sbn){
+        if (sbn == null || sbn.getNotification() == null)
+            return false;
 
-        if(bodyOfMessage != null)
-            return bom2String = bodyOfMessage.toString();
-        else
-            return "Message is NULL";
+        String bodyText = getBodyText(sbn);
+
+        //if we have no body, don't send notifications.
+        //this rids us of grouped notifications also
+        if (bodyText == null)
+            return false;
+
+        return true;
+
+    }
+
+    private Boolean canUseNotif(StatusBarNotification sbn) {
+
+        if (email == null || email.length() == 0)
+            return false;
+
+        return true;
     }
 
     private String getMessageID(StatusBarNotification sbn){
         StringBuilder sb = new StringBuilder();
+
         sb.append(sbn.getPackageName());
+
         if(!TextUtils.isEmpty(sbn.getTag()))
             sb.append(sbn.getTag());
+
         if(!TextUtils.isEmpty(String.valueOf(sbn.getId())))
             sb.append(sbn.getId());
 
+        //String body = getBodyText(sbn);
+        //if (body != null) {
+        //    String trimmed = body.substring(0, Math.min(body.length(), 50));
+        //    sb.append(trimmed);
+        //}
+
         return sb.toString();
+    }
+
+    private String toBase64(String str){
+        try {
+            byte[] data = str.getBytes("UTF-8");
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        }catch(Exception ex){
+            return str;
+        }
+    }
+
+    private String getBodyText(StatusBarNotification sbn){
+
+        CharSequence body = sbn.getNotification().extras.getCharSequence("android.text");
+        if (body != null)
+            return body.toString();
+        else
+            return null;
+
+
     }
 
     private void sendMessage(SailfishMessage sm){
@@ -175,9 +231,14 @@ public class SailfishNotificationService extends NotificationListenerService{
     public void onNotificationRemoved(StatusBarNotification sbn){
         Log.w(logTAG, "Notification REMOVED*************** " + "User: "
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
+
+        if (!canUseNotif(sbn))
+            return;
+
         SailfishMessage sm = new SailfishMessage();
         sm.Action = MessageActions.REMOVE_NOTIFICATION;
         sm.ID = getMessageID(sbn);
+
         sendMessage(sm);
     }
 

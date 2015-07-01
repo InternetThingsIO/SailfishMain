@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="io.internetthings.sailfish.ftue.CheckListActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All Done"
+        android:id="@+id/btnFinished"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickFinished"
+        android:paddingRight="40dp"
+        android:paddingLeft="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Checklist of steps we completed:"
+        android:id="@+id/checklist"
+        android:layout_above="@+id/emailSelected"
+        android:layout_alignEnd="@+id/NAgranted"
+        android:paddingBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="You are done!"
+        android:id="@+id/doneTxt"
+        android:textSize="32dp"
+        android:layout_alignBottom="@+id/checklist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="42dp"
+        android:paddingBottom="50dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected Email"
+        android:id="@+id/emailSelected"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:checked="false" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configured Chrome"
+        android:id="@+id/configuredChrome"
+        android:layout_below="@+id/emailSelected"
+        android:layout_alignStart="@+id/emailSelected"
+        android:checked="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notice has Notification Access"
+        android:id="@+id/NAgranted"
+        android:layout_below="@+id/configuredChrome"
+        android:layout_alignStart="@+id/configuredChrome"
+        android:checked="false" />
+
+</RelativeLayout>

@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -36,7 +38,7 @@
         <service
             android:name=".SailfishNotificationService"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/notification_service_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
             <intent-filter>
@@ -55,6 +57,30 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <activity
+            android:name=".ftue.SelectEmail"
+            android:label="@string/title_activity_ftue" >
+        </activity>
+        <activity
+            android:name=".DebugActivity"
+            android:label="@string/title_activity_debug"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.internetthings.sailfish.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ftue.NotificationAccessActivity"
+            android:label="@string/title_activity_notification_access" >
+        </activity>
+        <activity
+            android:name=".ftue.ConfigureChromeActivity"
+            android:label="@string/title_activity_configure_chrome" >
+        </activity>
+        <activity
+            android:name=".ftue.CheckListActivity"
+            android:label="@string/title_activity_check_list" >
+        </activity>
     </application>
 
 </manifest>

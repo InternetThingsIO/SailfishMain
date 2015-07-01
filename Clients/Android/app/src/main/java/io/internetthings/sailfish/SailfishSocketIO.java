@@ -30,6 +30,12 @@ public class SailfishSocketIO {
 
             try{
                 mSocket = IO.socket("https://api.internetthings.io");
+
+                //optimize some stuff for battery life
+                mSocket.io().reconnection(true);
+                mSocket.io().reconnectionDelay(1000);
+                mSocket.io().reconnectionDelayMax(90000);
+
             }catch (URISyntaxException e){}
 
             if (!mSocket.connected()) {
@@ -57,9 +63,10 @@ public class SailfishSocketIO {
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
+
             }
         };
-        mSocket.on("connect", onConnect);
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
 
         Emitter.Listener onDisconnect = new Emitter.Listener() {
             @Override
@@ -70,7 +77,7 @@ public class SailfishSocketIO {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
         };
-        mSocket.on("disconnect", onDisconnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.connect();
     }
 

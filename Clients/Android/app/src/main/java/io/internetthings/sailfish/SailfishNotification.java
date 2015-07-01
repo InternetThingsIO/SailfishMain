@@ -21,16 +21,17 @@ public class SailfishNotification extends SailfishMessage{
     private String Body;
     private String PackageName;
     private long PostTime;
+    private int Priority;
 
 
-    public SailfishNotification(Drawable icon, String subjectInput, String bodyInput, String packageNameInput, long postTimeInput){
+    public SailfishNotification(Drawable icon, String subjectInput, String bodyInput, String packageNameInput, long postTimeInput, int priority){
 
         Base64Image = drawableToBase64(icon);
         Subject = subjectInput;
         Body = bodyInput;
         PackageName = packageNameInput;
         PostTime = postTimeInput;
-
+        this.Priority = priority;
 
 
     }
