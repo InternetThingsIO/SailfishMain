@@ -30,6 +30,12 @@ public class SailfishSocketIO {
 
             try{
                 mSocket = IO.socket("https://api.internetthings.io");
+
+                //optimize some stuff for battery life
+                mSocket.io().reconnection(true);
+                mSocket.io().reconnectionDelay(1000);
+                mSocket.io().reconnectionDelayMax(90000);
+
             }catch (URISyntaxException e){}
 
             if (!mSocket.connected()) {
@@ -56,6 +62,7 @@ public class SailfishSocketIO {
                 Intent intent = new Intent("onSocketConnect");
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
 
             }
         };
