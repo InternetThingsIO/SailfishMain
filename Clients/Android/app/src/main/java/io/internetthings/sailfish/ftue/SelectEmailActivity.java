@@ -16,7 +16,7 @@ import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.R;
 import io.internetthings.sailfish.SailfishPreferences;
 
-public class SelectEmail extends Activity {
+public class SelectEmailActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +52,7 @@ public class SelectEmail extends Activity {
     private void addRadioButtons(Account[] accounts){
 
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
+        rdoEmails.removeAllViews();
 
         RadioButton rdoButton;
 
@@ -72,7 +73,7 @@ public class SelectEmail extends Activity {
 
     //changes Please select email text to bold red
     private void changePlsSelectEmailTxt(){
-        TextView PlsSelectEmail = (TextView)findViewById(R.id.PlsSelectEml);
+        TextView PlsSelectEmail = (TextView)findViewById(R.id.SetupMSG);
         PlsSelectEmail.setTextColor(getResources().getColor(R.color.Red));
         PlsSelectEmail.setTypeface(Typeface.DEFAULT_BOLD);
     }
