@@ -1,9 +1,7 @@
 package io.internetthings.sailfish;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.wifi.WifiConfiguration;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -18,7 +16,6 @@ import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashSet;
 
 /*
     Created by: Jason Maderski
@@ -35,8 +32,6 @@ public class SailfishNotificationService extends NotificationListenerService{
     public static final String MY_PREFS_NAME = "SailFishPref";
 
     private String email;
-
-    //private HashSet<String> IssuedNotifications = new HashSet<String>();
 
     public SailfishNotificationService(){
     }
@@ -97,7 +92,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         );
 
         //don't issue this notification if it shouldn't be issued
-        if (!shouldIssueNotif(sbn))
+        if (!canUseNotif(sbn))
             return;
 
 
@@ -138,7 +133,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
-    private Boolean shouldIssueNotif(StatusBarNotification sbn) {
+    private Boolean canUseNotif(StatusBarNotification sbn) {
 
         if (email == null || email.length() == 0)
             return false;
@@ -237,7 +232,8 @@ public class SailfishNotificationService extends NotificationListenerService{
         Log.w(logTAG, "Notification REMOVED*************** " + "User: "
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
 
-
+        if (!canUseNotif(sbn))
+            return;
 
         SailfishMessage sm = new SailfishMessage();
         sm.Action = MessageActions.REMOVE_NOTIFICATION;
