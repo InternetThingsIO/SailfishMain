@@ -15,7 +15,8 @@
         android:layout_centerHorizontal="true"
         android:onClick="onClickFinished"
         android:paddingRight="40dp"
-        android:paddingLeft="40dp" />
+        android:paddingLeft="40dp"
+        android:background="@drawable/button_green_roundedcorners"/>
 
     <TextView
         android:layout_width="wrap_content"

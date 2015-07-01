@@ -58,7 +58,8 @@
         android:layout_centerHorizontal="true"
         android:onClick="onClickCompletedButton"
         android:paddingLeft="40dp"
-        android:paddingRight="40dp" />
+        android:paddingRight="40dp"
+        android:background="@drawable/button_green_roundedcorners"/>
 
     <ImageView
         android:layout_width="wrap_content"
