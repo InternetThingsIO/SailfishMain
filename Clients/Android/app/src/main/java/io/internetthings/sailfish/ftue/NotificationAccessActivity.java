@@ -14,8 +14,10 @@ import io.internetthings.sailfish.R;
 
 public class NotificationAccessActivity extends Activity {
 
+    static final String shouldCheckAccess = "shouldCheckAccess";
+
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
 
     }
@@ -25,6 +27,20 @@ public class NotificationAccessActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_access);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(getIntent().getExtras()!= null && getIntent().getExtras().getBoolean(shouldCheckAccess, false)) {
+            if(NotificationActions.checkNotificationAccess(this)) {
+                Intent i = new Intent(this, CheckListActivity.class);
+                startActivity(i);
+            }else
+                NotificationActions.toastMSG(this, "Opps...looks like you didn't give us access!");
+        }
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,12 +67,16 @@ public class NotificationAccessActivity extends Activity {
     public void onClickNext(View view){
 
         //load next activity
-        Intent i = new Intent(this, CheckListActivity.class);
+        Intent i = new Intent(this, NotificationAccessActivity.class);
+        i.putExtra(shouldCheckAccess, true);
         startActivity(i);
 
-        this.finish();
         //check for notification access and ask for it if we don't have it
-        NotificationActions.checkNotificationAccess(getApplication());
+        if(!NotificationActions.checkNotificationAccess(getApplication()))
+            NotificationActions.openNotificationAccess(getApplication());
+        else
+            NotificationActions.toastMSG(getApplication(), "You already gave us access, you sly dog!");
+        this.finish();
 
     }
 }

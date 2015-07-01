@@ -31,26 +31,27 @@ public class NotificationActions {
     }
 
     //Checks whether or not the NoticeNotificationService has access
-    public static void checkNotificationAccess(Context context){
+    public static boolean checkNotificationAccess(Context context){
 
         String enabledAppList = Settings.Secure.getString(context.getContentResolver(),
                 "enabled_notification_listeners");
         if(enabledAppList == null)
             enabledAppList = "None";
 
-        boolean checkAppAccessFlag = enabledAppList.contains("SailfishNotificationService");
+        return enabledAppList.contains("SailfishNotificationService");
+    }
 
-        if (!checkAppAccessFlag) {
-            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        }
+    //Opens Notification Access in Android
+    public static void openNotificationAccess(Context context){
+
+        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+
     }
 
     public static void toastMSG(Context context, CharSequence message){
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, message, duration);
-        toast.show();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
+
 }

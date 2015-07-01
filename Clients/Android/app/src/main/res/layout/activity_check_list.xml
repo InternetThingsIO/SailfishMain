@@ -56,7 +56,7 @@
         android:id="@+id/configuredChrome"
         android:layout_below="@+id/emailSelected"
         android:layout_alignStart="@+id/emailSelected"
-        android:checked="true" />
+        android:checked="false" />
 
     <CheckBox
         android:layout_width="wrap_content"

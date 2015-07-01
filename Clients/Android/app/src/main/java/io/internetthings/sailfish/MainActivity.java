@@ -284,7 +284,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Log.e(logTAG, "Token Value: " + s);
 
             //get notification access after everything else works
-            NotificationActions.checkNotificationAccess(getApplication());
+            if(!NotificationActions.checkNotificationAccess(getApplication())){
+                NotificationActions.toastMSG(getApplication(), "Notice does not have Notification Access");
+            }
 
         }
     }
