@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView2"
-        android:src="@drawable/phonemockup"
+        android:src="@drawable/notifmockup"
         android:paddingBottom="10dp"
         android:layout_above="@+id/Instructions"
         android:layout_alignParentStart="true" />
