@@ -24,6 +24,10 @@
         <item name="android:background">@android:drawable/bottom_bar</item>
     </style>
 
+    <style name="ActionButton">
+        <item name="android:actionButtonStyle"></item>
+    </style>
+
     <!-- Backward-compatible version of ?android:attr/buttonBarButtonStyle -->
     <style name="ButtonBarButton" />
 

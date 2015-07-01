@@ -1,5 +1,12 @@
 <resources>
 
-    <color name="black_overlay">#66000000</color>
+    <color name="black_overlay">#660000</color>
+    <color name="h1_bg">#03A9F4</color>
+    <color name="h2_bg">#81D4FA</color>
+
+    <color name="h1_text">#ffffff</color>
+    <color name="h2_text">#01579B</color>
+
+    <color name="btn_pri">#2ecc71</color>
 
 </resources>
