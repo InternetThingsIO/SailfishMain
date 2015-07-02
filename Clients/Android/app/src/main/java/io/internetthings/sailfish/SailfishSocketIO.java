@@ -33,7 +33,7 @@ public class SailfishSocketIO {
 
                 //optimize some stuff for battery life
                 mSocket.io().reconnection(true);
-                mSocket.io().reconnectionDelay(1000);
+                mSocket.io().reconnectionDelay(5000);
                 mSocket.io().reconnectionDelayMax(90000);
 
             }catch (URISyntaxException e){}

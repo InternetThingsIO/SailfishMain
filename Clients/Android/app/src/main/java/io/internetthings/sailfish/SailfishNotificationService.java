@@ -69,7 +69,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         }
 
         //wait until we are connected
-        while(!SailfishSocketIO.SocketSingleton().connected()){}
+        //while(!SailfishSocketIO.SocketSingleton().connected()){}
 
     }
 
