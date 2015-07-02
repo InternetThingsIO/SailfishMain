@@ -59,7 +59,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Check the box next to\n\n\nClick the back button"
         android:id="@+id/Instructions"
-        android:paddingLeft="15dp"
+        android:paddingLeft="10dp"
         android:layout_above="@+id/btnDoThis"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp" />
@@ -70,10 +70,13 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=" 1 "
         android:id="@+id/num1"
-        android:textColor="#ff83e30c"
-        android:background="#ff040404"
+        android:textColor="#fffffffb"
+        android:background="@drawable/rounded_corners"
         android:layout_alignTop="@+id/Instructions"
-        android:layout_toStartOf="@+id/Instructions" />
+        android:layout_toStartOf="@+id/Instructions"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,10 +84,13 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=" 2 "
         android:id="@+id/num2"
-        android:textColor="#ff83e30c"
-        android:background="#ff040404"
+        android:textColor="#fff8fdff"
+        android:background="@drawable/rounded_corners"
         android:layout_alignBottom="@+id/Instructions"
-        android:layout_toStartOf="@+id/Instructions" />
+        android:layout_toStartOf="@+id/Instructions"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
