@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     //Method runs when user is signed on
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.d("", "onConnected Success");
+        Log.d(logTAG, "Successfully connected to Google");
         getProfileInformation();
 
     }
@@ -169,6 +169,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onStart(){
         super.onStart();
         mGoogleApiClient.connect();
+        SailfishSocketIO.connect();
 
     }
 
@@ -182,8 +183,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     protected void onResume(){
         super.onResume();
 
+        SailfishSocketIO.connect();
+
         //get current socket status
-        if (SailfishSocketIO.SocketSingleton().connected())
+        if (SailfishSocketIO.isConnected())
             setConnectedText();
         else
             setDisconnectedText();

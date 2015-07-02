@@ -34,6 +34,7 @@ public class SailfishNotificationService extends NotificationListenerService{
     private String email;
 
     public SailfishNotificationService(){
+        SailfishSocketIO.setupSocket(this);
     }
 
     //start sticky so it restarts on crash :-)
@@ -44,32 +45,30 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         Mint.initAndStartSession(this, Constants.MINT_API_KEY);
 
-        getPrefAndConnect();
-
         return START_STICKY;
     }
 
     private void getPrefAndConnect() {
 
-        if (SailfishSocketIO.SocketSingleton().connected())
+        if (SailfishSocketIO.isConnected()) {
+            Log.i(logTAG, "Socket is already connected");
             return;
+        }
 
         //get preferences
         this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
         //connect if we have an email
         if (email != null) {
-            Log.e(logTAG, "Started service, found email: " + email);
-            SailfishSocketIO.connect(email, getApplicationContext());
+            Log.e(logTAG, "Connecting to socket, found email: " + email);
+
+            SailfishSocketIO.connect();
 
             Mint.setUserIdentifier(email);
 
         }else{
             Log.e(logTAG, "Email is NULL");
         }
-
-        //wait until we are connected
-        //while(!SailfishSocketIO.SocketSingleton().connected()){}
 
     }
 
@@ -81,7 +80,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         if (!isNotifValid(sbn))
             return;
 
-        Log.w("checkingOUT", "Notification POSTED " + "\n"
+        Log.i("checkingOUT", "Notification POSTED " + "\n"
                         + " Package Name: " + sbn.getPackageName()
                         + "\n" + " ID: " + sbn.getId()
                         + "\n" + " Tag: " + sbn.getTag()
@@ -91,12 +90,11 @@ public class SailfishNotificationService extends NotificationListenerService{
                         + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
+        getPrefAndConnect();
+
         //don't issue this notification if it shouldn't be issued
         if (!canUseNotif(sbn))
             return;
-
-
-        getPrefAndConnect();
 
         Drawable icon = null;
         try {
@@ -206,7 +204,7 @@ public class SailfishNotificationService extends NotificationListenerService{
     //Displays notification that has been removed in the logcat window
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn){
-        Log.w(logTAG, "Notification REMOVED*************** " + "User: "
+        Log.i(logTAG, "Notification REMOVED*************** " + "User: "
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
 
         if (!canUseNotif(sbn))

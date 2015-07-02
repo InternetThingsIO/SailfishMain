@@ -22,68 +22,101 @@ import java.net.URISyntaxException;
 public class SailfishSocketIO {
 
     private static Socket mSocket;
-    private static String email;
     private static final String logTAG = "SailfishSocketIO";
 
-    public static Socket SocketSingleton(){
-        if (mSocket == null) {
+    private static boolean isSetup = false;
 
-            try{
-                mSocket = IO.socket("https://api.internetthings.io");
-
-                //optimize some stuff for battery life
-                mSocket.io().reconnection(true);
-                mSocket.io().reconnectionDelay(5000);
-                mSocket.io().reconnectionDelayMax(90000);
-
-            }catch (URISyntaxException e){}
-
-            if (!mSocket.connected()) {
-
-            }
-
-        }
-
-        return mSocket;
-
+    public static boolean isConnected(){
+        return mSocket.connected();
     }
 
-    public static void connect(String emailIn, final Context context){
+    public static void setupSocket(final Context context){
 
-        email = emailIn;
+        if (isSetup) {
+            Log.i(logTAG, "Socket was already setup, we won't do it again");
+            return;
+        }
 
-        //call singleton so mSocket is instantiated
-        SocketSingleton();
+        Log.i(logTAG, "Setting up socket");
+
+        try{
+
+            mSocket = IO.socket("https://api.internetthings.io");
+
+            //optimize some stuff for battery life
+            mSocket.io().reconnection(true);
+            mSocket.io().reconnectionDelay(5000);
+            mSocket.io().reconnectionDelayMax(90000);
+
+        }catch (URISyntaxException e){}
 
         Emitter.Listener onConnect = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                Log.i("NoticeSocketIO", "NoticeSocketIO onConnect");
+                Log.w(logTAG, "NoticeSocketIO onConnect");
                 Intent intent = new Intent("onSocketConnect");
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
-
+                joinUsersRoom(context);
             }
         };
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
 
+
         Emitter.Listener onDisconnect = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                Log.i(logTAG, "onDisconnect Listener");
+                Log.w(logTAG, "onDisconnect Listener");
                 Intent intent = new Intent("onSocketDisconnect");
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
         };
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
-        mSocket.connect();
+
+
+        Emitter.Listener onReconnected = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                Log.w(logTAG, "NoticeSocketIO onReconnected");
+                joinUsersRoom(context);
+            }
+        };
+        mSocket.on(Socket.EVENT_RECONNECT, onReconnected);
+
+
+        Emitter.Listener onReconnectFailed = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                Log.w(logTAG, "NoticeSocketIO onReconnectFailed");
+                //mSocket.connect();
+            }
+        };
+        mSocket.on(Socket.EVENT_RECONNECT_FAILED, onReconnectFailed);
+
+        //set this so this function can only be run once
+        isSetup = true;
     }
 
     public static void disconnect() {
         mSocket.disconnect();
 
+    }
+
+    public static void connect(){
+        if (!mSocket.connected())
+            mSocket.connect();
+    }
+
+    public static void joinUsersRoom(Context context){
+        String email = SailfishPreferences.reader(context).getString(SailfishPreferences.EMAIL_KEY, null);
+        if (email != null) {
+            Log.w(logTAG, "Joining user's room");
+            joinRoom(GoogleAuth.getToken(context, email), email);
+        }
+        else
+            Log.e(logTAG, "email was null for some reason in joinUsersRoom");
     }
 
     public static void attemptSend(String token, String email, String message){
@@ -92,6 +125,14 @@ public class SailfishSocketIO {
             mSocket.emit("send message", token, email, message);
         }else{
             Log.e(logTAG, "mSocket was null for some reason in attemptSend");
+        }
+    }
+
+    public static void joinRoom(String token, String room){
+        if(mSocket != null) {
+            mSocket.emit("join room", token, room);
+        }else{
+            Log.e(logTAG, "mSocket was null for some reason in joinRoom");
         }
     }
 
