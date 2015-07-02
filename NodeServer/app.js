@@ -33,7 +33,10 @@ function main(){
 
     socket.on('send message', function(token, email, msg){
       checkToken(token, email, socket, messageToClient, [msg]);
-      
+    });
+
+    socket.on('dismiss_notif_device', function(token, email, notifId){
+      checkToken(token, email, socket, dismissNotification, [notifId]);
     });
 
   });
@@ -89,6 +92,11 @@ function leaveRoom(email, socket, args){
 function messageToClient(email, socket, args){
   console.log('Emitting message to: ' + email);
   io.to(email).emit('message', args[0]);
+}
+
+function dismissNotification(email, socket, args){
+  console.log('Removing notification from device: ' + args[0]);
+  io.to(email).emit('dismiss_notif_device', args[0]);
 }
 
 //run the main function at the end
