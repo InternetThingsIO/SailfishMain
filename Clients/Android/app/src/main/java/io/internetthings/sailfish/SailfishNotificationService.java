@@ -16,6 +16,8 @@ import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /*
     Created by: Jason Maderski
@@ -50,13 +52,17 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private void getPrefAndConnect() {
 
+        if (this.email == null){
+            //get preferences
+            this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        }
+
         if (SailfishSocketIO.isConnected()) {
             Log.i(logTAG, "Socket is already connected");
             return;
         }
 
-        //get preferences
-        this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+
 
         //connect if we have an email
         if (email != null) {
@@ -90,6 +96,7 @@ public class SailfishNotificationService extends NotificationListenerService{
                         + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
+        //this.cancelNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId());
         getPrefAndConnect();
 
         //don't issue this notification if it shouldn't be issued
@@ -117,15 +124,19 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private Boolean isNotifValid(StatusBarNotification sbn){
-        if (sbn == null || sbn.getNotification() == null)
+        if (sbn == null || sbn.getNotification() == null) {
+            Log.w(logTAG, "sbn was null, notification is not valid");
             return false;
+        }
 
         String bodyText = getBodyText(sbn);
 
         //if we have no body, don't send notifications.
         //this rids us of grouped notifications also
-        if (bodyText == null)
+        if (bodyText == null) {
+            Log.w(logTAG, "Notification body text is null");
             return false;
+        }
 
         return true;
 
@@ -133,8 +144,10 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private Boolean canUseNotif(StatusBarNotification sbn) {
 
-        if (email == null || email.length() == 0)
+        if (email == null || email.length() == 0) {
+            Log.w(logTAG, "Email is null, can't issue notification");
             return false;
+        }
 
         return true;
     }
@@ -142,19 +155,28 @@ public class SailfishNotificationService extends NotificationListenerService{
     private String getMessageID(StatusBarNotification sbn){
         StringBuilder sb = new StringBuilder();
 
-        sb.append(sbn.getPackageName());
+        try {
+            //packagename:tag:id
+            sb.append(URLEncoder.encode(sbn.getPackageName(), "utf-8"));
 
-        if(!TextUtils.isEmpty(sbn.getTag()))
-            sb.append(sbn.getTag());
+            sb.append(":");
 
-        if(!TextUtils.isEmpty(String.valueOf(sbn.getId())))
-            sb.append(sbn.getId());
+            if (!TextUtils.isEmpty(sbn.getTag()))
+                sb.append(URLEncoder.encode(sbn.getTag(), "utf-8"));
 
-        //String body = getBodyText(sbn);
-        //if (body != null) {
-        //    String trimmed = body.substring(0, Math.min(body.length(), 50));
-        //    sb.append(trimmed);
-        //}
+            sb.append(":");
+
+            if (!TextUtils.isEmpty(String.valueOf(sbn.getId())))
+                sb.append(URLEncoder.encode(String.valueOf(sbn.getId()), "utf-8"));
+
+            //String body = getBodyText(sbn);
+            //if (body != null) {
+            //    String trimmed = body.substring(0, Math.min(body.length(), 50));
+            //    sb.append(trimmed);
+            //}
+        }catch (UnsupportedEncodingException ex){
+            Log.e(logTAG, "Had some error with encoding type");
+        }
 
         return sb.toString();
     }
@@ -180,6 +202,9 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private void sendMessage(SailfishMessage sm){
+
+        Log.w(logTAG, "Sending message");
+
         Gson gson = new Gson();
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);

@@ -1,5 +1,6 @@
 package io.internetthings.sailfish;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -10,7 +11,10 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.github.nkzawa.emitter.Emitter;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /*
         Created by: Jason Maderski
@@ -30,7 +34,7 @@ public class SailfishSocketIO {
         return mSocket.connected();
     }
 
-    public static void setupSocket(final Context context){
+    public static void setupSocket(final SailfishNotificationService context){
 
         if (isSetup) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");
@@ -94,6 +98,35 @@ public class SailfishSocketIO {
             }
         };
         mSocket.on(Socket.EVENT_RECONNECT_FAILED, onReconnectFailed);
+
+
+        //listener for removing notification
+        Emitter.Listener onNotificationRemoved = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                Log.w(logTAG, "NoticeSocketIO dismiss_notif_device");
+
+                //get the android ID
+                String concatID = (String)args[0];
+                String[] split = concatID.split(":");
+                String id, tag, packageName;
+
+                try {
+                    //packagename:tag:id
+                    if (split.length == 3) {
+                        packageName = URLDecoder.decode(split[0], "utf-8");
+                        id = URLDecoder.decode(split[2], "utf-8");
+                        tag = URLDecoder.decode(split[1], "utf-8");
+                        Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
+
+                        context.cancelNotification(packageName, tag, Integer.parseInt(id));
+                    }
+                }catch(Exception ex){
+                    Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");
+                }
+            }
+        };
+        mSocket.on("dismiss_notif_device", onNotificationRemoved);
 
         //set this so this function can only be run once
         isSetup = true;
