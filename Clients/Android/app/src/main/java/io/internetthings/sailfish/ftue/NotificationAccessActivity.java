@@ -35,6 +35,7 @@ public class NotificationAccessActivity extends Activity {
             if(NotificationActions.checkNotificationAccess(this)) {
                 Intent i = new Intent(this, CheckListActivity.class);
                 startActivity(i);
+                this.finish();
             }else
                 NotificationActions.toastMSG(this, "Opps...looks like you didn't give us access!");
         }
@@ -76,7 +77,6 @@ public class NotificationAccessActivity extends Activity {
             NotificationActions.openNotificationAccess(getApplication());
         else
             NotificationActions.toastMSG(getApplication(), "You already gave us access, you sly dog!");
-        this.finish();
 
     }
 }
