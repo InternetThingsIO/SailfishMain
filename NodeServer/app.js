@@ -36,7 +36,7 @@ function main(){
     });
 
     socket.on('dismiss_notif_device', function(token, email, notifId){
-      console.log('got dismiss_notif_device');
+      console.log('got dismiss_notif_device id: ' + notifId);
       checkToken(token, email, socket, dismissNotification, [notifId]);
     });
 
