@@ -69,7 +69,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         }
 
         //wait until we are connected
-        while(!SailfishSocketIO.SocketSingleton().connected()){}
+        //while(!SailfishSocketIO.SocketSingleton().connected()){}
 
     }
 
@@ -186,35 +186,12 @@ public class SailfishNotificationService extends NotificationListenerService{
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
 
-        String token = getToken();
+        String token = GoogleAuth.getToken(this, email);
 
         if (!TextUtils.isEmpty(token))
             SailfishSocketIO.attemptSend(token, email, json);
         else
             Log.e(logTAG, "Token came back empty on sendMessage");
-    }
-
-    private String getToken(){
-        String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
-        String token = null;
-        try {
-            token = GoogleAuthUtil.getToken(getApplicationContext(), email, scopes);
-        } catch (IOException e) {
-            Log.e(logTAG, e.getMessage());
-        } catch (UserRecoverableAuthException e) {
-            //startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
-        } catch (GoogleAuthException e) {
-            switch (Log.e(logTAG, e.getMessage())) {
-            }
-        }
-
-        //make a request with the token
-
-        BufferedReader in = null;
-        String data = null;
-
-        return token;
-
     }
 
     public String ReadBigStringIn(BufferedReader buffIn) throws IOException {

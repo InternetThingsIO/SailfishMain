@@ -225,7 +225,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 setLoggedInEmailText(email);
 
                 //get the token here in case we need to provide extra permissions to do it
-                new RetrieveTokenTask().execute(email);
+                //new RetrieveTokenTask().execute(email);
 
                 //tell mint who we are
                 Mint.setUserIdentifier(email);
