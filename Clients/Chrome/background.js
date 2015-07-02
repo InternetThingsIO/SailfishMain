@@ -16,12 +16,22 @@ function main(){
   chrome.idle.setDetectionInterval(3600);
   chrome.idle.onStateChanged.addListener(chromeStateListener);
 
+  //add notification closed listener
+  chrome.notifications.onClosed.addListener(onNotificationClosed);
+
   createSocket();
 
   xhrWithAuth('GET',
                 'https://www.googleapis.com/plus/v1/people/me',
                 false,
                 onUserInfoFetched);
+
+}
+
+function onNotificationClosed(notificationId, byUser){
+  console.log('dismissing notif id: ' + notificationId);
+  //emit something to the device, dismissing the notification
+  emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
 
 }
 
@@ -232,10 +242,7 @@ function socketLeaveRoom(room){
 function emitSocket(name, arg1, arg2){
 
   chrome.identity.getAuthToken({ interactive: false }, function(token) {
-
     socket.emit(name, token, arg1, arg2);
-  
-
   });
 
 }
