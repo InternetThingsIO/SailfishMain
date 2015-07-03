@@ -209,7 +209,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
 
-        String token = GoogleAuthActivity.getToken(this, email);
+        String token = GoogleAuth2Activity.getToken(this, email);
 
         if (!TextUtils.isEmpty(token))
             SailfishSocketIO.attemptSend(token, email, json);

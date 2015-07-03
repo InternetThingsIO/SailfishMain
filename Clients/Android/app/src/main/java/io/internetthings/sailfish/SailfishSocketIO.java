@@ -146,7 +146,7 @@ public class SailfishSocketIO {
         String email = SailfishPreferences.reader(context).getString(SailfishPreferences.EMAIL_KEY, null);
         if (email != null) {
             Log.w(logTAG, "Joining user's room");
-            joinRoom(GoogleAuthActivity.getToken(context, email), email);
+            joinRoom(GoogleAuth2Activity.getToken(context, email), email);
         }
         else
             Log.e(logTAG, "email was null for some reason in joinUsersRoom");

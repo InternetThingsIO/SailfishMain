@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.Window;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -18,10 +22,10 @@ import com.google.android.gms.plus.Plus;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-/**
- * Created by gsapp on 7/1/2015.
- */
-public class GoogleAuthActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+import io.internetthings.sailfish.ftue.ConfigureChromeActivity;
+
+
+public class GoogleAuth2Activity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String logTAG = "GoogleAuth";
 
@@ -31,40 +35,31 @@ public class GoogleAuthActivity extends Activity implements GoogleApiClient.Conn
     //Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
 
-    private Activity context;
-
-    private Intent connectionSuccess;
-
     /* A flag indicating that a PendingIntent is in progress and prevents
        us from starting further intents.
      */
     private boolean mIntentInProgress;
 
-    public GoogleAuthActivity(Activity context){
 
-        this.context = context;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.activity_google_auth2);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
-                .setAccountName(SailfishPreferences.reader(context).getString(SailfishPreferences.EMAIL_KEY, null))
+                .setAccountName(SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null))
                 .build();
-    }
 
-    public void Connect(Intent connectionSuccess){
+        mGoogleApiClient.connect();
 
-        this.connectionSuccess = connectionSuccess;
-
-        if (!mGoogleApiClient.isConnected())
-            mGoogleApiClient.connect();
-    }
-
-    public void Disconnect(){
-        if (mGoogleApiClient.isConnected())
-            mGoogleApiClient.disconnect();
     }
 
     //Method runs when user is signed on
@@ -72,7 +67,9 @@ public class GoogleAuthActivity extends Activity implements GoogleApiClient.Conn
     public void onConnected(Bundle connectionHint) {
         Log.d(logTAG, "Successfully connected to Google");
 
-        context.startActivity(connectionSuccess);
+        Intent i = new Intent(this, ConfigureChromeActivity.class);
+        startActivity(i);
+
     }
 
     @Override
@@ -87,7 +84,7 @@ public class GoogleAuthActivity extends Activity implements GoogleApiClient.Conn
         if(!mIntentInProgress && result.hasResolution()){
             try{
                 mIntentInProgress = true;
-                result.startResolutionForResult(context, RC_SIGN_IN);
+                result.startResolutionForResult(this, RC_SIGN_IN);
                 Log.e(logTAG, "Resolving connection failure");
             }catch (IntentSender.SendIntentException e){
                 // The intent was canceled before it was sent.  Return to the default
@@ -104,8 +101,8 @@ public class GoogleAuthActivity extends Activity implements GoogleApiClient.Conn
         Log.w(logTAG, "Got onActivityResult");
 
         if(requestCode == RC_SIGN_IN){
-            if(responseCode != context.RESULT_OK){
-
+            if(responseCode != this.RESULT_OK){
+                Log.i(logTAG, "We successfully connected!!!");
             }
 
             mIntentInProgress = false;
@@ -139,5 +136,4 @@ public class GoogleAuthActivity extends Activity implements GoogleApiClient.Conn
         return token;
 
     }
-
 }

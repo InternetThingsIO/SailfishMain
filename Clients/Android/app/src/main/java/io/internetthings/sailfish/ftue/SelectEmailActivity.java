@@ -7,12 +7,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import io.internetthings.sailfish.GoogleAuthActivity;
+import io.internetthings.sailfish.GoogleAuth2Activity;
 import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.R;
 import io.internetthings.sailfish.SailfishPreferences;
@@ -34,13 +33,6 @@ public class SelectEmailActivity extends Activity {
     protected void onResume(){
         super.onResume();
 
-        setProgressBar(false);
-
-    }
-
-    private void setProgressBar(Boolean value){
-        ProgressBar prg = (ProgressBar) findViewById(R.id.progressBarEmail);
-        prg.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
     //Sets selected email and launches MainActivity when Next button is clicked
@@ -54,12 +46,8 @@ public class SelectEmailActivity extends Activity {
             SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, (String) radioButton.getText());
             SailfishPreferences.editor(this).commit();
 
-            GoogleAuthActivity auth = new GoogleAuthActivity(this);
-            Intent i = new Intent(this, ConfigureChromeActivity.class);
-
-            setProgressBar(true);
-            auth.Connect(i);
-
+            Intent i = new Intent(this, GoogleAuth2Activity.class);
+            startActivity(i);
 
         }else{
             changePlsSelectEmailTxt();
@@ -81,13 +69,6 @@ public class SelectEmailActivity extends Activity {
             rdoEmails.addView(rdoButton);
         }
 
-    }
-    //Sends user back to Main Activity
-    private void backToMainActivity(){
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-
-        this.finish();
     }
 
     //changes Please select email text to bold red

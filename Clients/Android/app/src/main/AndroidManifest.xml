@@ -60,7 +60,7 @@
         <activity
             android:name=".ftue.SelectEmailActivity"
             android:label="@string/title_activity_ftue"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DebugActivity"
@@ -73,17 +73,22 @@
         <activity
             android:name=".ftue.NotificationAccessActivity"
             android:label="@string/title_activity_notification_access"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ftue.ConfigureChromeActivity"
             android:label="@string/title_activity_configure_chrome"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ftue.CheckListActivity"
             android:label="@string/title_activity_check_list"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".GoogleAuth2Activity"
+            android:label="@string/title_activity_google_auth2"
+            android:theme="@android:style/Theme.Translucent">
         </activity>
     </application>
 

@@ -125,6 +125,8 @@ public class MainActivity extends Activity{
         else
             setDisconnectedText();
 
+        setProfileInformation();
+
     }
 
     @Override
