@@ -33,24 +33,9 @@ import com.splunk.mint.Mint;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
-
-    //Request code used to invoke sign in user interactions.
-    private static final int RC_SIGN_IN = 0;
+public class MainActivity extends Activity{
 
     private final String logTAG = this.getClass().getName();
-
-    //Client used to interact with Google APIs.
-    private GoogleApiClient mGoogleApiClient;
-
-    /* A flag indicating that a PendingIntent is in progress and prevents
-       us from starting further intents.
-     */
-    private boolean mIntentInProgress;
-    private boolean nAccessEnabled;
-
-    private TextView connectionStatusColor;
-    private TextView loggedInEmail;
 
     BroadcastReceiver onSocketConnectReceiver;
     BroadcastReceiver onSocketDisconnectReceiver;
@@ -62,22 +47,16 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         //Line of code to add Splunk Mint to the project
         Mint.initAndStartSession(MainActivity.this, Constants.MINT_API_KEY);
 
-        setContentView(R.layout.activity_main);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_PROFILE)
-                .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
-                .setAccountName(SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null))
-                .build();
-
         setupBroadcastManagers();
+
+        setProfileInformation();
+
+        setContentView(R.layout.activity_main);
     }
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD
     private void setConnectedText(){
+        TextView connectionStatusColor = (TextView)findViewById(R.id.status);
         connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
         connectionStatusColor.setText("Connected!");
         connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
@@ -85,13 +64,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     //Changes Connection status text to "Disconnected", sets text color to red and
     //changes typeface to BOLD
     private void setDisconnectedText(){
+        TextView connectionStatusColor = (TextView)findViewById(R.id.status);
         connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
         connectionStatusColor.setText("Disconnected!");
         connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
     }
     //Shows users logged in email on main_Activity
     private void setLoggedInEmailText(String email){
-        loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
+        TextView loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
         loggedInEmail.setText(email);
     }
 
@@ -110,8 +90,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
         };
 
-        connectionStatusColor = (TextView)findViewById(R.id.status);
-
         LocalBroadcastManager.getInstance(this).registerReceiver(onSocketConnectReceiver,
                 new IntentFilter("onSocketConnect"));
 
@@ -119,56 +97,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 new IntentFilter("onSocketDisconnect"));
 
     }
-    //Method runs when user is signed on
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.d(logTAG, "Successfully connected to Google");
-        getProfileInformation();
 
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        mGoogleApiClient.connect();
-    }
-
-
-    //Runs when Google+ sign in fails
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Log.e("", "onConnectionFailed");
-        if(!mIntentInProgress && result.hasResolution()){
-            try{
-                mIntentInProgress = true;
-                result.startResolutionForResult(this, RC_SIGN_IN);
-            }catch (SendIntentException e){
-                // The intent was canceled before it was sent.  Return to the default
-                // state and attempt to connect to get an updated ConnectionResult.
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent){
-        if(requestCode == RC_SIGN_IN){
-            if(responseCode != RESULT_OK){
-
-            }
-
-            mIntentInProgress = false;
-
-            if(!mGoogleApiClient.isConnected()){
-                mGoogleApiClient.reconnect();
-            }
-        }
-    }
 
     @Override
     protected void onStart(){
         super.onStart();
-        mGoogleApiClient.connect();
+
         SailfishSocketIO.connect();
 
     }
@@ -176,13 +110,13 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
 
+        //try to connect
         SailfishSocketIO.connect();
 
         //get current socket status
@@ -217,9 +151,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     //Displays person email in Logcat if connected
-    private void getProfileInformation(){
+    private void setProfileInformation(){
         try{
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
             if(email != null){
                 //display Person ID in logcat
@@ -227,18 +161,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //display Person ID on Home screen
                 setLoggedInEmailText(email);
 
-                //get the token here in case we need to provide extra permissions to do it
-                //new RetrieveTokenTask().execute(email);
-
                 //tell mint who we are
                 Mint.setUserIdentifier(email);
 
-                SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, email);
-                SailfishPreferences.editor(this).commit();
-
-                startNotificationService();
-
-                Log.d(logTAG, "Got email successfully");
+                //startNotificationService();
 
             }else{
                 Log.e("", "Person information is NULL");

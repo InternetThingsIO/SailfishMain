@@ -6,12 +6,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import io.internetthings.sailfish.GoogleAuthActivity;
 import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.R;
 import io.internetthings.sailfish.SailfishPreferences;
@@ -28,9 +29,23 @@ public class SelectEmailActivity extends Activity {
         addRadioButtons(accounts);
 
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        setProgressBar(false);
+
+    }
+
+    private void setProgressBar(Boolean value){
+        ProgressBar prg = (ProgressBar) findViewById(R.id.progressBarEmail);
+        prg.setVisibility(value ? View.VISIBLE : View.GONE);
+    }
+
     //Sets selected email and launches MainActivity when Next button is clicked
     public void onClickNext(View view){
-        boolean emailSelected = false;
+
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
 
         if(rdoEmails.getCheckedRadioButtonId()!=-1){
@@ -38,14 +53,18 @@ public class SelectEmailActivity extends Activity {
             RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
             SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, (String) radioButton.getText());
             SailfishPreferences.editor(this).commit();
-            emailSelected = true;
-            //Log.i("Email:", selectedEmail + "\n" + "RadioButton ID: " + String.valueOf(id));
-        }
-        if(emailSelected == true) {
+
+            GoogleAuthActivity auth = new GoogleAuthActivity(this);
             Intent i = new Intent(this, ConfigureChromeActivity.class);
-            startActivity(i);
-        }else
+
+            setProgressBar(true);
+            auth.Connect(i);
+
+
+        }else{
             changePlsSelectEmailTxt();
+        }
+
     }
 
     //dynamically adds radiobuttons for email selection
@@ -77,4 +96,6 @@ public class SelectEmailActivity extends Activity {
         PlsSelectEmail.setTextColor(getResources().getColor(R.color.Red));
         PlsSelectEmail.setTypeface(Typeface.DEFAULT_BOLD);
     }
+
+
 }

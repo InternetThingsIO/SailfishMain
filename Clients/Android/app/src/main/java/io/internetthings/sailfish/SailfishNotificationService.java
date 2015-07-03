@@ -209,7 +209,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
 
-        String token = GoogleAuth.getToken(this, email);
+        String token = GoogleAuthActivity.getToken(this, email);
 
         if (!TextUtils.isEmpty(token))
             SailfishSocketIO.attemptSend(token, email, json);
@@ -240,6 +240,13 @@ public class SailfishNotificationService extends NotificationListenerService{
         sm.ID = getMessageID(sbn);
 
         sendMessage(sm);
+    }
+
+    @Override
+    public void onDestroy(){
+
+        super.onDestroy();
+        SailfishSocketIO.Close();
     }
 
 }
