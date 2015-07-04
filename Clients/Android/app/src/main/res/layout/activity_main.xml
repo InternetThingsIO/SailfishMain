@@ -1,19 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Notice"
-        android:id="@+id/programName"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="36dp" />
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -22,19 +10,78 @@
         android:text="Not Connected"
         android:id="@+id/status"
         android:textColor="#ffff000e"
-        android:layout_below="@+id/programName"
-        android:layout_alignStart="@+id/programName"
-        android:layout_marginTop="83dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/loggedInEmail"
-        android:id="@+id/emailTxtView"
-        android:layout_above="@+id/programName"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="81dp" />
+        android:layout_marginBottom="80dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/h1_bg"
+        android:visibility="visible"
+        android:clickable="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:padding="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:id="@+id/relativeLayout8"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Notice"
+            android:id="@+id/notice"
+            android:layout_centerHorizontal="true"
+            android:textSize="36dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="visible"
+            android:textColor="@color/h1_text"
+            android:typeface="sans" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/h2_bg"
+        android:visibility="visible"
+        android:clickable="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:padding="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:gravity="center"
+        android:id="@+id/relativeLayout9"
+        android:layout_below="@+id/relativeLayout8"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Not Logged in"
+            android:id="@+id/emailTxtView"
+            android:textAlignment="center"
+            android:gravity="center_horizontal"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/h2_text" />
+    </RelativeLayout>
 
 
 </RelativeLayout>
