@@ -65,6 +65,7 @@
         <activity
             android:name=".DebugActivity"
             android:label="@string/title_activity_debug"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -30,4 +30,13 @@
         android:nestedScrollingEnabled="false"
         android:onClick="onClickExit" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Email"
+        android:id="@+id/sendEmailBtn"
+        android:layout_below="@+id/btnTestCrash"
+        android:layout_alignStart="@+id/btnTestCrash"
+        android:onClick="onClickSendEmail" />
+
 </RelativeLayout>

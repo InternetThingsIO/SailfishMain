@@ -59,4 +59,7 @@ public class DebugActivity extends ActionBarActivity {
         startActivity(i);
     }
 
+    public void onClickSendEmail(View view){
+
+    }
 }
