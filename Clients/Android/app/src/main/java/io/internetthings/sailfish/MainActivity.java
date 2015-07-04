@@ -39,9 +39,6 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Line of code to add Splunk Mint to the project
-        Mint.initAndStartSession(MainActivity.this, Constants.MINT_API_KEY);
-
         setupBroadcastManagers();
 
         setProfileInformation();
@@ -158,8 +155,6 @@ public class MainActivity extends Activity{
                 //display Person ID on Home screen
                 setLoggedInEmailText(email);
 
-                //tell mint who we are
-                Mint.setUserIdentifier(email);
 
                 //startNotificationService();
 

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.splunk.mint.Mint;
+
 import io.internetthings.sailfish.ftue.SelectEmailActivity;
 
 /*
@@ -30,22 +32,13 @@ public class SplashScreen extends Activity {
 
         //starts everything we need to do before the app finishes loading
         doStartupTasks();
-        /*
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                Intent i = new Intent(SplashScreen.this, MainActivity.class);
-                startActivity(i);
-                finish();
-                overridePendingTransition(0, R.animator.fadeout);
-            }
-        }, SPLASHSCREEN_TIME_OUT);
-        */
 
 }
 
     private void doStartupTasks(){
+
+        //have to do this in the main thread for some reason
+        setupMint();
 
         //do not access the Android UI toolkit from outside the UI thread. that means below!!!!
         new Thread(new Runnable() {
@@ -84,7 +77,6 @@ public class SplashScreen extends Activity {
                 }else{
 
                     //start FTUE here
-
                     newActivity = SelectEmailActivity.class;
                 }
 
@@ -96,6 +88,16 @@ public class SplashScreen extends Activity {
             }
 
         }).start();
+
+    }
+
+    private void setupMint(){
+        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        //Line of code to add Splunk Mint to the project
+        Mint.initAndStartSession(this, Constants.MINT_API_KEY);
+
+        if (email != null)
+            Mint.setUserIdentifier(email);
 
     }
 }
