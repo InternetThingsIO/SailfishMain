@@ -11,6 +11,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.splunk.mint.Mint;
+
 import io.internetthings.sailfish.GoogleAuth2Activity;
 import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.R;
@@ -45,6 +47,9 @@ public class SelectEmailActivity extends Activity {
             RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
             SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, (String) radioButton.getText());
             SailfishPreferences.editor(this).commit();
+            
+            //set email used by mint
+            Mint.setUserIdentifier((String) radioButton.getText());
 
             Intent i = new Intent(this, GoogleAuth2Activity.class);
             startActivity(i);
