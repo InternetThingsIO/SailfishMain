@@ -1,6 +1,7 @@
 package io.internetthings.sailfish;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,6 +61,25 @@ public class DebugActivity extends ActionBarActivity {
     }
 
     public void onClickSendEmail(View view){
+        final String sendTo = "itsailfish123@gmail.com";
+        final String sendFrom = "itsailfish123@gmail.com";
+        final String sender = "itsailfish123@gmail.com";
+        final String senderPw = "GeoJasTer3";
 
+        final EmailSender emailSender = new EmailSender(sender, senderPw);
+        new AsyncTask<Void, Void, Void>() {
+            @Override public Void doInBackground(Void... arg) {
+                try {
+                    Log.d("emailSender", "I ran");
+                    emailSender.sendMail("This is Subject",
+                            "This is Body",
+                            sendTo,
+                            sendFrom);
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+                }
+                return null;}
+
+        }.execute();
     }
 }

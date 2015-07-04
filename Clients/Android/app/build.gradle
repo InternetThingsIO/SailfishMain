@@ -53,4 +53,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.splunk.mint:mint:4.2.1'
     compile 'com.android.support:support-v4:22.2.0'
+    compile files('libs/activation.jar', 'libs/additionnal.jar', 'libs/mail.jar')
 }
