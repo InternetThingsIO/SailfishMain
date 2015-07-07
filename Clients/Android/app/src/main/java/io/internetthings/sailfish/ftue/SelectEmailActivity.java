@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -72,6 +73,8 @@ public class SelectEmailActivity extends Activity {
             rdoButton = new RadioButton(this);
             rdoButton.setButtonDrawable(R.drawable.custom_rdobtn);
             rdoButton.setText(acct.name);
+            rdoButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
+            rdoButton.setPadding(10, 0, 0, 0);
             rdoEmails.addView(rdoButton);
         }
 
