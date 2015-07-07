@@ -18,7 +18,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -48,18 +50,22 @@ public class MainActivity extends Activity{
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD
     private void setConnectedText(){
-        TextView connectionStatusColor = (TextView)findViewById(R.id.status);
-        connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
-        connectionStatusColor.setText("Connected!");
-        connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+        CheckBox cb = (CheckBox)findViewById(R.id.checkStatus);
+        cb.setChecked(true);
+        cb.setText("Connected!");
+        cb.setTextColor(getResources().getColor(R.color.Green));
+        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
+        cb.setTypeface(Typeface.DEFAULT_BOLD);
     }
     //Changes Connection status text to "Disconnected", sets text color to red and
     //changes typeface to BOLD
     private void setDisconnectedText(){
-        TextView connectionStatusColor = (TextView)findViewById(R.id.status);
-        connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
-        connectionStatusColor.setText("Disconnected!");
-        connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+        CheckBox cb = (CheckBox)findViewById(R.id.checkStatus);
+        cb.setChecked(false);
+        cb.setText("Disconnected!");
+        cb.setTextColor(getResources().getColor(R.color.Red));
+        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
+        cb.setTypeface(Typeface.DEFAULT_BOLD);
     }
     //Shows users logged in email on main_Activity
     private void setLoggedInEmailText(String email){

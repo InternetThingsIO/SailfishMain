@@ -78,16 +78,17 @@
         android:layout_below="@+id/relativeLayout9"
         android:layout_centerHorizontal="true">
 
-        <TextView
+        <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Not Connected"
-            android:id="@+id/status"
-            android:textColor="#ffff000e"
-            android:layout_marginBottom="20dp"
+            android:id="@+id/checkStatus"
+            android:checked="false"
+            android:button="@drawable/custom_checkbox"
+            android:paddingLeft="5dp"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp" />
     </RelativeLayout>
 
 
