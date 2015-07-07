@@ -96,7 +96,10 @@
         android:clickable="false"
         android:layout_marginTop="25dp"
         android:layout_below="@+id/relativeLayout3"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:button="@drawable/custom_checkbox"
+        android:paddingLeft="5dp"
+        android:textSize="20dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -106,17 +109,25 @@
         android:layout_below="@+id/emailSelected"
         android:layout_alignStart="@+id/emailSelected"
         android:checked="false"
-        android:clickable="false" />
+        android:clickable="false"
+        android:button="@drawable/custom_checkbox"
+        android:paddingLeft="5dp"
+        android:textSize="20dp"
+        android:layout_marginTop="5dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notice has Notification Access"
+        android:text="Has Notification Access"
         android:id="@+id/NAgranted"
         android:layout_below="@+id/configuredChrome"
         android:layout_alignStart="@+id/configuredChrome"
         android:checked="false"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:button="@drawable/custom_checkbox"
+        android:paddingLeft="5dp"
+        android:textSize="20dp"
+        android:layout_marginTop="5dp" />
 
     <Button
         android:layout_width="wrap_content"

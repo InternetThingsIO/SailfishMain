@@ -9,4 +9,13 @@
 
     <color name="btn_pri">#2ecc71</color>
 
+    <color name="btn_orange">#FF9819</color>
+    <color name="btn_orange_pressed">#E67E00</color>
+
+    <color name="btn_green">#2ecc71</color>
+    <color name="btn_green_pressed">#15B358</color>
+
+    <color name="unchecked_red">#FF3300</color>
+    <color name="checked_green">#15B358</color>
+
 </resources>

@@ -11,7 +11,7 @@
                 android:right="1dp"
                 android:top="1dp"
                 android:bottom="1dp"/>
-            <solid android:color="#E67E00"/>
+            <solid android:color="@color/btn_orange_pressed"/>
         </shape>
     </item>
     <item>
@@ -25,7 +25,7 @@
                 android:top="1dp"
                 android:bottom="1dp"/>
 
-            <solid android:color="#FF9819"/>
+            <solid android:color="@color/btn_orange"/>
         </shape>
     </item>
 
