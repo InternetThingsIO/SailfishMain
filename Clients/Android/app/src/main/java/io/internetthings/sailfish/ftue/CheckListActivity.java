@@ -56,6 +56,10 @@ public class CheckListActivity extends Activity {
         return true;
     }
 
+    public void sentTestMSG(View view){
+        NotificationActions.sendMSG(this, "Notice Message", "Hello!  This is a test message");
+    }
+
     public void onClickFinished(View view){
 
 

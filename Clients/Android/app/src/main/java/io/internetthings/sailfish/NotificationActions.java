@@ -18,13 +18,13 @@ public class NotificationActions {
     private static final String sTAG = "NotificationActions";
 
     //Send Text Message from Notice
-    public static void sendMSG(Context context, String Message){
+    public static void sendMSG(Context context, String title, String message){
         NotificationManager nManager = (NotificationManager)context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         int nID = Math.abs((int)System.currentTimeMillis());
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-            .setContentTitle("Notice Message")
-            .setContentText(Message + "\n" + "Test Notification ID: " + nID)
+            .setContentTitle(title)
+            .setContentText(message)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setAutoCancel(true);
         nManager.notify(sTAG, nID, builder.build());
