@@ -70,6 +70,7 @@ public class SelectEmailActivity extends Activity {
 
         for (Account acct : accounts){
             rdoButton = new RadioButton(this);
+            rdoButton.setButtonDrawable(R.drawable.custom_rdobtn);
             rdoButton.setText(acct.name);
             rdoEmails.addView(rdoButton);
         }
