@@ -54,7 +54,7 @@ public class MainActivity extends Activity{
         cb.setChecked(true);
         cb.setText("Connected!");
         cb.setTextColor(getResources().getColor(R.color.Green));
-        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
+        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24F);
         cb.setTypeface(Typeface.DEFAULT_BOLD);
     }
     //Changes Connection status text to "Disconnected", sets text color to red and
@@ -64,7 +64,7 @@ public class MainActivity extends Activity{
         cb.setChecked(false);
         cb.setText("Disconnected!");
         cb.setTextColor(getResources().getColor(R.color.Red));
-        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
+        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24F);
         cb.setTypeface(Typeface.DEFAULT_BOLD);
     }
     //Shows users logged in email on main_Activity
