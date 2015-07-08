@@ -36,4 +36,12 @@
     <!-- Backward-compatible version of ?android:attr/buttonBarButtonStyle -->
     <style name="ButtonBarButton" />
 
+    <!-- Default theme used for Notice -->
+    <style name="NoticeDefault" parent="android:Theme">
+        <item name="android:background">@color/notice_background</item>
+        <item name="android:button">@drawable/notice_button</item>
+        <item name="android:textColor">@color/notice_text_color</item>
+    </style>
+
+
 </resources>

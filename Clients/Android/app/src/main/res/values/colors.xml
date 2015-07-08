@@ -17,5 +17,7 @@
 
     <color name="unchecked_red">#FF3300</color>
     <color name="checked_green">#15B358</color>
+    <color name="notice_text_color">#005272</color>
+    <color name="notice_background">#00ABEF</color>
 
 </resources>

@@ -65,7 +65,7 @@ public class DebugActivity extends ActionBarActivity {
         final String sender = "itsailfish123@gmail.com";
         final String senderPw = "123ittest";
 
-        final String recipient = "george@internetthings.io";
+        final String recipient = "jason@internetthings.io";
         final String subject = "This is from Notice";
         final String body = "Set up Chrome! Foo!";
 
