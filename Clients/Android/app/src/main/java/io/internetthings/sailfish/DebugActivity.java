@@ -61,20 +61,20 @@ public class DebugActivity extends ActionBarActivity {
     }
 
     public void onClickSendEmail(View view){
-        final String sendTo = "itsailfish123@gmail.com";
-        final String sendFrom = "itsailfish123@gmail.com";
+
         final String sender = "itsailfish123@gmail.com";
-        final String senderPw = "GeoJasTer3";
+        final String senderPw = "123ittest";
+
+        final String recipient = "george@internetthings.io";
+        final String subject = "This is from Notice";
+        final String body = "Set up Chrome! Foo!";
 
         final EmailSender emailSender = new EmailSender(sender, senderPw);
         new AsyncTask<Void, Void, Void>() {
             @Override public Void doInBackground(Void... arg) {
                 try {
-                    Log.d("emailSender", "I ran");
-                    emailSender.sendMail("This is Subject",
-                            "This is Body",
-                            sendTo,
-                            sendFrom);
+                    Log.d("emailSender", "I ran " + "sent to: " + recipient);
+                    emailSender.sendMail(recipient, subject, body);
                 } catch (Exception e) {
                     Log.e("SendMail", e.getMessage(), e);
                 }

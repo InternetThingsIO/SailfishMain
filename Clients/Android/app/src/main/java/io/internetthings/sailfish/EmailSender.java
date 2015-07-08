@@ -8,7 +8,6 @@ import android.util.Log;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -45,8 +44,7 @@ public class EmailSender extends javax.mail.Authenticator {
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class",
                 "javax.net.ssl.SSLSocketFactory");
-        //props.put("mail.smtp.socketFactory.fallback", "false");
-        //props.setProperty("mail.smtp.quitwait", "false");
+        props.put("mail.smtp.debug", "true");
 
         session = Session.getInstance(props, this);
 
@@ -58,17 +56,14 @@ public class EmailSender extends javax.mail.Authenticator {
         return new PasswordAuthentication(user, password);
     }
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {
+    public synchronized void sendMail(String recipient, String subject, String body) throws Exception {
         try{
             MimeMessage message = new MimeMessage(session);
             DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
-            message.setSender(new InternetAddress(sender));
+            message.setSender(new InternetAddress(user));
             message.setSubject(subject);
             message.setDataHandler(handler);
-            if (recipients.indexOf(',') > 0)
-                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
-            else
-                message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             Transport.send(message);
         }catch(Exception e){
             Log.e("NOT Sent: ", e.toString() + " " + user + " " + password + " " + e.getStackTrace());
