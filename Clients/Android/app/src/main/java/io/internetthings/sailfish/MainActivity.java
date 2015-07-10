@@ -40,12 +40,8 @@ public class MainActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setupBroadcastManagers();
-
-        setProfileInformation();
-
         setContentView(R.layout.activity_main);
+        setupBroadcastManagers();
     }
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD
