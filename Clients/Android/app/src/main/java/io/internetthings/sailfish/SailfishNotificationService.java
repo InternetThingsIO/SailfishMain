@@ -1,6 +1,7 @@
 package io.internetthings.sailfish;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -105,7 +106,15 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         Drawable icon = null;
         try {
-            icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
+            //icon from application
+            //icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
+
+            //icon from notification
+            if (sbn.getNotification().largeIcon != null)
+                icon = new BitmapDrawable(getResources(), sbn.getNotification().largeIcon);
+            else
+                icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
+
         }catch (Exception e){}
 
         String bodyText = getBodyText(sbn);
