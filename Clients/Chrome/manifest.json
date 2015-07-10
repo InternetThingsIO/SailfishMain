@@ -14,7 +14,7 @@
   "background": { "scripts": ["xhrGoogleAPI.js", "socket.io-1.2.0.js", "background.js"] },
   "manifest_version": 2,
   "minimum_chrome_version": "29",
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsKQsAwpxR9/muFLa6ihDzHa/Ji7dQIHoJw1ByNkHcbXzhKEDIFFeMs/uLuQEzw23+HNsoY1RX33EuJ1Vg1rc2x/jMkZd7LFgKu8ZgZL2u7y5JeRdKvd8wxPDiihU7TbtVDImHB2iggVQmyNsn8fyNqOkcHNkwUtELamGYCrE7GWckj3dCCAnRrzuClOdOLyntqZj/XnAGlMfWrqoP3qm+Hz7jWN9yvN0ZOLgfwXzfexFx1rc2nzu2l1dCmIMjjqOAi4R8DSzRQ2Le6QN1CxRu0FznSCS2AtzOEtMeeMKJ69bpnSDT5wl6N84/wR0jMT54qYTfsb2ZwPRgCO/khaGLwIDAQAB",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnipEyupfNyJsOYqydiqIjx06srslSzrAjbQTRL9xsfn4BSv3GBmF4z0o1Xa61+AuFdFxIAZnrx0CmYLy0riw3xXDjdWrOLQbQ3WxPNvXN13okyspHo2ly9//M9YsvCr/oxhwcP7MxndTFrmRIhkAlw2i2Zk7US1aHcPtKePQZOKYPUsGrQcJn6KPsOGQ6Y0Bf11L7W1yPUC9dd36UMsuZpeYu+CLoWIRUBLw2oVIFo19i1VliPruCuzKpgrkm572oMRztXYdgSKa+5IaWbI6t0wWMryYoLgHyUV1ZA34x2oj9Xs6bWUk6GYKoikxoP7ekXm9oz9HRnqmIDZbkniPawIDAQAB",
   "oauth2": {
     "client_id": "1093471737235-944flu3gaeh5o6ghnrl28kt3081b5vb6.apps.googleusercontent.com",
     "scopes": [
