@@ -49,6 +49,11 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
         setContentView(R.layout.activity_google_auth2);
 
+    }
+
+    @Override
+    protected void onResume(){
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -59,6 +64,8 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
                 .build();
 
         mGoogleApiClient.connect();
+
+        super.onResume();
 
     }
 
