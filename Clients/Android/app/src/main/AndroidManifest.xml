@@ -31,7 +31,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultTheme" >
         </activity>
 
         <!-- Notification Service -->
@@ -60,13 +61,15 @@
         <activity
             android:name=".ftue.SelectEmailActivity"
             android:label="@string/title_activity_ftue"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultTheme" >
         </activity>
         <activity
             android:name=".DebugActivity"
             android:label="@string/title_activity_debug"
             android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/DefaultTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.internetthings.sailfish.MainActivity" />
@@ -79,12 +82,14 @@
         <activity
             android:name=".ftue.ConfigureChromeActivity"
             android:label="@string/title_activity_configure_chrome"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultTheme">
         </activity>
         <activity
             android:name=".ftue.CheckListActivity"
             android:label="@string/title_activity_check_list"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultTheme" >
         </activity>
         <activity
             android:name=".GoogleAuth2Activity"
