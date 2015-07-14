@@ -63,7 +63,7 @@ public class SelectEmailActivity extends Activity {
 
     }
 
-    //dynamically adds radiobuttons for email selection
+    //no longer dynamically adds radiobuttons for email selection *in old woman voice
     private void addRadioButtons(Account[] accounts){
 
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);

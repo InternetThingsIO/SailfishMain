@@ -1,12 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:touchscreenBlocksFocus="true"
-    android:transitionGroup="false">
+    android:transitionGroup="false"
+    android:onClick="onClickFinished">
 
     <Button
         android:layout_width="wrap_content"
@@ -17,11 +18,11 @@
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/button_green_roundedcorners"
         android:textSize="20dp"
         android:singleLine="false"
         android:nestedScrollingEnabled="true"
-        android:onClick="onClick" />
+        android:onClick="onClick"
+        android:clickable="true" />
 
     <RadioGroup
         android:layout_width="wrap_content"
