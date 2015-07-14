@@ -6,7 +6,8 @@
     android:paddingTop="0dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:touchscreenBlocksFocus="true"
-    android:transitionGroup="false">
+    android:transitionGroup="false"
+    android:theme="@style/DefaultTheme">
 
     <Button
         android:layout_width="wrap_content"
