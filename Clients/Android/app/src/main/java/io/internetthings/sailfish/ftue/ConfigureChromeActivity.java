@@ -27,8 +27,6 @@ public class ConfigureChromeActivity extends Activity {
     public void onClickCompletedButton(View view){
         Intent i = new Intent(this, NotificationAccessActivity.class);
         startActivity(i);
-
-        this.finish();
     }
 
     //gets email that user selected in SelectEmail Activity and sets it in ConfigureChrome Activity
