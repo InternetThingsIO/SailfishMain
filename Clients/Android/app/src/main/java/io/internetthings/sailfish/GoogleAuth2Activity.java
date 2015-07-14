@@ -77,6 +77,8 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
         Intent i = new Intent(this, ConfigureChromeActivity.class);
         startActivity(i);
 
+        this.finish();
+
     }
 
     @Override
