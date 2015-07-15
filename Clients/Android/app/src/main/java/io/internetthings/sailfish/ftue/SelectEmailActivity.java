@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import io.internetthings.sailfish.R;
 import io.internetthings.sailfish.SailfishPreferences;
 
 public class SelectEmailActivity extends Activity {
+
+    private final String logTag = this.getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class SelectEmailActivity extends Activity {
     }
 
     //Sets selected email and launches MainActivity when Next button is clicked
-    public void onClickNext(View view){
+    public void onClick(View view){
 
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
 
@@ -55,36 +59,34 @@ public class SelectEmailActivity extends Activity {
             Intent i = new Intent(this, GoogleAuth2Activity.class);
             startActivity(i);
 
-        }else{
-            changePlsSelectEmailTxt();
         }
 
     }
 
-    //dynamically adds radiobuttons for email selection
+    //no longer dynamically adds radiobuttons for email selection *in old woman voice
     private void addRadioButtons(Account[] accounts){
 
         RadioGroup rdoEmails = (RadioGroup) findViewById(R.id.rdoEmails);
-        rdoEmails.removeAllViews();
-
         RadioButton rdoButton;
 
-        for (Account acct : accounts){
-            rdoButton = new RadioButton(this);
-            rdoButton.setButtonDrawable(R.drawable.custom_rdobtn);
-            rdoButton.setText(acct.name);
-            rdoButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
-            rdoButton.setPadding(10, 0, 0, 0);
-            rdoEmails.addView(rdoButton);
+        int number = rdoEmails.getChildCount();
+
+        for (int i=0; i<number; i++){
+            rdoEmails.getChildAt(i).setVisibility(View.INVISIBLE);
         }
 
-    }
+        for (int i=0; i<accounts.length; i++){
 
-    //changes Please select email text to bold red
-    private void changePlsSelectEmailTxt(){
-        TextView PlsSelectEmail = (TextView)findViewById(R.id.SetupMSG);
-        PlsSelectEmail.setTextColor(getResources().getColor(R.color.Red));
-        PlsSelectEmail.setTypeface(Typeface.DEFAULT_BOLD);
+            if (i < number) {
+                rdoButton = (RadioButton) rdoEmails.getChildAt(i);
+                //rdoButton.setButtonDrawable(R.drawable.custom_rdobtn);
+                rdoButton.setText(accounts[i].name);
+                //rdoButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F);
+                rdoButton.setVisibility(View.VISIBLE);
+
+            }
+        }
+
     }
 
 

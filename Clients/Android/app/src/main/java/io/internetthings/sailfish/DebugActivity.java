@@ -2,18 +2,17 @@ package io.internetthings.sailfish;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.app.Activity;
 
 
-public class DebugActivity extends ActionBarActivity {
+public class DebugActivity extends Activity {
+
+    private final String logTag = this.getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,24 +61,22 @@ public class DebugActivity extends ActionBarActivity {
 
     public void onClickSendEmail(View view){
 
-        final String sender = "itsailfish123@gmail.com";
-        final String senderPw = "123ittest";
+        final String recipient = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
-        final String recipient = "jason@internetthings.io";
-        final String subject = "This is from Notice";
-        final String body = "Set up Chrome! Foo!";
+        //bail if we don't have an email for some reason
+        if (recipient == null) {
+            Log.e(logTag, "Couldn't send an email because we had no email address");
+            return;
+        }
 
-        final EmailSender emailSender = new EmailSender(sender, senderPw);
+        final EmailSender emailSender = new EmailSender();
         new AsyncTask<Void, Void, Void>() {
             @Override public Void doInBackground(Void... arg) {
-                try {
-                    Log.d("emailSender", "I ran " + "sent to: " + recipient);
-                    emailSender.sendMail(recipient, subject, body);
-                } catch (Exception e) {
-                    Log.e("SendMail", e.getMessage(), e);
-                }
-                return null;}
 
+                Log.d(logTag, "I ran " + "sent to: " + recipient);
+                emailSender.sendMail(recipient);
+                return null;
+            }
         }.execute();
     }
 }

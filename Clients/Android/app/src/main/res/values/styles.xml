@@ -37,10 +37,29 @@
     <style name="ButtonBarButton" />
 
     <!-- Default theme used for Notice -->
-    <style name="NoticeDefault" parent="android:Theme">
-        <item name="android:background">@color/notice_background</item>
-        <item name="android:button">@drawable/notice_button</item>
-        <item name="android:textColor">@color/notice_text_color</item>
+    <style name="DefaultTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:background">@color/background</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:buttonStyle">@style/Button</item>
+        <item name="android:radioButtonStyle">@style/RadioButton</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:background">@color/button</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:minWidth">200dp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="RadioButton" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:textColor">@color/radio_button_text</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
     </style>
 
 

@@ -14,14 +14,23 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.MessagingException;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.Security;
 import java.util.Properties;
 
 public class EmailSender extends javax.mail.Authenticator {
+
+    private final String logTag = this.getClass().getName();
+
     private String user;
     private String password;
     private Session session;
@@ -30,9 +39,11 @@ public class EmailSender extends javax.mail.Authenticator {
         Security.addProvider(new io.internetthings.sailfish.JSSEProvider());
     }
 
-    public EmailSender(String user, String password) {
-        this.user = user;
-        this.password = password;
+    public EmailSender() {
+
+        this.user = "itsailfish123@gmail.com";
+        this.password = "123ittest";
+
         String mailhost = "smtp.gmail.com";
 
         Properties props = new Properties();
@@ -56,18 +67,40 @@ public class EmailSender extends javax.mail.Authenticator {
         return new PasswordAuthentication(user, password);
     }
 
-    public synchronized void sendMail(String recipient, String subject, String body) throws Exception {
-        try{
+    public synchronized void sendMail(String recipient) {
+
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            // Create a URL for the desired page
+            URL url = new URL("http://www.internetthings.io/notice_resources/email/index.html");
+
+            // Read all the text returned by the server
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                sb.append(line);
+            }
+            in.close();
+
             MimeMessage message = new MimeMessage(session);
-            DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
+            DataHandler handler = new DataHandler(new ByteArrayDataSource(sb.toString().getBytes(), "text/html"));
             message.setSender(new InternetAddress(user));
-            message.setSubject(subject);
+            message.setSubject("Notice is here!");
             message.setDataHandler(handler);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             Transport.send(message);
-        }catch(Exception e){
-            Log.e("NOT Sent: ", e.toString() + " " + user + " " + password + " " + e.getStackTrace());
+
+        } catch (MalformedURLException e) {
+            Log.e(logTag, "MalformedURLException: " + e.getMessage());
+        } catch (IOException e) {
+            Log.e(logTag, "IOException: " + e.getMessage());
+        } catch(MessagingException e){
+            Log.e(logTag, "Messaging exception: " + e.getMessage());
         }
+
+
+
     }
 
     public class ByteArrayDataSource implements DataSource {
