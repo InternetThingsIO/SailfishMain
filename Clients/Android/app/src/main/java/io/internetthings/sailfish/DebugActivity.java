@@ -69,7 +69,7 @@ public class DebugActivity extends Activity {
             return;
         }
 
-        final EmailSender emailSender = new EmailSender("itsailfish123@gmail.com","123ittest");
+        final EmailSender emailSender = new EmailSender();
         new AsyncTask<Void, Void, Void>() {
             @Override public Void doInBackground(Void... arg) {
 
