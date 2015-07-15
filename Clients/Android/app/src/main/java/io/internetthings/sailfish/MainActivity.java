@@ -14,13 +14,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -46,27 +50,28 @@ public class MainActivity extends Activity{
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD
     private void setConnectedText(){
-        CheckBox cb = (CheckBox)findViewById(R.id.checkStatus);
-        cb.setChecked(true);
-        cb.setText("Connected!");
-        cb.setTextColor(getResources().getColor(R.color.Green));
-        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24F);
-        cb.setTypeface(Typeface.DEFAULT_BOLD);
+        ImageView status = (ImageView)findViewById(R.id.statusImage);
+        status.setImageResource(R.drawable.connected);
     }
     //Changes Connection status text to "Disconnected", sets text color to red and
     //changes typeface to BOLD
     private void setDisconnectedText(){
-        CheckBox cb = (CheckBox)findViewById(R.id.checkStatus);
-        cb.setChecked(false);
-        cb.setText("Disconnected!");
-        cb.setTextColor(getResources().getColor(R.color.Red));
-        cb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24F);
-        cb.setTypeface(Typeface.DEFAULT_BOLD);
+        ImageView status = (ImageView)findViewById(R.id.statusImage);
+        status.setImageResource(R.drawable.disconnected);
     }
     //Shows users logged in email on main_Activity
     private void setLoggedInEmailText(String email){
         TextView loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
         loggedInEmail.setText(email);
+    }
+
+    //Opens WEBSITE
+    public void openWebsite(View v){
+        String website = "http://www.internetthings.io/desktopbeam";
+
+        Uri url = Uri.parse(website);
+        Intent i = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(i);
     }
 
     private void setupBroadcastManagers(){
