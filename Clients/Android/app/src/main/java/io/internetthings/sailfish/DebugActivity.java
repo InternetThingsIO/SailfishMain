@@ -62,8 +62,6 @@ public class DebugActivity extends Activity {
     public void onClickSendEmail(View view){
 
         final String recipient = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
-        final String subject = "This is from Notice";
-        final String body = "Set up Chrome! Foo!";
 
         //bail if we don't have an email for some reason
         if (recipient == null) {
@@ -74,14 +72,11 @@ public class DebugActivity extends Activity {
         final EmailSender emailSender = new EmailSender();
         new AsyncTask<Void, Void, Void>() {
             @Override public Void doInBackground(Void... arg) {
-                try {
-                    Log.d("emailSender", "I ran " + "sent to: " + recipient);
-                    emailSender.sendMail(recipient, subject, body);
-                } catch (Exception e) {
-                    Log.e("SendMail", e.getMessage(), e);
-                }
-                return null;}
 
+                Log.d(logTag, "I ran " + "sent to: " + recipient);
+                emailSender.sendMail(recipient);
+                return null;
+            }
         }.execute();
     }
 }
