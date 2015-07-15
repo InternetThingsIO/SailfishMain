@@ -67,8 +67,8 @@
         <activity
             android:name=".DebugActivity"
             android:label="@string/title_activity_debug"
-            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/DefaultTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -84,7 +84,7 @@
             android:name=".ftue.ConfigureChromeActivity"
             android:label="@string/title_activity_configure_chrome"
             android:screenOrientation="portrait"
-            android:theme="@style/DefaultTheme">
+            android:theme="@style/DefaultTheme" >
         </activity>
         <activity
             android:name=".ftue.CheckListActivity"
@@ -95,7 +95,13 @@
         <activity
             android:name=".GoogleAuth2Activity"
             android:label="@string/title_activity_google_auth2"
-            android:theme="@android:style/Theme.Translucent">
+            android:theme="@android:style/Theme.Translucent" >
+        </activity>
+        <activity
+            android:name=".OptionsActivity"
+            android:label="@string/title_activity_options"
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultTheme" >
         </activity>
     </application>
 

@@ -65,8 +65,13 @@ public class MainActivity extends Activity{
         loggedInEmail.setText(email);
     }
 
+    public void openOptions(View view){
+        Intent i = new Intent(this, OptionsActivity.class);
+        startActivity(i);
+    }
+
     //Opens WEBSITE
-    public void openWebsite(View v){
+    public void openWebsite(View view){
         String website = "http://www.internetthings.io/desktopbeam";
 
         Uri url = Uri.parse(website);
