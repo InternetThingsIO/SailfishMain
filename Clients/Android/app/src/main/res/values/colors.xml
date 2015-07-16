@@ -19,6 +19,8 @@
     <color name="checked_green">#15B358</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="grey">#91A3B0</color>
+    <color name="light_grey">#C0C6CA</color>
 
     <color name="text">#005272</color>
     <color name="background">#00ABEF</color>
