@@ -18,10 +18,12 @@
     <color name="unchecked_red">#FF3300</color>
     <color name="checked_green">#15B358</color>
 
+    <color name="white">#FFFFFF</color>
 
     <color name="text">#005272</color>
     <color name="background">#00ABEF</color>
     <color name="button">#0fcd7b</color>
     <color name="radio_button_text">#005272</color>
+
 
 </resources>

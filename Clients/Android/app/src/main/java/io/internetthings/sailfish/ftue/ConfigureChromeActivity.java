@@ -3,16 +3,12 @@ package io.internetthings.sailfish.ftue;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import io.internetthings.sailfish.EmailSender;
-import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.R;
 import io.internetthings.sailfish.SailfishPreferences;
 
@@ -25,7 +21,7 @@ public class ConfigureChromeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure_chrome);
         setEmail();
-        SendEmail();
+        sendEmail();
     }
 
     //Starts the NotificationAccess Activity on click of button in configure chrome activity
@@ -43,7 +39,7 @@ public class ConfigureChromeActivity extends Activity {
         Log.i("To: ", email);
     }
 
-    public void SendEmail(){
+    public void sendEmail(){
 
         final String recipient = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 

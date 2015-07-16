@@ -41,18 +41,18 @@ public class EmailSender extends javax.mail.Authenticator {
 
     public EmailSender() {
 
-        this.user = "itsailfish123@gmail.com";
-        this.password = "123ittest";
+        this.user = "george@internetthings.io";
+        this.password = "internetthings123";
 
-        String mailhost = "smtp.gmail.com";
+        String mailhost = "smtpcorp.com";
 
         Properties props = new Properties();
 
         props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.host", mailhost);
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
-        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.port", "8465");
+        props.put("mail.smtp.socketFactory.port", "8465");
         props.put("mail.smtp.socketFactory.class",
                 "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.debug", "true");
@@ -85,7 +85,7 @@ public class EmailSender extends javax.mail.Authenticator {
 
             MimeMessage message = new MimeMessage(session);
             DataHandler handler = new DataHandler(new ByteArrayDataSource(sb.toString().getBytes(), "text/html"));
-            message.setSender(new InternetAddress(user));
+            message.setSender(new InternetAddress("no-reply@internetthings.io", "Notice by Internet Things"));
             message.setSubject("Notice is here!");
             message.setDataHandler(handler);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
