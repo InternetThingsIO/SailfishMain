@@ -4,6 +4,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.AccountPicker;
@@ -39,7 +40,12 @@ public class OptionsActivity extends Activity {
             String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, accountName);
             SailfishPreferences.editor(this).commit();
+            Log.i("Email: ", accountName);
             NotificationActions.toastMSG(getApplication(), "Set to: " + accountName);
+            stopService(new Intent(this, SailfishNotificationService.class));
+            Log.i("Service: ", "STOPPED");
+            startService(new Intent(this, SailfishNotificationService.class));
+            Log.i("Service: ", "STARTED");
         }
     }
 
