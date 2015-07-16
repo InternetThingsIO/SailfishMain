@@ -26,13 +26,13 @@ public class OptionsActivity extends Activity {
     public void sendTestMSG(View view){
         NotificationActions.sendMSG(this, "Notice", "Hello!  This is a Test Message");
     }
-
+    //Launches window to display gmail accounts for user to choose
     public void changeACCTEmail(View view){
         Intent i = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
                 false, null, null, null, null);
         startActivityForResult(i, PICK_ACCOUNT_REQUEST);
     }
-
+    //User clicks ok and this method sets the selected email as the EMAIL_KEY, then stops and starts the service
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode,
                                     final Intent data) {
@@ -42,10 +42,7 @@ public class OptionsActivity extends Activity {
             SailfishPreferences.editor(this).commit();
             Log.i("Email: ", accountName);
             NotificationActions.toastMSG(getApplication(), "Set to: " + accountName);
-            stopService(new Intent(this, SailfishNotificationService.class));
-            Log.i("Service: ", "STOPPED");
-            startService(new Intent(this, SailfishNotificationService.class));
-            Log.i("Service: ", "STARTED");
+            restartService();
         }
     }
 
@@ -64,6 +61,13 @@ public class OptionsActivity extends Activity {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         this.finish();
+    }
+    //Stops and Starts the SailfishNotificationService
+    private void restartService(){
+        stopService(new Intent(this, SailfishNotificationService.class));
+        Log.i("Service: ", "STOPPED");
+        startService(new Intent(this, SailfishNotificationService.class));
+        Log.i("Service: ", "STARTED");
     }
 
 }
