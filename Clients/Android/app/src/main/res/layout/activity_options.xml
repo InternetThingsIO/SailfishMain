@@ -20,51 +20,61 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send Test Notification"
-        android:id="@+id/button2"
-        android:layout_below="@+id/optionsTxt"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="63dp"
-        android:clickable="true"
-        android:onClick="sendTestMSG"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Change Email"
-        android:id="@+id/changeEmail"
-        android:layout_below="@+id/button2"
-        android:layout_alignParentStart="true"
-        android:clickable="true"
-        android:onClick="changeACCTEmail"
-        android:layout_marginTop="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/white" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Setup Chrome (sends Email)"
-        android:id="@+id/sendChromeEmail"
-        android:layout_below="@+id/changeEmail"
-        android:layout_alignParentStart="true"
-        android:clickable="true"
-        android:onClick="sendChromeSetupEmail"
-        android:layout_marginTop="10dp"
-        android:textSize="20dp"
-        android:textColor="@color/white" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Back"
         android:id="@+id/backtoMain"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:clickable="true"
-        android:onClick="backToMain"
-        android:textSize="20dp"
-        android:textColor="@color/white" />
+        android:onClick="backToMain" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/optionsTxt"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="51dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Notice"
+            android:id="@+id/testNotice"
+            android:layout_below="@+id/optionsTxt"
+            android:layout_alignParentStart="true"
+            android:clickable="true"
+            android:onClick="sendTestMSG" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restart Setup"
+            android:id="@+id/restartSetup"
+            android:layout_below="@+id/testNotice"
+            android:layout_alignParentStart="true"
+            android:clickable="true"
+            android:onClick="changeACCTEmail"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a Device"
+            android:id="@+id/sendChromeEmail"
+            android:layout_below="@+id/restartSetup"
+            android:layout_alignParentStart="true"
+            android:clickable="true"
+            android:onClick="sendChromeSetupEmail"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Email"
+            android:id="@+id/changeEmail"
+            android:layout_below="@+id/sendChromeEmail"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
 </RelativeLayout>

@@ -7,6 +7,7 @@
     <string name="title_activity_start_up">StartUP</string>
 
     <string name="hello_world">hello hello!</string>
+    <string name="not_logged_in">Not Logged in</string>
 
     <string name="title_activity_ftue">SelectEmail</string>
     <string name="dummy_button">Dummy Button</string>

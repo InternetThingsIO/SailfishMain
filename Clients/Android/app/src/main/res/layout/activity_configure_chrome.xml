@@ -8,12 +8,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Done"
-        android:textColor="#FFFFFF"
         android:id="@+id/btnCompletedStep"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="onClickCompletedButton"
-        android:textSize="20dp"
         android:minWidth="200dp"
         android:clickable="true" />
 
