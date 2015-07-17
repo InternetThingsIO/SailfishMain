@@ -33,7 +33,7 @@ public class NotificationAccessActivity extends Activity {
         super.onResume();
         if(getIntent().getExtras()!= null && getIntent().getExtras().getBoolean(shouldCheckAccess, false)) {
             if(NotificationActions.checkNotificationAccess(this)) {
-                Intent i = new Intent(this, CheckListActivity.class);
+                Intent i = new Intent(this, ConfigureChromeActivity.class);
                 startActivity(i);
                 this.finish();
             }else
@@ -68,7 +68,7 @@ public class NotificationAccessActivity extends Activity {
     public void onClickNext(View view){
 
         //load next activity
-        Intent i = new Intent(this, ConfigureChromeActivity.class);
+        Intent i = new Intent(this, NotificationAccessActivity.class);
         i.putExtra(shouldCheckAccess, true);
         startActivity(i);
 
