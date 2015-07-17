@@ -83,14 +83,13 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
                         .getBoolean(SailfishPreferences
                                 .FTUE_COMPLETED_KEY, false);
 
-        Intent i;
+
         if (!ftueCompleted) {
-            i = new Intent(this, NotificationAccessActivity.class);
-        }else{
-            i = new Intent(this, OptionsActivity.class);
+            Intent i = new Intent(this, NotificationAccessActivity.class);
+            startActivity(i);
         }
 
-        startActivity(i);
+        //finish activity (go back if ftue is completed).
         this.finish();
 
     }
