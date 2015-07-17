@@ -24,7 +24,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:clickable="true"
-        android:onClick="openOptions" />
+        android:onClick="openOptions"
+        android:visibility="invisible" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,7 +74,17 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:gravity="center" />
+
     </RelativeLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:background="@drawable/settings"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="openOptions" />
 
 
 </RelativeLayout>
