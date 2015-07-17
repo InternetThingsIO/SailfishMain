@@ -33,8 +33,7 @@ public class ConfigureChromeActivity extends Activity {
         //mark FTUE completed
         SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, true);
         SailfishPreferences.editor(this).commit();
-
-        this.finish();
+        
     }
 
     //gets email that user selected in SelectEmail Activity and sets it in ConfigureChrome Activity
