@@ -19,6 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 
 /*
     Created by: Jason Maderski
@@ -35,6 +38,8 @@ public class SailfishNotificationService extends NotificationListenerService{
     public static final String MY_PREFS_NAME = "SailFishPref";
 
     private String email;
+
+    private ArrayList<SailfishNotification> issuedNotifications = new ArrayList<>();
 
     public SailfishNotificationService(){
         SailfishSocketIO.setupSocket(this);
@@ -97,37 +102,14 @@ public class SailfishNotificationService extends NotificationListenerService{
                         + "\n" + " getActiveNotifications: " + getActiveNotifications().length
         );
 
-        //this.cancelNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId());
         getPrefAndConnect();
 
+        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION);
+
         //don't issue this notification if it shouldn't be issued
-        if (!canUseNotif(sbn))
+        if (!canUseNotif(sn))
             return;
 
-        Drawable icon = null;
-        try {
-            //icon from application
-            //icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
-
-            //icon from notification
-            if (sbn.getNotification().largeIcon != null)
-                icon = new BitmapDrawable(getResources(), sbn.getNotification().largeIcon);
-            else
-                icon = getPackageManager().getApplicationIcon(sbn.getPackageName());
-
-        }catch (Exception e){}
-
-        String bodyText = getBodyText(sbn);
-
-        SailfishNotification sn = new SailfishNotification(icon,
-                sbn.getNotification().extras.getString("android.title"),
-                bodyText,
-                sbn.getPackageName(),
-                sbn.getPostTime(),
-                sbn.getNotification().priority);
-
-        sn.Action = MessageActions.POST_NOTIFICATION;
-        sn.ID = getMessageID(sbn);
         sendMessage(sn);
 
     }
@@ -151,44 +133,36 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
-    private Boolean canUseNotif(StatusBarNotification sbn) {
+    private Boolean canUseNotif(SailfishNotification sn) {
 
         if (email == null || email.length() == 0) {
             Log.w(logTAG, "Email is null, can't issue notification");
             return false;
         }
 
+        //check to see if this is a duplicate
+        if (issuedNotifications.contains(sn)){
+
+            int index = issuedNotifications.indexOf(sn);
+            SailfishNotification existingSn = issuedNotifications.get(index);
+
+            //check if it is expired
+            if ((new Date().getTime() - existingSn.CreatedDate.getTime()) > 86400000){
+                Log.i(logTAG, "Duplicate notification expired, removing it");
+                issuedNotifications.remove(sn);
+                return true;
+            }
+            else {
+                Log.i(logTAG, "Non-expired duplicate notification detected");
+                return false;
+            }
+        }else{
+            issuedNotifications.add(sn);
+        }
+
         return true;
     }
 
-    private String getMessageID(StatusBarNotification sbn){
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            //packagename:tag:id
-            sb.append(URLEncoder.encode(sbn.getPackageName(), "utf-8"));
-
-            sb.append(":");
-
-            if (!TextUtils.isEmpty(sbn.getTag()))
-                sb.append(URLEncoder.encode(sbn.getTag(), "utf-8"));
-
-            sb.append(":");
-
-            if (!TextUtils.isEmpty(String.valueOf(sbn.getId())))
-                sb.append(URLEncoder.encode(String.valueOf(sbn.getId()), "utf-8"));
-
-            //String body = getBodyText(sbn);
-            //if (body != null) {
-            //    String trimmed = body.substring(0, Math.min(body.length(), 50));
-            //    sb.append(trimmed);
-            //}
-        }catch (UnsupportedEncodingException ex){
-            Log.e(logTAG, "Had some error with encoding type");
-        }
-
-        return sb.toString();
-    }
 
     private String toBase64(String str){
         try {
@@ -238,17 +212,23 @@ public class SailfishNotificationService extends NotificationListenerService{
     //Displays notification that has been removed in the logcat window
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn){
+
+        //bail if this isn't a valid notification
+        if (!isNotifValid(sbn))
+            return;
+
         Log.i(logTAG, "Notification REMOVED*************** " + "User: "
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
 
-        if (!canUseNotif(sbn))
-            return;
 
-        SailfishMessage sm = new SailfishMessage();
-        sm.Action = MessageActions.REMOVE_NOTIFICATION;
-        sm.ID = getMessageID(sbn);
+        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION.REMOVE_NOTIFICATION);
 
-        sendMessage(sm);
+        if (issuedNotifications.contains(sn)) {
+            Log.i(logTAG, "Removing existing notification from issuedNotifications");
+            issuedNotifications.remove(sn);
+        }
+
+        sendMessage(sn);
     }
 
     @Override
