@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:onClick="openWebsite"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
         android:id="@+id/textView14"
         android:textSize="60dp"
         android:textStyle="bold|italic"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="25dp"
         android:layout_below="@+id/imageView4"
         android:layout_centerHorizontal="true" />
 

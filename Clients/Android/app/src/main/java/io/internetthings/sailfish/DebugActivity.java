@@ -57,6 +57,7 @@ public class DebugActivity extends Activity {
     public void onClickExit(View view){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
+        this.finish();
     }
 
     public void onClickSendEmail(View view){
