@@ -29,6 +29,7 @@ public class ConfigureChromeActivity extends Activity {
     //Starts the NotificationAccess Activity on click of button in configure chrome activity
     public void onClickCompletedButton(View view){
         Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
 
         //mark FTUE completed
@@ -37,6 +38,8 @@ public class ConfigureChromeActivity extends Activity {
 
         //send Test Notification
         NotificationActions.sendMSG(this, "Notice", "Hello!  Notice has been successfully setup!");
+
+
     }
 
     //gets email that user selected in SelectEmail Activity and sets it in ConfigureChrome Activity
