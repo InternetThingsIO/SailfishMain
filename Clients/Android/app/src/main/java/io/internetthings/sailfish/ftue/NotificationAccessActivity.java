@@ -68,7 +68,7 @@ public class NotificationAccessActivity extends Activity {
     public void onClickNext(View view){
 
         //load next activity
-        Intent i = new Intent(this, NotificationAccessActivity.class);
+        Intent i = new Intent(this, ConfigureChromeActivity.class);
         i.putExtra(shouldCheckAccess, true);
         startActivity(i);
 

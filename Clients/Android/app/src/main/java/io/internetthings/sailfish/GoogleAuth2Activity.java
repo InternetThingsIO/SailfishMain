@@ -22,7 +22,9 @@ import com.google.android.gms.plus.Plus;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import io.internetthings.sailfish.ftue.CheckListActivity;
 import io.internetthings.sailfish.ftue.ConfigureChromeActivity;
+import io.internetthings.sailfish.ftue.NotificationAccessActivity;
 
 
 public class GoogleAuth2Activity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -74,7 +76,7 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
     public void onConnected(Bundle connectionHint) {
         Log.d(logTAG, "Successfully connected to Google");
 
-        Intent i = new Intent(this, ConfigureChromeActivity.class);
+        Intent i = new Intent(this, NotificationAccessActivity.class);
         startActivity(i);
 
         this.finish();

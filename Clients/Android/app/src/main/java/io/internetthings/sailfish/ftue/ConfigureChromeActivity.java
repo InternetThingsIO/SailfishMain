@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import io.internetthings.sailfish.EmailSender;
+import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.R;
 import io.internetthings.sailfish.SailfishPreferences;
 
@@ -26,8 +27,12 @@ public class ConfigureChromeActivity extends Activity {
 
     //Starts the NotificationAccess Activity on click of button in configure chrome activity
     public void onClickCompletedButton(View view){
-        Intent i = new Intent(this, NotificationAccessActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
+
+        //mark FTUE completed
+        SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, true);
+        SailfishPreferences.editor(this).commit();
     }
 
     //gets email that user selected in SelectEmail Activity and sets it in ConfigureChrome Activity
