@@ -85,7 +85,7 @@ public class EmailSender extends javax.mail.Authenticator {
 
             MimeMessage message = new MimeMessage(session);
             DataHandler handler = new DataHandler(new ByteArrayDataSource(sb.toString().getBytes(), "text/html"));
-            message.setSender(new InternetAddress("no-reply@internetthings.io", "Notice by Internet Things"));
+            message.setSender(new InternetAddress("no-reply@internetthings.io", "Internet Things", "utf-8"));
             message.setSubject("Notice is here!");
             message.setDataHandler(handler);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
