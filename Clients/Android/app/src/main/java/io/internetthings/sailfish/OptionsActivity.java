@@ -42,7 +42,8 @@ public class OptionsActivity extends Activity {
             SailfishPreferences.editor(this).commit();
             Log.i("Email: ", accountName);
             NotificationActions.toastMSG(getApplication(), "Set to: " + accountName);
-            restartService();
+            Intent i = new Intent(this, GoogleAuth2Activity.class);
+            startActivity(i);
         }
     }
 
@@ -53,6 +54,10 @@ public class OptionsActivity extends Activity {
     }
 
     public void restartSetup(View view){
+
+        SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, false);
+        SailfishPreferences.editor(this).commit();
+
         Intent i = new Intent(this, SelectEmailActivity.class);
         startActivity(i);
     }
@@ -62,12 +67,6 @@ public class OptionsActivity extends Activity {
         startActivity(i);
         this.finish();
     }
-    //Stops and Starts the SailfishNotificationService
-    private void restartService(){
-        stopService(new Intent(this, SailfishNotificationService.class));
-        Log.i("Service: ", "STOPPED");
-        startService(new Intent(this, SailfishNotificationService.class));
-        Log.i("Service: ", "STARTED");
-    }
+
 
 }

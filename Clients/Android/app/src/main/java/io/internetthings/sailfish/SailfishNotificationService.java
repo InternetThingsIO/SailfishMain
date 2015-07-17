@@ -37,8 +37,6 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
     public static final String MY_PREFS_NAME = "SailFishPref";
 
-    private String email;
-
     private ArrayList<SailfishNotification> issuedNotifications = new ArrayList<>();
 
     public SailfishNotificationService(){
@@ -49,6 +47,8 @@ public class SailfishNotificationService extends NotificationListenerService{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        super.onStartCommand(intent,flags, startId);
+
         Log.i(logTAG, "SailfishNotificationService starting");
 
         Mint.initAndStartSession(this, Constants.MINT_API_KEY);
@@ -58,17 +58,12 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private void getPrefAndConnect() {
 
-        if (this.email == null){
-            //get preferences
-            this.email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
-        }
-
         if (SailfishSocketIO.isConnected()) {
             Log.i(logTAG, "Socket is already connected");
             return;
         }
 
-
+        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
         //connect if we have an email
         if (email != null) {
@@ -135,6 +130,8 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private Boolean canUseNotif(SailfishNotification sn) {
 
+        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+
         if (email == null || email.length() == 0) {
             Log.w(logTAG, "Email is null, can't issue notification");
             return false;
@@ -191,6 +188,8 @@ public class SailfishNotificationService extends NotificationListenerService{
         Gson gson = new Gson();
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
+
+        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
         String token = GoogleAuth2Activity.getToken(this, email);
 
