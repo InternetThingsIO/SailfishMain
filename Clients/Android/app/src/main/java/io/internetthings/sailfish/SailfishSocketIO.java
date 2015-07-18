@@ -104,10 +104,13 @@ public class SailfishSocketIO {
         Emitter.Listener onNotificationRemoved = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                Log.w(logTAG, "NoticeSocketIO dismiss_notif_device");
+
 
                 //get the android ID
                 String concatID = (String)args[0];
+
+                Log.w(logTAG, "NoticeSocketIO dismiss_notif: " + concatID);
+
                 String[] split = concatID.split(":");
                 String id, tag, packageName;
 
@@ -117,6 +120,11 @@ public class SailfishSocketIO {
                         packageName = URLDecoder.decode(split[0], "utf-8");
                         id = URLDecoder.decode(split[2], "utf-8");
                         tag = URLDecoder.decode(split[1], "utf-8");
+
+                        packageName = packageName.length() == 0 ? null : packageName;
+                        id = id.length() == 0 ? null : id;
+                        tag = tag.length() == 0? null : tag;
+
                         Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
 
                         context.cancelNotification(packageName, tag, Integer.parseInt(id));
