@@ -4,6 +4,8 @@ package io.internetthings.sailfish;
  * Created by Dev on 7/4/2015.
  */
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import javax.activation.DataHandler;
@@ -67,7 +69,27 @@ public class EmailSender extends javax.mail.Authenticator {
         return new PasswordAuthentication(user, password);
     }
 
-    public synchronized void sendMail(String recipient) {
+    public void sendEmail(Context context){
+
+        final String recipient = SailfishPreferences.reader(context).getString(SailfishPreferences.EMAIL_KEY, null);
+
+        //bail if we don't have an email for some reason
+        if (recipient == null) {
+            Log.e(logTag, "Couldn't send an email because we had no email address");
+            return;
+        }
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override public Void doInBackground(Void... arg) {
+
+                Log.d(logTag, "I ran " + "sent to: " + recipient);
+                sendEMailRecipient(recipient);
+                return null;
+            }
+        }.execute();
+    }
+
+    private void sendEMailRecipient(String recipient) {
 
         StringBuilder sb = new StringBuilder();
 

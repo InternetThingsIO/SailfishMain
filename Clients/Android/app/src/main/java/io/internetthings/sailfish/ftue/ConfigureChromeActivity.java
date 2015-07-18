@@ -28,13 +28,20 @@ public class ConfigureChromeActivity extends Activity {
 
     //Starts the NotificationAccess Activity on click of button in configure chrome activity
     public void onClickCompletedButton(View view){
-        Intent i = new Intent(this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
 
-        //mark FTUE completed
-        SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, true);
-        SailfishPreferences.editor(this).commit();
+        Boolean FTUECompleted = SailfishPreferences.reader(this).getBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, false);
+
+        if (FTUECompleted){
+            this.finish();
+        }else {
+            Intent i = new Intent(this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+
+            //mark FTUE completed
+            SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, true);
+            SailfishPreferences.editor(this).commit();
+        }
 
         //send Test Notification
         NotificationActions.sendMSG(this, "Notice", "Hello!  Notice has been successfully setup!");
@@ -51,26 +58,11 @@ public class ConfigureChromeActivity extends Activity {
         Log.i("To: ", email);
     }
 
-    public void sendEmail(){
+    public void sendEmail() {
 
-        final String recipient = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        EmailSender sender = new EmailSender();
+        sender.sendEmail(this);
 
-        //bail if we don't have an email for some reason
-        if (recipient == null) {
-            Log.e(logTag, "Couldn't send an email because we had no email address");
-            return;
-        }
-
-        final EmailSender emailSender = new EmailSender();
-        new AsyncTask<Void, Void, Void>() {
-            @Override public Void doInBackground(Void... arg) {
-
-                Log.d(logTag, "I ran " + "sent to: " + recipient);
-                emailSender.sendMail(recipient);
-                return null;
-            }
-        }.execute();
     }
-
 
 }

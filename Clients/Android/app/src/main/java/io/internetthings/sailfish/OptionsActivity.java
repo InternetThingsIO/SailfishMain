@@ -49,10 +49,9 @@ public class OptionsActivity extends Activity {
         }
     }
 
-    public void sendChromeSetupEmail(View view){
-        ConfigureChromeActivity email = new ConfigureChromeActivity();
-        email.sendEmail();
-        NotificationActions.toastMSG(getApplication(), "Sent email to: " + SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null));
+    public void startChromeSetup(View view){
+        Intent i = new Intent(this, ConfigureChromeActivity.class);
+        startActivity(i);
     }
 
     public void restartSetup(View view){

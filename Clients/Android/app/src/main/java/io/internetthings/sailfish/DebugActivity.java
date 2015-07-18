@@ -62,22 +62,6 @@ public class DebugActivity extends Activity {
 
     public void onClickSendEmail(View view){
 
-        final String recipient = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
-        //bail if we don't have an email for some reason
-        if (recipient == null) {
-            Log.e(logTag, "Couldn't send an email because we had no email address");
-            return;
-        }
-
-        final EmailSender emailSender = new EmailSender();
-        new AsyncTask<Void, Void, Void>() {
-            @Override public Void doInBackground(Void... arg) {
-
-                Log.d(logTag, "I ran " + "sent to: " + recipient);
-                emailSender.sendMail(recipient);
-                return null;
-            }
-        }.execute();
     }
 }
