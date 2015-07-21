@@ -25,7 +25,7 @@ public class NotificationActions {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.icon_notice_logo)
             .setAutoCancel(true);
         nManager.notify(sTAG, nID, builder.build());
     }
