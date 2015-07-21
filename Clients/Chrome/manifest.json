@@ -3,7 +3,7 @@
   "version": "0.8",
   "offline_enabled": false,
   "description":
-    "Turns your phone notifications into smart notifications.  Why just get the information?  Do something useful with it.",
+    "Instantly synchronize notifications between your phone and your computer.",
   "icons": {"48": "logo48.png", "128": "logo128.png"},
   "permissions": [
     "notifications",
