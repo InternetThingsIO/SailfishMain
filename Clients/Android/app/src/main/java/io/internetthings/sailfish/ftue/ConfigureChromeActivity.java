@@ -44,7 +44,7 @@ public class ConfigureChromeActivity extends Activity {
         }
 
         //send Test Notification
-        NotificationActions.sendMSG(this, "Notice", "Hello!  Notice has been successfully setup!");
+        NotificationActions.sendMSG(this, "Notice", "Yay!  Notice has been successfully setup!");
 
 
     }

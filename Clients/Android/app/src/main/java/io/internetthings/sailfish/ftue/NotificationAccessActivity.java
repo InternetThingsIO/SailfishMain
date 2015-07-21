@@ -2,13 +2,11 @@ package io.internetthings.sailfish.ftue;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.NotificationActions;
 import io.internetthings.sailfish.R;
 

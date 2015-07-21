@@ -1,6 +1,5 @@
 package io.internetthings.sailfish;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -9,12 +8,9 @@ import android.util.Log;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.github.nkzawa.emitter.Emitter;
-import com.google.android.gms.auth.GoogleAuthUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 /*
         Created by: Jason Maderski

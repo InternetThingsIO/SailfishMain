@@ -13,24 +13,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.splunk.mint.Mint;
 
 import java.io.IOException;
 
@@ -72,7 +67,7 @@ public class MainActivity extends Activity{
 
     //Opens WEBSITE
     public void openWebsite(View view){
-        String website = "http://www.internetthings.io/desktopbeam";
+        String website = "http://www.internetthings.io/";
 
         Uri url = Uri.parse(website);
         Intent i = new Intent(Intent.ACTION_VIEW, url);

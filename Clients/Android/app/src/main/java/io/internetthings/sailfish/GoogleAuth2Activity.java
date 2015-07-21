@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -22,8 +19,6 @@ import com.google.android.gms.plus.Plus;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import io.internetthings.sailfish.ftue.CheckListActivity;
-import io.internetthings.sailfish.ftue.ConfigureChromeActivity;
 import io.internetthings.sailfish.ftue.NotificationAccessActivity;
 
 
