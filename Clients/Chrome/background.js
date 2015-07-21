@@ -281,7 +281,7 @@ function showSimpleNotification(id, inTitle, inIcon, inBody) {
 
   }else{
     //set default icon here
-    options.iconUrl = '128.png';
+    options.iconUrl = 'logo128.png';
 
     //issue the notification
   chrome.notifications.create(id, options);
