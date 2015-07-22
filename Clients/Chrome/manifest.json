@@ -1,6 +1,6 @@
 {
   "name": "Notice",
-  "version": "0.8",
+  "version": "0.9",
   "offline_enabled": false,
   "description":
     "Instantly synchronize notifications between your phone and your computer.",
@@ -21,7 +21,6 @@
       "https://www.googleapis.com/auth/userinfo.email"
     ]
   },
-  // crbug.com/134315.  Only to use local resources.  Can use resources on WWW without this
   "web_accessible_resources": [
     "logo48.png",
     "logo128.png",
