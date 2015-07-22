@@ -112,4 +112,8 @@ public class SailfishNotification extends SailfishMessage implements Comparable<
 
     }
 
+    public void clearImage(){
+        this.Base64Image = "";
+    }
+
 }
