@@ -1,27 +1,20 @@
 package io.internetthings.sailfish;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gson.Gson;
 import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Iterator;
 
 /*
     Created by: Jason Maderski
@@ -101,11 +94,21 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION);
 
+        updateDuplicates(sn);
+
+
+
         //don't issue this notification if it shouldn't be issued
-        if (!canUseNotif(sn))
+        if (!canIssueNotif(sn))
             return;
 
         sendMessage(sn);
+
+        //add current notif
+        //clear image to save memory
+        sn.clearImage();
+        if (!issuedNotifications.contains(sn))
+            issuedNotifications.add(sn);
 
     }
 
@@ -128,7 +131,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
-    private Boolean canUseNotif(SailfishNotification sn) {
+    private Boolean canIssueNotif(SailfishNotification sn) {
 
         String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
 
@@ -138,28 +141,41 @@ public class SailfishNotificationService extends NotificationListenerService{
         }
 
         //check to see if this is a duplicate
-        if (issuedNotifications.contains(sn)){
-
-            int index = issuedNotifications.indexOf(sn);
-            SailfishNotification existingSn = issuedNotifications.get(index);
-
-            //check if it is expired
-            if ((new Date().getTime() - existingSn.CreatedDate.getTime()) > 86400000){
-                Log.i(logTAG, "Duplicate notification expired, removing it");
-                issuedNotifications.remove(sn);
-                return true;
-            }
-            else {
-                Log.i(logTAG, "Non-expired duplicate notification detected");
-                return false;
-            }
-        }else{
-            issuedNotifications.add(sn);
-        }
+        if (isDuplicate(sn))
+            return false;
 
         return true;
     }
 
+    private boolean isDuplicate(SailfishNotification sn){
+        if (issuedNotifications.contains(sn)){
+            Log.i(logTAG, "Duplicate notification detected");
+            return true;
+        }
+
+        return false;
+    }
+
+    private void updateDuplicates(SailfishNotification sn){
+
+        Iterator<SailfishNotification> it =  issuedNotifications.iterator();
+
+        SailfishNotification currNotif;
+        long elapsedTime;
+
+        //clear expired notifs
+        while (it.hasNext()){
+            currNotif = it.next();
+            elapsedTime = new Date().getTime() - currNotif.CreatedDate.getTime();
+
+            if (elapsedTime > Constants.NOTIF_EXPIRATION_MS) {
+                it.remove();
+                Log.i(logTAG, "Removing expired notif ID: " + currNotif.ID);
+            }
+        }
+
+        Log.i(logTAG, "Issued Notifications Size: " + issuedNotifications.size());
+    }
 
     private String toBase64(String str){
         try {
@@ -220,13 +236,14 @@ public class SailfishNotificationService extends NotificationListenerService{
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
 
 
-        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION.REMOVE_NOTIFICATION);
+        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.REMOVE_NOTIFICATION);
 
         if (issuedNotifications.contains(sn)) {
             Log.i(logTAG, "Removing existing notification from issuedNotifications");
             issuedNotifications.remove(sn);
         }
 
+        sn.clearImage();
         sendMessage(sn);
     }
 

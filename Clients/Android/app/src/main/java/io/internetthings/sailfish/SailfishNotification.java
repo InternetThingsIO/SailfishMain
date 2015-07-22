@@ -6,14 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.service.notification.StatusBarNotification;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
 
 /*
         Created by: Jason Maderski
@@ -114,6 +110,10 @@ public class SailfishNotification extends SailfishMessage implements Comparable<
         else
             return false;
 
+    }
+
+    public void clearImage(){
+        this.Base64Image = "";
     }
 
 }

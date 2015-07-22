@@ -87,12 +87,6 @@
             android:theme="@style/DefaultTheme" >
         </activity>
         <activity
-            android:name=".ftue.CheckListActivity"
-            android:label="@string/title_activity_check_list"
-            android:screenOrientation="portrait"
-            android:theme="@style/DefaultTheme" >
-        </activity>
-        <activity
             android:name=".GoogleAuth2Activity"
             android:label="@string/title_activity_google_auth2"
             android:theme="@android:style/Theme.Translucent" >
