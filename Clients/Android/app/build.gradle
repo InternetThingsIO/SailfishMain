@@ -17,8 +17,8 @@ android {
         applicationId "io.internetthings.sailfish"
         minSdkVersion 19
         targetSdkVersion 20
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.8"
         signingConfig signingConfigs.config
     }
     buildTypes {
