@@ -1,40 +1,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:gravity="center_horizontal">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Notice"
-        android:id="@+id/programName"
-        android:layout_centerVertical="true"
+        android:id="@+id/textView14"
+        android:textSize="70dp"
+        android:textStyle="bold|italic"
         android:layout_centerHorizontal="true"
-        android:textSize="36dp" />
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:background="@color/white" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/statusImage"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/disconnected"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_marginTop="215dp"
+        android:layout_marginBottom="200dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_alignParentStart="true">
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:background="@drawable/settings"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="openOptions" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Not Connected"
-        android:id="@+id/status"
-        android:textColor="#ffff000e"
-        android:layout_below="@+id/programName"
-        android:layout_alignStart="@+id/programName"
-        android:layout_marginTop="83dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/loggedInEmail"
+        android:text="@string/not_logged_in"
         android:id="@+id/emailTxtView"
-        android:layout_above="@+id/programName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="81dp" />
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:background="@drawable/white_rounded"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:gravity="center"
+        android:layout_marginBottom="48dp"
+        android:layout_above="@+id/imageButton"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

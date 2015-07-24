@@ -16,12 +16,22 @@ function main(){
   chrome.idle.setDetectionInterval(3600);
   chrome.idle.onStateChanged.addListener(chromeStateListener);
 
+  //add notification closed listener
+  chrome.notifications.onClosed.addListener(onNotificationClosed);
+
   createSocket();
 
   xhrWithAuth('GET',
                 'https://www.googleapis.com/plus/v1/people/me',
                 false,
                 onUserInfoFetched);
+
+}
+
+function onNotificationClosed(notificationId, byUser){
+  console.log('dismissing notif id: ' + notificationId);
+  //emit something to the device, dismissing the notification
+  emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
 
 }
 
@@ -157,13 +167,21 @@ function determineActions(jsonObj){
 
 //creates a basic notification. other types to come
 function createBasicNotif(jsonObj){
-  chrome.notifications.create(jsonObj.ID, {
+
+  var notifOptions = {
     type: 'basic', 
     iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
     title: jsonObj.Subject, 
     message: jsonObj.Body,
-    eventTime: jsonObj.PostTime
-  });
+    eventTime: jsonObj.PostTime,
+    priority: jsonObj.Priority
+  };
+
+
+  chrome.notifications.create(jsonObj.ID, notifOptions);
+
+  chrome.notifications.update(jsonObj.ID, notifOptions);
+
 }
 
 function isJSON(jsonString){
@@ -206,7 +224,9 @@ function socketJoinRoom(room){
 
   emitSocket('join room', room);
 
-  showSimpleNotification('Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
+  console.trace();
+
+  showSimpleNotification('subscribe','Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
 
 }
 
@@ -222,15 +242,14 @@ function socketLeaveRoom(room){
 function emitSocket(name, arg1, arg2){
 
   chrome.identity.getAuthToken({ interactive: false }, function(token) {
-
     socket.emit(name, token, arg1, arg2);
-  
-
   });
 
 }
 
-function showSimpleNotification(inTitle, inIcon, inBody) {
+function showSimpleNotification(id, inTitle, inIcon, inBody) {
+
+  var unixTime = new Date().getTime();
 
   var options = {
         type: 'basic', 
@@ -238,8 +257,6 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
         message: inBody,
         eventTime: unixTime
       };
-
-  var unixTime = new Date().getTime();
 
   //set change the size of the image returned by google
   if (inIcon){
@@ -257,17 +274,17 @@ function showSimpleNotification(inTitle, inIcon, inBody) {
       options.iconUrl = window.URL.createObjectURL(blob);
 
       //issue the notification
-      chrome.notifications.create(unixTime.toString(), options);
+      chrome.notifications.create(id, options);
 
     };
     xhr.send(null);
 
   }else{
     //set default icon here
-    options.iconUrl = '128.png';
+    options.iconUrl = 'logo128.png';
 
     //issue the notification
-  chrome.notifications.create(unixTime.toString(), options);
+  chrome.notifications.create(id, options);
   }
 
   

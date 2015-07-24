@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:gravity="center_vertical">
     <!-- changed splashscreen file name -->
+
+
     <ImageView
-        android:id="@+id/splashScreen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/it125"
+        android:longClickable="true"
+        android:layout_marginLeft="0dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/splashscreen"/>
-
-
-</LinearLayout>
+        android:id="@+id/progressBar2"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="308dp"
+        android:layout_marginTop="97dp"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible" />
+</RelativeLayout>

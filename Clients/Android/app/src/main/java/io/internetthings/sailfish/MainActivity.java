@@ -13,45 +13,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender.SendIntentException;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.provider.Settings;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.Plus;
-import com.splunk.mint.Mint;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class MainActivity extends Activity{
 
-    //Request code used to invoke sign in user interactions.
-    private static final int RC_SIGN_IN = 0;
-    public static final String MY_PREFS_NAME = "SailFishPref";
     private final String logTAG = this.getClass().getName();
-
-    //Client used to interact with Google APIs.
-    private GoogleApiClient mGoogleApiClient;
-
-    /* A flag indicating that a PendingIntent is in progress and prevents
-       us from starting further intents.
-     */
-    private boolean mIntentInProgress;
-    private boolean nAccessEnabled;
-
-    private TextView connectionStatusColor;
-    private TextView loggedInEmail;
 
     BroadcastReceiver onSocketConnectReceiver;
     BroadcastReceiver onSocketDisconnectReceiver;
@@ -59,42 +39,55 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Line of code to add Splunk Mint to the project
-        Mint.initAndStartSession(MainActivity.this, "50573816");
-
         setContentView(R.layout.activity_main);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
-                .build();
-
         setupBroadcastManagers();
+    }
+    //Changes Connection status text to "Connected", sets text color to green and
+    //changes the typeface to BOLD
+    private void setConnectedText(){
+        ImageView status = (ImageView)findViewById(R.id.statusImage);
+        status.setImageResource(R.drawable.connected);
+    }
+    //Changes Connection status text to "Disconnected", sets text color to red and
+    //changes typeface to BOLD
+    private void setDisconnectedText(){
+        ImageView status = (ImageView)findViewById(R.id.statusImage);
+        status.setImageResource(R.drawable.disconnected);
+    }
+    //Shows users logged in email on main_Activity
+    private void setLoggedInEmailText(String email){
+        TextView loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
+        loggedInEmail.setText(email);
+    }
+
+    public void openOptions(View view){
+        Intent i = new Intent(this, OptionsActivity.class);
+        startActivity(i);
+    }
+
+    //Opens WEBSITE
+    public void openWebsite(View view){
+        String website = "http://www.internetthings.io/";
+
+        Uri url = Uri.parse(website);
+        Intent i = new Intent(Intent.ACTION_VIEW, url);
+        startActivity(i);
     }
 
     private void setupBroadcastManagers(){
         onSocketConnectReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                connectionStatusColor.setTextColor(getResources().getColor(R.color.Green));
-                connectionStatusColor.setText("Connected!");
-                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+                setConnectedText();
             }
         };
 
         onSocketDisconnectReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                connectionStatusColor.setTextColor(getResources().getColor(R.color.Red));
-                connectionStatusColor.setText("Disconnected!");
-                connectionStatusColor.setTypeface(Typeface.DEFAULT_BOLD);
+                setDisconnectedText();
             }
         };
-
-        connectionStatusColor = (TextView)findViewById(R.id.status);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onSocketConnectReceiver,
                 new IntentFilter("onSocketConnect"));
@@ -103,62 +96,36 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 new IntentFilter("onSocketDisconnect"));
 
     }
-    //Method runs when user is signed on
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.d("", "onConnected Success");
-        getProfileInformation();
-    }
 
-    @Override
-    public void onConnectionSuspended(int cause) {
-        mGoogleApiClient.connect();
-    }
-
-
-    //Runs when Google+ sign in fails
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Log.e("", "onConnectionFailed");
-        if(!mIntentInProgress && result.hasResolution()){
-            try{
-                mIntentInProgress = true;
-                result.startResolutionForResult(this, RC_SIGN_IN);
-            }catch (SendIntentException e){
-                // The intent was canceled before it was sent.  Return to the default
-                // state and attempt to connect to get an updated ConnectionResult.
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent){
-        if(requestCode == RC_SIGN_IN){
-            if(responseCode != RESULT_OK){
-
-            }
-
-            mIntentInProgress = false;
-
-            if(!mGoogleApiClient.isConnected()){
-                mGoogleApiClient.reconnect();
-            }
-        }
-    }
 
     @Override
     protected void onStart(){
         super.onStart();
-        mGoogleApiClient.connect();
+
+        SailfishSocketIO.connect();
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        //try to connect
+        SailfishSocketIO.connect();
+
+        //get current socket status
+        if (SailfishSocketIO.isConnected())
+            setConnectedText();
+        else
+            setDisconnectedText();
+
+        setProfileInformation();
+
     }
 
     @Override
@@ -169,30 +136,34 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     }
 
-    //Display's person email in Logcat if connected
-    private void getProfileInformation(){
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        //if 4 fingers touch at once, open debug menu
+        if (event.getPointerCount() == 4){
+            Log.i(logTAG, "Entering debug menu");
+
+            Intent i = new Intent(this, DebugActivity.class);
+            startActivity(i);
+
+        }
+
+        return true;
+    }
+
+    //Displays person email in Logcat if connected
+    private void setProfileInformation(){
         try{
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            String email = SailfishPreferences.getEmail(this);
 
             if(email != null){
                 //display Person ID in logcat
                 Log.d(logTAG, "Name: " + email);
                 //display Person ID on Home screen
-                loggedInEmail = (TextView)findViewById(R.id.emailTxtView);
-                loggedInEmail.setText(email);
+                setLoggedInEmailText(email);
 
-                //get the token here in case we need to provide extra permissions to do it
-                new RetrieveTokenTask().execute(email);
 
-                //tell mint who we are
-                Mint.setUserIdentifier(email);
-
-                SharedPreferences.Editor editor =
-                        getSharedPreferences(MY_PREFS_NAME, MODE_MULTI_PROCESS).edit();
-                editor.putString("email", email);
-                editor.commit();
-
-                Log.d(logTAG, "Got email successfully");
+                //startNotificationService();
 
             }else{
                 Log.e("", "Person information is NULL");
@@ -203,26 +174,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    //Checks whether or not the NoticeNotificationService has access
-    private void checkNotificationAccess(){
+    private void startNotificationService(){
 
-        String enabledAppList = Settings.Secure.getString(this.getContentResolver(),
-                "enabled_notification_listeners");
-        if(enabledAppList == null)
-            enabledAppList = "None";
+        Intent i = new Intent(this, SailfishNotificationService.class);
+        this.startService(i);
 
-        boolean checkAppAccessFlag = enabledAppList.contains("SailfishNotificationService");
-
-        if (!checkAppAccessFlag) {
-            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            startActivity(intent);
-        }
-    }
-
-    //Sends Notice created text message
-    private void send1stMSG(){
-        SendNotification sn = new SendNotification(this);
-        sn.SendMSG("Hello there Stranger!");
     }
 
     private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
@@ -256,7 +212,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             Log.e(logTAG, "Token Value: " + s);
 
             //get notification access after everything else works
-            checkNotificationAccess();
+            if(!NotificationActions.checkNotificationAccess(getApplication())){
+                NotificationActions.toastMSG(getApplication(), "Notice does not have Notification Access");
+            }
 
         }
     }
