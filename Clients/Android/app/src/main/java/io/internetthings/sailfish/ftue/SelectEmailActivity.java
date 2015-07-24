@@ -44,8 +44,8 @@ public class SelectEmailActivity extends Activity {
         if(rdoEmails.getCheckedRadioButtonId()!=-1){
             int id = rdoEmails.getCheckedRadioButtonId();
             RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
-            SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, (String) radioButton.getText());
-            SailfishPreferences.editor(this).commit();
+            SailfishPreferences.setEmail(this, (String) radioButton.getText());
+            SailfishPreferences.commit(this);
             
             //set email used by mint
             Mint.setUserIdentifier((String) radioButton.getText());

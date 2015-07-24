@@ -29,7 +29,7 @@ public class ConfigureChromeActivity extends Activity {
     //Starts the NotificationAccess Activity on click of button in configure chrome activity
     public void onClickCompletedButton(View view){
 
-        Boolean FTUECompleted = SailfishPreferences.reader(this).getBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, false);
+        Boolean FTUECompleted = SailfishPreferences.getFTUECompleted(this); //.reader(this).getBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, false);
 
         if (FTUECompleted){
             this.finish();
@@ -39,8 +39,8 @@ public class ConfigureChromeActivity extends Activity {
             startActivity(i);
 
             //mark FTUE completed
-            SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, true);
-            SailfishPreferences.editor(this).commit();
+            SailfishPreferences.setFTUECompleted(this, true);
+            SailfishPreferences.commit(this);
         }
 
         //send Test Notification
@@ -52,7 +52,7 @@ public class ConfigureChromeActivity extends Activity {
     //gets email that user selected in SelectEmail Activity and sets it in ConfigureChrome Activity
     private void setEmail(){
 
-        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        String email = SailfishPreferences.getEmail(this);
         TextView ftueemail = (TextView)findViewById(R.id.FTUEEmail);
         ftueemail.setText("To: " + email);
         Log.i("To: ", email);

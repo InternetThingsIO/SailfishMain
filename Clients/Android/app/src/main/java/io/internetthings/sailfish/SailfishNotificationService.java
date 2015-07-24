@@ -56,7 +56,7 @@ public class SailfishNotificationService extends NotificationListenerService{
             return;
         }
 
-        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        String email = SailfishPreferences.getEmail(this);
 
         //connect if we have an email
         if (email != null) {
@@ -133,7 +133,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private Boolean canIssueNotif(SailfishNotification sn) {
 
-        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        String email = SailfishPreferences.getEmail(this);
 
         if (email == null || email.length() == 0) {
             Log.w(logTAG, "Email is null, can't issue notification");
@@ -205,7 +205,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         String json = gson.toJson(sm);
         Log.i("JSONTest", json);
 
-        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        String email = SailfishPreferences.getEmail(this);
 
         String token = GoogleAuth2Activity.getToken(this, email);
 

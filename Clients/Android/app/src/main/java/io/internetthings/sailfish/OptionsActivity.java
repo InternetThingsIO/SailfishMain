@@ -38,8 +38,8 @@ public class OptionsActivity extends Activity {
                                     final Intent data) {
         if (requestCode == PICK_ACCOUNT_REQUEST && resultCode == RESULT_OK) {
             String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            SailfishPreferences.editor(this).putString(SailfishPreferences.EMAIL_KEY, accountName);
-            SailfishPreferences.editor(this).commit();
+            SailfishPreferences.setEmail(this, accountName); //editor(this).putString(SailfishPreferences.EMAIL_KEY, accountName);
+            SailfishPreferences.commit(this);
             Log.i("Email: ", accountName);
             NotificationActions.toastMSG(getApplication(), "Set to: " + accountName);
 
@@ -56,8 +56,8 @@ public class OptionsActivity extends Activity {
 
     public void restartSetup(View view){
 
-        SailfishPreferences.editor(this).putBoolean(SailfishPreferences.FTUE_COMPLETED_KEY, false);
-        SailfishPreferences.editor(this).commit();
+        SailfishPreferences.setFTUECompleted(this, false);
+        SailfishPreferences.commit(this);
 
         Intent i = new Intent(this, SelectEmailActivity.class);
         startActivity(i);

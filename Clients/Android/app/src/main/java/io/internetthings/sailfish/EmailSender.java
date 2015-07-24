@@ -71,7 +71,7 @@ public class EmailSender extends javax.mail.Authenticator {
 
     public void sendEmail(Context context){
 
-        final String recipient = SailfishPreferences.reader(context).getString(SailfishPreferences.EMAIL_KEY, null);
+        final String recipient = SailfishPreferences.getEmail(context);
 
         //bail if we don't have an email for some reason
         if (recipient == null) {

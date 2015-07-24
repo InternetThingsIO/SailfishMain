@@ -154,7 +154,7 @@ public class MainActivity extends Activity{
     //Displays person email in Logcat if connected
     private void setProfileInformation(){
         try{
-            String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+            String email = SailfishPreferences.getEmail(this);
 
             if(email != null){
                 //display Person ID in logcat

@@ -57,8 +57,8 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .addScope(new Scope("https://www.googleapis.com/auth/userinfo.email"))
-                .setAccountName(SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null))
-                .build();
+                .setAccountName(SailfishPreferences.getEmail(this))
+                        .build();
 
         mGoogleApiClient.connect();
 
@@ -74,10 +74,7 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
         restartService();
 
         boolean ftueCompleted =
-                SailfishPreferences.reader(this)
-                        .getBoolean(SailfishPreferences
-                                .FTUE_COMPLETED_KEY, false);
-
+                SailfishPreferences.getFTUECompleted(this);
 
         if (!ftueCompleted) {
             Intent i = new Intent(this, NotificationAccessActivity.class);

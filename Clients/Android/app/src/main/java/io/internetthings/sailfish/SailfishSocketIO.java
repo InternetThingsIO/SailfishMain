@@ -147,7 +147,7 @@ public class SailfishSocketIO {
     }
 
     public static void joinUsersRoom(Context context){
-        String email = SailfishPreferences.reader(context).getString(SailfishPreferences.EMAIL_KEY, null);
+        String email = SailfishPreferences.getEmail(context);
         if (email != null) {
             Log.w(logTAG, "Joining user's room");
             joinRoom(GoogleAuth2Activity.getToken(context, email), email);

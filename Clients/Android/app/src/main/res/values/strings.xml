@@ -18,5 +18,6 @@
     <string name="title_activity_check_list">CheckListActivity</string>
     <string name="title_activity_google_auth2">GoogleAuth2Activity</string>
     <string name="title_activity_options">OptionsActivity</string>
+    <string name="title_activity_muted_notificaitons">MutedNotificaitonsActivity</string>
 
 </resources>

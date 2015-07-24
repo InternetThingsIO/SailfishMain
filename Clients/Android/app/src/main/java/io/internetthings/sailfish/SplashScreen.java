@@ -64,9 +64,7 @@ public class SplashScreen extends Activity {
             private void endStartup(){
 
                 boolean FTUECompleted =
-                        SailfishPreferences.reader(getApplicationContext())
-                                .getBoolean(SailfishPreferences
-                                        .FTUE_COMPLETED_KEY, false);
+                        SailfishPreferences.getFTUECompleted(getApplicationContext());
 
                 Class newActivity;
 
@@ -92,7 +90,7 @@ public class SplashScreen extends Activity {
     }
 
     private void setupMint(){
-        String email = SailfishPreferences.reader(this).getString(SailfishPreferences.EMAIL_KEY, null);
+        String email = SailfishPreferences.getEmail(this);
         //Line of code to add Splunk Mint to the project
         Mint.initAndStartSession(this, Constants.MINT_API_KEY);
 

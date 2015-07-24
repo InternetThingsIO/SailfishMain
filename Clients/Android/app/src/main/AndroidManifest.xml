@@ -97,6 +97,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/DefaultTheme" >
         </activity>
+        <activity
+            android:name=".MutedPackagesActivity"
+            android:label="@string/title_activity_muted_notificaitons"
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultTheme" >
+        </activity>
     </application>
 
 </manifest>
