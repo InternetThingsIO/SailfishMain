@@ -15,7 +15,7 @@ var redis = require('socket.io-redis');
 var io = require('socket.io').listen(server);
 
 //redis is installed on load balancer
-io.adapter(redis({ host: '104.236.77.219', port: 6379 }));
+io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
 
 server.listen(443);
 
