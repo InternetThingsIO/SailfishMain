@@ -11,6 +11,7 @@ var options = {
 };
 
 var server = https.createServer(options, app);
+var redis = require('socket.io-redis');
 var io = require('socket.io').listen(server);
 
 //redis is installed on load balancer
