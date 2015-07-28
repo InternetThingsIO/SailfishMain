@@ -1,23 +1,16 @@
 var app = require('express')();
-var https = require('https');
-var fs = require('fs');
+var http = require('http').Server(app);
 var XMLHttpRequest = require('xhr2');
 
-
-var options = {
-  key: fs.readFileSync('/etc/ssl/certs/privatekey.pem'),
-  cert: fs.readFileSync('/etc/ssl/certs/certificate.pem'),
-  ca: fs.readFileSync('/etc/ssl/certs/intermediate.pem')
-};
-
-var server = https.createServer(options, app);
 var redis = require('socket.io-redis');
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(http);
 
 //redis is installed on load balancer
 io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
 
-server.listen(6000);
+http.listen(6001, function(){
+	console.log('listening on *:6001');
+});
 
 function main(){
 
