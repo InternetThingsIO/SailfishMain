@@ -39,4 +39,10 @@ public class DebugActivity extends Activity {
 
 
     }
+
+    public void onClickTestMutedPkg(View view){
+        Intent i = new Intent(this, MutedPackagesActivity.class);
+        startActivity(i);
+        this.finish();
+    }
 }

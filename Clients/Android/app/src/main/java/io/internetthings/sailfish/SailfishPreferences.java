@@ -21,6 +21,7 @@ public class SailfishPreferences {
     public static final String EMAIL_KEY = "email";
     public static final String FTUE_COMPLETED_KEY = "FTUECompleted";
     public static final String MUTED_PACKAGES_KEY = "mute";
+    public static final String EVER_MUTED_KEY = "EVER_MUTED_KEY";
 
     private static SharedPreferences.Editor editor(Context context){
 
@@ -67,6 +68,14 @@ public class SailfishPreferences {
 
     public static Set<String> getMutedPackages(Context context){
         return reader(context).getStringSet(MUTED_PACKAGES_KEY, null);
+    }
+
+    public static void setEverMutedPackages(Context context, Set<String> value){
+        editor(context).putStringSet(EVER_MUTED_KEY, value);
+    }
+
+    public static Set<String> getEverMutedPackages(Context context){
+        return reader(context).getStringSet(EVER_MUTED_KEY, null);
     }
 
     public static void commit(Context context){
