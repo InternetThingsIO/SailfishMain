@@ -17,7 +17,7 @@ var io = require('socket.io').listen(server);
 //redis is installed on load balancer
 io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
 
-server.listen(443);
+server.listen(6000);
 
 function main(){
 
