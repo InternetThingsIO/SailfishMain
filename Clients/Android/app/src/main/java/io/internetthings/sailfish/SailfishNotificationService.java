@@ -130,10 +130,10 @@ public class SailfishNotificationService extends NotificationListenerService{
         //if ongoing or not clearable and not on white list, return false
         if (sbn.isClearable() == false || sbn.isOngoing() == true){
             if (!PkgWhiteList.contains(sbn.getPackageName())) {
-                Log.i(logTAG, "Package: " + sbn.getPackageName() + " is not on the white list");
+                Log.i(logTAG, "Package: " + sbn.getPackageName() + " is NOT on the white list");
                 return false;
             }
-
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " IS on the white list");
         }
 
         return true;
