@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 
 /*
@@ -30,10 +31,18 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
     public static final String MY_PREFS_NAME = "SailFishPref";
 
-    private ArrayList<SailfishNotification> issuedNotifications = new ArrayList<>();
+    private HashSet<String> PkgWhiteList = new HashSet<>();
 
     public SailfishNotificationService(){
+
         SailfishSocketIO.setupSocket(this);
+
+        //create white list
+        PkgWhiteList.add("com.google.android.dialer");
+        PkgWhiteList.add("com.skype.raider");
+        PkgWhiteList.add("com.viber.voip");
+        PkgWhiteList.add("com.skype.android");
+        PkgWhiteList.add("com.whatsapp");
     }
 
     //start sticky so it restarts on crash :-)
@@ -94,21 +103,12 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION);
 
-        updateDuplicates(sn);
-
-
-
-        //don't issue this notification if it shouldn't be issued
-        if (!canIssueNotif(sn))
-            return;
 
         sendMessage(sn);
 
         //add current notif
         //clear image to save memory
         sn.clearImage();
-        if (!issuedNotifications.contains(sn))
-            issuedNotifications.add(sn);
 
     }
 
@@ -127,54 +127,17 @@ public class SailfishNotificationService extends NotificationListenerService{
             return false;
         }
 
-        return true;
-
-    }
-
-    private Boolean canIssueNotif(SailfishNotification sn) {
-
-        String email = SailfishPreferences.getEmail(this);
-
-        if (email == null || email.length() == 0) {
-            Log.w(logTAG, "Email is null, can't issue notification");
-            return false;
-        }
-
-        //check to see if this is a duplicate
-        if (isDuplicate(sn))
-            return false;
-
-        return true;
-    }
-
-    private boolean isDuplicate(SailfishNotification sn){
-        if (issuedNotifications.contains(sn)){
-            Log.i(logTAG, "Duplicate notification detected");
-            return true;
-        }
-
-        return false;
-    }
-
-    private void updateDuplicates(SailfishNotification sn){
-
-        Iterator<SailfishNotification> it =  issuedNotifications.iterator();
-
-        SailfishNotification currNotif;
-        long elapsedTime;
-
-        //clear expired notifs
-        while (it.hasNext()){
-            currNotif = it.next();
-            elapsedTime = new Date().getTime() - currNotif.CreatedDate.getTime();
-
-            if (elapsedTime > Constants.NOTIF_EXPIRATION_MS) {
-                it.remove();
-                Log.i(logTAG, "Removing expired notif ID: " + currNotif.ID);
+        //if ongoing or not clearable and not on white list, return false
+        if (sbn.isClearable() == false || sbn.isOngoing() == true){
+            if (!PkgWhiteList.contains(sbn.getPackageName())) {
+                Log.i(logTAG, "Package: " + sbn.getPackageName() + " is NOT on the white list");
+                return false;
             }
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " IS on the white list");
         }
 
-        Log.i(logTAG, "Issued Notifications Size: " + issuedNotifications.size());
+        return true;
+
     }
 
     private String toBase64(String str){
@@ -237,11 +200,6 @@ public class SailfishNotificationService extends NotificationListenerService{
 
 
         SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.REMOVE_NOTIFICATION);
-
-        if (issuedNotifications.contains(sn)) {
-            Log.i(logTAG, "Removing existing notification from issuedNotifications");
-            issuedNotifications.remove(sn);
-        }
 
         sn.clearImage();
         sendMessage(sn);
