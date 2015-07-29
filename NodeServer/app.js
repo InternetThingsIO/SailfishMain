@@ -1,3 +1,5 @@
+require('newrelic');
+
 var app = require('express')();
 var http = require('http').Server(app);
 var XMLHttpRequest = require('xhr2');
