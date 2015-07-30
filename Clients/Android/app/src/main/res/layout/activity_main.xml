@@ -64,5 +64,14 @@
         android:layout_above="@+id/imageButton"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Version"
+        android:id="@+id/versionTxt"
+        android:layout_alignBottom="@+id/imageButton"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
