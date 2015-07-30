@@ -1,4 +1,4 @@
-require('newrelic');
+var nr = require('newrelic');
 
 var app = require('express')();
 var http = require('http').Server(app);
@@ -22,17 +22,26 @@ function main(){
 
   io.on('connection', function(socket){
 
-    socket.on('join room', function(token, email){
+    socket.on('ping', nr.createWebTransaction('/ws/ping', function (data) {
+      socket.emit('pong');
+      nr.endTransaction();
+    }));
+
+
+    socket.on('join room', nr.createWebTransaction('/ws/join_room', function (token, email){
       checkToken(token, email, socket, joinRoom, null);
-    });
+      nr.endTransaction();
+    }));
 
-    socket.on('leave room', function(token, email){
+    socket.on('leave room', nr.createWebTransaction('/ws/leave_room', function (token, email){
       checkToken(token, email, socket, leaveRoom, null);
-    });
+      nr.endTransaction();
+    }));
 
-    socket.on('send message', function(token, email, msg){
+    socket.on('send message', nr.createWebTransaction('/ws/send_message', function (token, email, msg){
       checkToken(token, email, socket, messageToClient, [msg]);
-    });
+      nr.endTransaction();
+    }));
 
     socket.on('dismiss_notif_device', function(token, email, notifId){
       checkToken(token, email, socket, dismissNotification, [notifId]);
