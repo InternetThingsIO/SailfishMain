@@ -18,6 +18,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/checkBoxLL"></LinearLayout>
+            android:id="@+id/checkBoxLL">
+
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

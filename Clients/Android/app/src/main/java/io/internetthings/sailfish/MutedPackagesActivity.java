@@ -1,12 +1,24 @@
 package io.internetthings.sailfish;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -17,28 +29,50 @@ import java.util.Set;
 public class MutedPackagesActivity extends Activity {
 
     private HashMap<String, Boolean> mutedPackages;
+    private String sTAG = this.getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muted_packages);
         getMutedPrefs();
-        createCheckboxes();
+        createCheckboxes(this);
     }
 
-    private void createCheckboxes(){
+    private void createCheckboxes(Context context){
+        Drawable icon = null;
+        String pkgName = "No name found!";
+
         Iterator<String> it = mutedPackages.keySet().iterator();
         Log.i("itsize: ", Integer.toString(mutedPackages.size()));
         while(it.hasNext()){
             String pkg = it.next();
             boolean value = mutedPackages.get(pkg);
+            ApplicationInfo appInfo;
+            try{
+                appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
+                icon = context.getPackageManager().getApplicationIcon(appInfo);
+                pkgName = context.getPackageManager().getApplicationLabel(appInfo).toString();
+            }catch (Exception e){
+                Log.e(sTAG, e.getMessage());
+            }
 
             LinearLayout ll = (LinearLayout) findViewById(R.id.checkBoxLL);
 
-            CheckBox cb = new CheckBox(this);
-            cb.setChecked(value);
-            cb.setText(pkg);
-            ll.addView(cb);
+            CheckedTextView chkBox = new CheckedTextView(this);
+            chkBox.setChecked(value);
+            chkBox.setCheckMarkDrawable(R.drawable.custom_checkbox);
+            chkBox.setText(pkgName);
+            chkBox.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            chkBox.setTextSize(24f);
+            chkBox.setTextColor(Color.WHITE);
+            chkBox.isClickable();
+            chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
+                public void onClick(View v) {
+                    ((CheckedTextView) v).toggle();
+                }
+            });
+            ll.addView(chkBox);
         }
     }
 
@@ -58,24 +92,24 @@ public class MutedPackagesActivity extends Activity {
     public void getMutedPrefs(){
         //mutedPackages  //(HashSet<String>)SailfishPreferences.getMutedPackages(this);
         mutedPackages = new HashMap<>();
-        mutedPackages.put("com.test1", true);
-        mutedPackages.put("com.test2", true);
-        mutedPackages.put("com.test3", true);
-        mutedPackages.put("com.test4", true);
-        mutedPackages.put("com.test5", true);
-        mutedPackages.put("com.test6", true);
-        mutedPackages.put("com.test7", true);
-        mutedPackages.put("com.test8", true);
-        mutedPackages.put("com.test9", true);
-        mutedPackages.put("com.test10", true);
-        mutedPackages.put("com.test11", true);
-        mutedPackages.put("com.test12", true);
-        mutedPackages.put("com.test13", true);
-        mutedPackages.put("com.test14", true);
-        mutedPackages.put("com.test15", true);
-        mutedPackages.put("com.test16", true);
-        mutedPackages.put("com.test17", true);
-        mutedPackages.put("com.test18", true);
+        mutedPackages.put("com.google.android.gm", false);
+        mutedPackages.put("com.google.android.talk", true);
+        /*mutedPackages.put("com.google.android.gm", false);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);
+        mutedPackages.put("com.google.android.gm", true);*/
 
 
     }

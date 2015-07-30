@@ -2,10 +2,12 @@ package io.internetthings.sailfish;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.app.Activity;
+import android.widget.Toast;
 
 
 public class DebugActivity extends Activity {
@@ -44,5 +46,14 @@ public class DebugActivity extends Activity {
         Intent i = new Intent(this, MutedPackagesActivity.class);
         startActivity(i);
         this.finish();
+    }
+
+    public void onClickRestartService(View view){
+        Intent i = new Intent(this, SailfishNotificationService.class);
+        stopService(i);
+        Log.i(logTag, "Stopping Service");
+        startService(i);
+        Log.i(logTag, "Starting Service");
+        Toast.makeText(getApplication(), "SailfishNotification Service Restarted",Toast.LENGTH_LONG).show();
     }
 }
