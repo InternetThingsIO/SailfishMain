@@ -113,6 +113,7 @@ function createSocket(){
   socket.on('message', function(jsonStr){
 
     handleMessage(jsonStr);
+    console.log('Transport type: ' + socket.io.engine.transport.name);
 
   });
 
@@ -121,6 +122,8 @@ function createSocket(){
     //rejoin room if we have one to join
     if (user_info)
       socketJoinRoom(user_info.emails[0].value);
+
+    console.log('Transport type: ' + socket.io.engine.transport.name);
 
   });
 
