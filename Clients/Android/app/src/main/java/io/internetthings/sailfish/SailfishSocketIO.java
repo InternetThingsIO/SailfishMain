@@ -179,5 +179,4 @@ public class SailfishSocketIO {
         mSocket.close();
 
     }
-
 }
