@@ -54,7 +54,7 @@ public class MutedPackagesActivity extends Activity {
             chkBox.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
             chkBox.setTextSize(24f);
             chkBox.setTextColor(Color.WHITE);
-            chkBox.isClickable();
+            chkBox.setPadding(0, 0, 35, 0);
             chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
                 public void onClick(View v) {
                     if(chkBox.isChecked())
