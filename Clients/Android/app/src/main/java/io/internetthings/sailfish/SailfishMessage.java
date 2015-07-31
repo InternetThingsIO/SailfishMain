@@ -16,11 +16,21 @@ public class SailfishMessage {
     public MessageActions Action;
     public String ID;
     public Date CreatedDate;
+    public Object Payload;
 
     public SailfishMessage(StatusBarNotification sbn, MessageActions action){
+        setupMessage(sbn, action, null);
+    }
+
+    public SailfishMessage(StatusBarNotification sbn, MessageActions action, Object payload){
+        setupMessage(sbn, action, payload);
+    }
+
+    private void setupMessage(StatusBarNotification sbn, MessageActions action, Object payload){
         this.ID = getMessageID(sbn);
         this.CreatedDate = new Date();
         this.Action = action;
+        this.Payload = payload;
     }
 
     private String getMessageID(StatusBarNotification sbn){

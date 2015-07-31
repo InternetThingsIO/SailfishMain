@@ -3,6 +3,7 @@ package io.internetthings.sailfish;
 import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import io.internetthings.sailfish.NotificationTemplateType.TemplateType;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -12,10 +13,8 @@ import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
+
 
 /*
     Created by: Jason Maderski
@@ -100,15 +99,10 @@ public class SailfishNotificationService extends NotificationListenerService{
         );
 
         getPrefAndConnect();
+        SailfishNotification sn = new SailfishNotification(sbn, this);
+        SailfishMessage message = new SailfishMessage(sbn, MessageActions.POST_NOTIFICATION, sn);
 
-        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION);
-
-
-        sendMessage(sn);
-
-        //add current notif
-        //clear image to save memory
-        sn.clearImage();
+        sendMessage(message);
 
     }
 
@@ -199,9 +193,8 @@ public class SailfishNotificationService extends NotificationListenerService{
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
 
 
-        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.REMOVE_NOTIFICATION);
+        SailfishMessage sn = new SailfishMessage(sbn, MessageActions.REMOVE_NOTIFICATION);
 
-        sn.clearImage();
         sendMessage(sn);
     }
 
