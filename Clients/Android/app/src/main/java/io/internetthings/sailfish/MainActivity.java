@@ -42,26 +42,7 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setVersionText();
         setupBroadcastManagers();
-    }
-
-    //Displays version number
-    private void setVersionText(){
-        String versionInfo;
-        PackageInfo pkgInfo = null;
-        TextView tv = (TextView) findViewById(R.id.versionTxt);
-        try {
-            pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        }catch(Exception e){
-            Log.e(logTAG, e.getMessage());
-        }
-
-        versionInfo = "Version: " + pkgInfo.versionName.toString()
-                + " Code: " + pkgInfo.versionCode;
-
-        tv.setText(versionInfo);
-        tv.setTextColor(Color.WHITE);
     }
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD

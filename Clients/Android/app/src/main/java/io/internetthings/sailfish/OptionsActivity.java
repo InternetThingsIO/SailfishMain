@@ -3,9 +3,11 @@ package io.internetthings.sailfish;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.common.AccountPicker;
 
@@ -16,11 +18,28 @@ import io.internetthings.sailfish.ftue.SelectEmailActivity;
 public class OptionsActivity extends Activity {
 
     static final int PICK_ACCOUNT_REQUEST =1;
+    private final String logTAG = this.getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+        setVersionText();
+    }
+
+    //Displays version number
+    private void setVersionText(){
+        String versionInfo;
+        PackageInfo pkgInfo = null;
+        TextView tv = (TextView) findViewById(R.id.versionTxt);
+        try {
+            pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        }catch(Exception e){
+            Log.e(logTAG, e.getMessage());
+        }
+        versionInfo = "v" + pkgInfo.versionName.toString()
+                + " build: " + pkgInfo.versionCode;
+        tv.setText(versionInfo);
     }
 
     public void sendTestMSG(View view){

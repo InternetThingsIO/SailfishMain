@@ -84,4 +84,13 @@
             android:clickable="true"
             android:onClick="changeACCTEmail" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Version"
+        android:id="@+id/versionTxt"
+        android:layout_alignBottom="@+id/backtoMain"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
