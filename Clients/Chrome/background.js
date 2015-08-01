@@ -171,7 +171,18 @@ function determineActions(jsonObj){
 //creates a basic notification. other types to come
 function createBasicNotif(jsonObj){
 
-  var notifOptions = jsonObj.Payload;
+  if (jsonObj.Payload != null)
+    var notifOptions = jsonObj.Payload;
+  else{
+    var notifOptions = {
+      type: 'basic', 
+      iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
+      title: jsonObj.Subject, 
+      message: jsonObj.Body,
+      eventTime: jsonObj.PostTime,
+      priority: jsonObj.Priority
+    };
+  }
 
   chrome.notifications.create(jsonObj.ID, notifOptions);
 
