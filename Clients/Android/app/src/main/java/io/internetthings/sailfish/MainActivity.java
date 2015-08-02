@@ -127,11 +127,7 @@ public class MainActivity extends Activity{
 
         setupBroadcastManagers();
 
-        //get current socket status
-        if (SailfishSocketIO.isConnected)
-            setConnectedText();
-        else
-            setDisconnectedText();
+        SailfishNotificationService.socketConnect();
 
         setProfileInformation();
 

@@ -34,7 +34,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private final String logTAG = this.getClass().getName();
 
-    private SailfishSocketIO socket;
+    private static SailfishSocketIO socket;
 
     BroadcastReceiver onNotificationDismissed;
 
@@ -48,9 +48,27 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     }
 
+    public static boolean socketIsConnected(){
+        if (socket != null)
+            return socket.isConnected();
+        else
+            return false;
+    }
+
+    public static void socketConnect(){
+        if (socket != null)
+            socket.connect();
+    }
+
+    public static void socketDisconnect(){
+        if (socket != null)
+            socket.disconnect();
+    }
+
     private void doStartup(){
         if (socket == null){
             socket = new SailfishSocketIO(this);
+            socket.connect();
         }
 
         //create white list
@@ -88,8 +106,6 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private void getPrefAndConnect() {
-
-
 
         if (socket.isConnected()) {
             Log.i(logTAG, "Socket is already connected");

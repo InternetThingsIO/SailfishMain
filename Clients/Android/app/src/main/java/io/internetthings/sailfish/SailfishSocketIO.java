@@ -26,8 +26,6 @@ public class SailfishSocketIO {
     private Socket mSocket;
     private static final String logTAG = "SailfishSocketIO";
 
-    public static Boolean isConnected = false;
-
     public boolean isConnected(){
         return mSocket.connected();
     }
@@ -65,8 +63,6 @@ public class SailfishSocketIO {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
                 joinUsersRoom(context);
-
-                isConnected = true;
             }
         };
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
@@ -79,7 +75,6 @@ public class SailfishSocketIO {
                 Intent intent = new Intent("onSocketDisconnect");
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                isConnected = false;
             }
         };
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -90,7 +85,6 @@ public class SailfishSocketIO {
             public void call(final Object... args) {
                 Log.w(logTAG, "NoticeSocketIO onReconnected");
                 joinUsersRoom(context);
-                isConnected = true;
             }
         };
         mSocket.on(Socket.EVENT_RECONNECT, onReconnected);
@@ -101,7 +95,6 @@ public class SailfishSocketIO {
             public void call(final Object... args) {
                 Log.w(logTAG, "NoticeSocketIO onReconnectFailed");
                 //mSocket.connect();
-                isConnected = false;
             }
         };
         mSocket.on(Socket.EVENT_RECONNECT_FAILED, onReconnectFailed);
