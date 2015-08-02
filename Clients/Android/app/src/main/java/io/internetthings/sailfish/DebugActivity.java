@@ -66,11 +66,10 @@ public class DebugActivity extends Activity {
     }
 
     public void onClickRestartService(View view){
-        Intent i = new Intent(this, SailfishNotificationService.class);
-        stopService(i);
-        Log.i(logTag, "Stopping Service");
-        startService(i);
-        Log.i(logTag, "Starting Service");
+        stopService(new Intent(this, SailfishNotificationService.class));
+        Log.i("Service: ", "STOPPED");
+        startService(new Intent(this, SailfishNotificationService.class));
+        Log.i("Service: ", "STARTED");
         Toast.makeText(getApplication(), "SailfishNotification Service Restarted",Toast.LENGTH_LONG).show();
     }
 }
