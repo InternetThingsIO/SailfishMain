@@ -42,8 +42,16 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupBroadcastManagers();
     }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
+    }
+
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD
     private void setConnectedText(){
@@ -117,9 +125,7 @@ public class MainActivity extends Activity{
 
         loadedDebug = false;
 
-        //try to connect
-        //SailfishSocketIO.setupSocket(this);
-        //SailfishSocketIO.connect();
+        setupBroadcastManagers();
 
         //get current socket status
         if (SailfishSocketIO.isConnected)
@@ -135,8 +141,6 @@ public class MainActivity extends Activity{
     protected void onDestroy(){
         super.onDestroy();
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
     }
 
     @Override
