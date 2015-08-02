@@ -18,9 +18,26 @@ public class DebugActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
+    }
 
+    public void onClickSocketDisconnect(View view){
+        SailfishSocketIO.disconnect();
+    }
 
+    public void onClickSocketConnect(View view){
+        SailfishSocketIO.connect();
+    }
 
+    public void onClickGetNotifAccess(View view){
+        if(!NotificationActions.checkNotificationAccess(getApplication()))
+            NotificationActions.openNotificationAccess(getApplication());
+        else
+            NotificationActions.toastMSG(getApplication(), "You already gave us access, you sly dog!");
+    }
+
+    public void onClickGAuth(View view){
+        Intent i = new Intent(this, GoogleAuth2Activity.class);
+        startActivity(i);
     }
 
     //hooked up to button via activity XML

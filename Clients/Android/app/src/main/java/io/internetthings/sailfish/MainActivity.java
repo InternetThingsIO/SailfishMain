@@ -38,6 +38,8 @@ public class MainActivity extends Activity{
     BroadcastReceiver onSocketConnectReceiver;
     BroadcastReceiver onSocketDisconnectReceiver;
 
+    private Boolean loadedDebug = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +119,8 @@ public class MainActivity extends Activity{
     protected void onResume(){
         super.onResume();
 
+        loadedDebug = false;
+
         //try to connect
         SailfishSocketIO.connect();
 
@@ -142,9 +146,11 @@ public class MainActivity extends Activity{
     public boolean onTouchEvent(MotionEvent event){
 
         //if 4 fingers touch at once, open debug menu
-        if (event.getPointerCount() == 4){
+        if (event.getPointerCount() == 4 && loadedDebug == false){
+
             Log.i(logTAG, "Entering debug menu");
 
+            loadedDebug = true;
             Intent i = new Intent(this, DebugActivity.class);
             startActivity(i);
 

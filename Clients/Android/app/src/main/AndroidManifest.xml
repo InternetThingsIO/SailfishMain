@@ -67,8 +67,7 @@
             android:name=".DebugActivity"
             android:label="@string/title_activity_debug"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DefaultTheme" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.internetthings.sailfish.MainActivity" />
