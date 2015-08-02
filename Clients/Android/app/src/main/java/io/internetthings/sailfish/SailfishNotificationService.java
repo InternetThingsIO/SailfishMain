@@ -40,14 +40,13 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private HashSet<String> PkgWhiteList;
 
-    public SailfishNotificationService(){}
+    public static void restartService(Context context){
+        context.stopService(new Intent(context, SailfishNotificationService.class));
+        context.startService(new Intent(context, SailfishNotificationService.class));
 
-    //start sticky so it restarts on crash :-)
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    }
 
-        super.onStartCommand(intent, flags, startId);
-
+    private void doStartup(){
         if (socket != null){
             socket.Close();
         }
@@ -64,8 +63,6 @@ public class SailfishNotificationService extends NotificationListenerService{
         PkgWhiteList.add("com.skype.android");
         PkgWhiteList.add("com.whatsapp");
 
-        Log.i(logTAG, "SailfishNotificationService starting");
-
         onNotificationDismissed = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -75,10 +72,24 @@ public class SailfishNotificationService extends NotificationListenerService{
         LocalBroadcastManager.getInstance(this).registerReceiver(onNotificationDismissed,
                 new IntentFilter(Constants.NOTIFICATON_DISMISSED));
 
+    }
+
+    //start sticky so it restarts on crash :-)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        super.onStartCommand(intent, flags, startId);
+
+        doStartup();
+
+        Log.e(logTAG, "Service Started");
+
         return START_STICKY;
     }
 
     private void getPrefAndConnect() {
+
+
 
         if (socket.isConnected()) {
             Log.i(logTAG, "Socket is already connected");
@@ -126,6 +137,10 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private Boolean isNotifValid(StatusBarNotification sbn){
+
+        if (PkgWhiteList == null)
+            return false;
+
         if (sbn == null || sbn.getNotification() == null) {
             Log.w(logTAG, "sbn was null, notification is not valid");
             return false;
@@ -223,6 +238,8 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         socket.Close();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotificationDismissed);
+
+        Log.e(logTAG, "Service Stopped");
     }
 
 }

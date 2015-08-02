@@ -7,6 +7,7 @@ import android.view.View;
 
 import io.internetthings.sailfish.NotificationActions;
 import io.internetthings.sailfish.R;
+import io.internetthings.sailfish.SailfishNotificationService;
 
 public class NotificationAccessActivity extends Activity {
 
@@ -53,6 +54,9 @@ public class NotificationAccessActivity extends Activity {
     }
 
     public void goNextActivity(){
+
+        SailfishNotificationService.restartService(this);
+
         Intent i = new Intent(this, ConfigureChromeActivity.class);
         startActivity(i);
         this.finish();

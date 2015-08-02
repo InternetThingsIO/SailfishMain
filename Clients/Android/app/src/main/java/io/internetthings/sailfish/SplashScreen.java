@@ -34,6 +34,10 @@ public class SplashScreen extends Activity {
 
     private void doStartupTasks(){
 
+        //restart notif service first thing
+        if (SailfishPreferences.getFTUECompleted(this))
+            SailfishNotificationService.restartService(this);
+
         //have to do this in the main thread for some reason
         setupMint();
 

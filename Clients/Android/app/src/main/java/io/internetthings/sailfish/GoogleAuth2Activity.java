@@ -77,8 +77,6 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
     public void onConnected(Bundle connectionHint) {
         Log.d(logTAG, "Successfully connected to Google");
 
-        restartService();
-
         boolean ftueCompleted =
                 SailfishPreferences.getFTUECompleted(this);
 
@@ -156,14 +154,6 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
         return token;
 
-    }
-
-    //Stops and Starts the SailfishNotificationService
-    private void restartService(){
-        stopService(new Intent(this, SailfishNotificationService.class));
-        Log.i("Service: ", "STOPPED");
-        startService(new Intent(this, SailfishNotificationService.class));
-        Log.i("Service: ", "STARTED");
     }
 
     private void closeGoogleClient(){
