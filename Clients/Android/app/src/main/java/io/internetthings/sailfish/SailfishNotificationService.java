@@ -33,7 +33,6 @@ import java.util.HashSet;
 public class SailfishNotificationService extends NotificationListenerService{
 
     private final String logTAG = this.getClass().getName();
-    public static final String MY_PREFS_NAME = "SailFishPref";
 
     private SailfishSocketIO socket;
 
