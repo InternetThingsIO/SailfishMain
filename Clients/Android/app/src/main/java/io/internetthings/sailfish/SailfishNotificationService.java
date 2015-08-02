@@ -39,28 +39,31 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     BroadcastReceiver onNotificationDismissed;
 
-    private HashSet<String> PkgWhiteList = new HashSet<>();
+    private HashSet<String> PkgWhiteList;
 
-    public SailfishNotificationService(){
-
-        socket = new SailfishSocketIO();
-
-        socket.setupSocket(this);
-
-        //create white list
-        PkgWhiteList.add("com.google.android.dialer");
-        PkgWhiteList.add("com.skype.raider");
-        PkgWhiteList.add("com.viber.voip");
-        PkgWhiteList.add("com.skype.android");
-        PkgWhiteList.add("com.whatsapp");
-
-    }
+    public SailfishNotificationService(){}
 
     //start sticky so it restarts on crash :-)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         super.onStartCommand(intent, flags, startId);
+
+        if (socket != null){
+            socket.Close();
+        }
+
+        socket = new SailfishSocketIO();
+
+        socket.setupSocket(this);
+
+        //create white list
+        PkgWhiteList = new HashSet<>();
+        PkgWhiteList.add("com.google.android.dialer");
+        PkgWhiteList.add("com.skype.raider");
+        PkgWhiteList.add("com.viber.voip");
+        PkgWhiteList.add("com.skype.android");
+        PkgWhiteList.add("com.whatsapp");
 
         Log.i(logTAG, "SailfishNotificationService starting");
 
