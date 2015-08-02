@@ -35,13 +35,17 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
     public static final String MY_PREFS_NAME = "SailFishPref";
 
+    private SailfishSocketIO socket;
+
     BroadcastReceiver onNotificationDismissed;
 
     private HashSet<String> PkgWhiteList = new HashSet<>();
 
     public SailfishNotificationService(){
 
-        SailfishSocketIO.setupSocket(this);
+        socket = new SailfishSocketIO();
+
+        socket.setupSocket(this);
 
         //create white list
         PkgWhiteList.add("com.google.android.dialer");
@@ -56,11 +60,9 @@ public class SailfishNotificationService extends NotificationListenerService{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        super.onStartCommand(intent,flags, startId);
+        super.onStartCommand(intent, flags, startId);
 
         Log.i(logTAG, "SailfishNotificationService starting");
-
-        Mint.initAndStartSession(this, Constants.MINT_API_KEY);
 
         onNotificationDismissed = new BroadcastReceiver() {
             @Override
@@ -76,7 +78,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private void getPrefAndConnect() {
 
-        if (SailfishSocketIO.isConnected()) {
+        if (socket.isConnected()) {
             Log.i(logTAG, "Socket is already connected");
             return;
         }
@@ -87,9 +89,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         if (email != null) {
             Log.e(logTAG, "Connecting to socket, found email: " + email);
 
-            SailfishSocketIO.connect();
-
-            Mint.setUserIdentifier(email);
+            socket.connect();
 
         }else{
             Log.e(logTAG, "Email is NULL");
@@ -184,7 +184,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         String token = GoogleAuth2Activity.getToken(this, email);
 
         if (!TextUtils.isEmpty(token))
-            SailfishSocketIO.attemptSend(token, email, json);
+            socket.attemptSend(token, email, json);
         else
             Log.e(logTAG, "Token came back empty on sendMessage");
     }
@@ -217,9 +217,10 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     @Override
     public void onDestroy(){
-        SailfishSocketIO.Close();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotificationDismissed);
         super.onDestroy();
+
+        socket.Close();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotificationDismissed);
     }
 
 }

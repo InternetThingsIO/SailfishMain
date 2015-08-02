@@ -62,7 +62,7 @@ public class ConfigureChromeActivity extends Activity {
 
         EmailSender sender = new EmailSender();
         sender.sendEmail(this);
-
+        sender = null;
     }
 
 }

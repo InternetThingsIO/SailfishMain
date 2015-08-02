@@ -118,11 +118,11 @@ public class MainActivity extends Activity{
         loadedDebug = false;
 
         //try to connect
-        SailfishSocketIO.setupSocket(this);
-        SailfishSocketIO.connect();
+        //SailfishSocketIO.setupSocket(this);
+        //SailfishSocketIO.connect();
 
         //get current socket status
-        if (SailfishSocketIO.isConnected())
+        if (SailfishSocketIO.isConnected)
             setConnectedText();
         else
             setDisconnectedText();
@@ -133,11 +133,10 @@ public class MainActivity extends Activity{
 
     @Override
     protected void onDestroy(){
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
-        SailfishSocketIO.Close();
         super.onDestroy();
 
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
     }
 
     @Override

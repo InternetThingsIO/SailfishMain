@@ -3,6 +3,7 @@ package io.internetthings.sailfish;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.splunk.mint.Mint;
 
@@ -16,14 +17,10 @@ import io.internetthings.sailfish.ftue.SelectEmailActivity;
 */
 public class SplashScreen extends Activity {
 
-    //Splash screen time displayed
-    private static int SPLASHSCREEN_TIME_OUT = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splashscreen);
-
     }
 
     @Override
@@ -49,7 +46,7 @@ public class SplashScreen extends Activity {
 
                 //unnecessary delay, delete later
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 }catch(Exception ex){}
 
                 endStartup();
@@ -80,8 +77,9 @@ public class SplashScreen extends Activity {
 
                 Intent i = new Intent(SplashScreen.this, newActivity);
                 startActivity(i);
-                finish();
                 overridePendingTransition(0, R.animator.fadeout);
+
+                finish();
 
             }
 

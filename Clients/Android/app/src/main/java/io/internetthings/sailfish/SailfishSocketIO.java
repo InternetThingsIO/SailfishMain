@@ -12,6 +12,8 @@ import com.github.nkzawa.emitter.Emitter;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
+import javax.net.ssl.SSLContext;
+
 /*
         Created by: Jason Maderski
         Date: 6/3/2015
@@ -21,14 +23,16 @@ import java.net.URLDecoder;
 
 public class SailfishSocketIO {
 
-    private static Socket mSocket;
+    private Socket mSocket;
     private static final String logTAG = "SailfishSocketIO";
 
-    public static boolean isConnected(){
+    public static Boolean isConnected = false;
+
+    public boolean isConnected(){
         return mSocket.connected();
     }
 
-    public static void setupSocket(final Context context){
+    public void setupSocket(final Context context){
 
         if (mSocket != null) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");
@@ -57,6 +61,8 @@ public class SailfishSocketIO {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
                 joinUsersRoom(context);
+
+                isConnected = true;
             }
         };
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
@@ -69,6 +75,7 @@ public class SailfishSocketIO {
                 Intent intent = new Intent("onSocketDisconnect");
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                isConnected = false;
             }
         };
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -79,6 +86,7 @@ public class SailfishSocketIO {
             public void call(final Object... args) {
                 Log.w(logTAG, "NoticeSocketIO onReconnected");
                 joinUsersRoom(context);
+                isConnected = true;
             }
         };
         mSocket.on(Socket.EVENT_RECONNECT, onReconnected);
@@ -89,6 +97,7 @@ public class SailfishSocketIO {
             public void call(final Object... args) {
                 Log.w(logTAG, "NoticeSocketIO onReconnectFailed");
                 //mSocket.connect();
+                isConnected = false;
             }
         };
         mSocket.on(Socket.EVENT_RECONNECT_FAILED, onReconnectFailed);
@@ -138,17 +147,17 @@ public class SailfishSocketIO {
 
     }
 
-    public static void disconnect() {
+    public void disconnect() {
         mSocket.disconnect();
 
     }
 
-    public static void connect(){
+    public void connect(){
         if (!mSocket.connected())
             mSocket.connect();
     }
 
-    public static void joinUsersRoom(Context context){
+    public void joinUsersRoom(Context context){
         String email = SailfishPreferences.getEmail(context);
         if (email != null) {
             Log.w(logTAG, "Joining user's room");
@@ -158,7 +167,7 @@ public class SailfishSocketIO {
             Log.e(logTAG, "email was null for some reason in joinUsersRoom");
     }
 
-    public static void attemptSend(String token, String email, String message){
+    public void attemptSend(String token, String email, String message){
 
         if(mSocket != null) {
             mSocket.emit("send message", token, email, message);
@@ -167,7 +176,7 @@ public class SailfishSocketIO {
         }
     }
 
-    public static void joinRoom(String token, String room){
+    public void joinRoom(String token, String room){
         if(mSocket != null) {
             mSocket.emit("join room", token, room);
         }else{
@@ -175,7 +184,8 @@ public class SailfishSocketIO {
         }
     }
 
-    public static void Close(){
+    public void Close(){
+
         mSocket.disconnect();
         mSocket.off();
         mSocket.close();

@@ -60,7 +60,10 @@ public class OptionsActivity extends Activity {
             SailfishPreferences.setEmail(this, accountName); //editor(this).putString(SailfishPreferences.EMAIL_KEY, accountName);
             SailfishPreferences.commit(this);
             Log.i("Email: ", accountName);
-            NotificationActions.toastMSG(getApplication(), "Set to: " + accountName);
+
+            NotificationActions notif = new NotificationActions();
+
+            notif.toastMSG(getApplication(), "Set to: " + accountName);
 
             //We have to ask the user to grant permissions for this new email if they haven't already been granted.
             Intent i = new Intent(this, GoogleAuth2Activity.class);
