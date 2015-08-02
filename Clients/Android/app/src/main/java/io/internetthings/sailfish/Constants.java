@@ -9,4 +9,6 @@ public class Constants {
 
     public static final long NOTIF_EXPIRATION_MS = 43200000;
 
+    public static final String NOTIFICATON_DISMISSED = "NOTIFICATION_DISMISSED";
+
 }

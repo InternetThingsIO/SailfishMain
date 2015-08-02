@@ -13,8 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -106,8 +104,6 @@ public class MainActivity extends Activity{
     protected void onStart(){
         super.onStart();
 
-        SailfishSocketIO.connect();
-
     }
 
     @Override
@@ -118,10 +114,11 @@ public class MainActivity extends Activity{
     @Override
     protected void onResume(){
         super.onResume();
-
+        Log.e(logTAG, "On Resume Called");
         loadedDebug = false;
 
         //try to connect
+        SailfishSocketIO.setupSocket(this);
         SailfishSocketIO.connect();
 
         //get current socket status

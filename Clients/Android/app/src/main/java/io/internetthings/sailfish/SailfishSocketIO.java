@@ -30,7 +30,7 @@ public class SailfishSocketIO {
         return mSocket.connected();
     }
 
-    public static void setupSocket(final SailfishNotificationService context){
+    public static void setupSocket(final Context context){
 
         if (isSetup) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");
@@ -123,7 +123,13 @@ public class SailfishSocketIO {
 
                         Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
 
-                        context.cancelNotification(packageName, tag, Integer.parseInt(id));
+                        Intent intent = new Intent(Constants.NOTIFICATON_DISMISSED);
+                        intent.putExtra("ID", id);
+                        intent.putExtra("tag", tag);
+                        intent.putExtra("pkg", packageName);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+
                     }
                 }catch(Exception ex){
                     Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");

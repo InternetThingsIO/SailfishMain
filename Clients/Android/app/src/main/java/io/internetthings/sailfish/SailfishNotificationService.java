@@ -1,9 +1,14 @@
 package io.internetthings.sailfish;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import io.internetthings.sailfish.NotificationTemplateType.TemplateType;
+
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -30,6 +35,8 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
     public static final String MY_PREFS_NAME = "SailFishPref";
 
+    BroadcastReceiver onNotificationDismissed;
+
     private HashSet<String> PkgWhiteList = new HashSet<>();
 
     public SailfishNotificationService(){
@@ -42,6 +49,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         PkgWhiteList.add("com.viber.voip");
         PkgWhiteList.add("com.skype.android");
         PkgWhiteList.add("com.whatsapp");
+
     }
 
     //start sticky so it restarts on crash :-)
@@ -53,6 +61,15 @@ public class SailfishNotificationService extends NotificationListenerService{
         Log.i(logTAG, "SailfishNotificationService starting");
 
         Mint.initAndStartSession(this, Constants.MINT_API_KEY);
+
+        onNotificationDismissed = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                cancelNotification(intent.getStringExtra("pkg"), intent.getStringExtra("tag"), Integer.parseInt(intent.getStringExtra("ID")));
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(onNotificationDismissed,
+                new IntentFilter(Constants.NOTIFICATON_DISMISSED));
 
         return START_STICKY;
     }
@@ -200,9 +217,9 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     @Override
     public void onDestroy(){
-
-        super.onDestroy();
         SailfishSocketIO.Close();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotificationDismissed);
+        super.onDestroy();
     }
 
 }
