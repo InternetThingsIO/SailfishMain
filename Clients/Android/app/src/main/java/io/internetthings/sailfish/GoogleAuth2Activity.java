@@ -126,7 +126,9 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
             mIntentInProgress = false;
 
-            if(!mGoogleApiClient.isConnected()){
+            if(!mGoogleApiClient.isConnecting() &&
+                    !mGoogleApiClient.isConnected()){
+
                 mGoogleApiClient.reconnect();
             }
         }

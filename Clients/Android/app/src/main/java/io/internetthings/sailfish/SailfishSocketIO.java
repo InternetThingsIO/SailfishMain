@@ -32,7 +32,11 @@ public class SailfishSocketIO {
         return mSocket.connected();
     }
 
-    public void setupSocket(final Context context){
+    public SailfishSocketIO(Context context){
+        setupSocket(context);
+    }
+
+    private void setupSocket(final Context context){
 
         if (mSocket != null) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");

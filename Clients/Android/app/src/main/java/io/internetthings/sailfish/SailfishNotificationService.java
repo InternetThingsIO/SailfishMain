@@ -40,6 +40,8 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private HashSet<String> PkgWhiteList;
 
+    private boolean receiverRegistered = false;
+
     public static void restartService(Context context){
         context.stopService(new Intent(context, SailfishNotificationService.class));
         context.startService(new Intent(context, SailfishNotificationService.class));
@@ -47,13 +49,9 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private void doStartup(){
-        if (socket != null){
-            socket.Close();
+        if (socket == null){
+            socket = new SailfishSocketIO(this);
         }
-
-        socket = new SailfishSocketIO();
-
-        socket.setupSocket(this);
 
         //create white list
         PkgWhiteList = new HashSet<>();
@@ -63,15 +61,17 @@ public class SailfishNotificationService extends NotificationListenerService{
         PkgWhiteList.add("com.skype.android");
         PkgWhiteList.add("com.whatsapp");
 
-        onNotificationDismissed = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                cancelNotification(intent.getStringExtra("pkg"), intent.getStringExtra("tag"), Integer.parseInt(intent.getStringExtra("ID")));
-            }
-        };
-        LocalBroadcastManager.getInstance(this).registerReceiver(onNotificationDismissed,
-                new IntentFilter(Constants.NOTIFICATON_DISMISSED));
-
+        if (!receiverRegistered) {
+            onNotificationDismissed = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    cancelNotification(intent.getStringExtra("pkg"), intent.getStringExtra("tag"), Integer.parseInt(intent.getStringExtra("ID")));
+                }
+            };
+            LocalBroadcastManager.getInstance(this).registerReceiver(onNotificationDismissed,
+                    new IntentFilter(Constants.NOTIFICATON_DISMISSED));
+            receiverRegistered = true;
+        }
     }
 
     //start sticky so it restarts on crash :-)
@@ -237,8 +237,9 @@ public class SailfishNotificationService extends NotificationListenerService{
         super.onDestroy();
 
         socket.Close();
+        socket = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotificationDismissed);
-
+        receiverRegistered = false;
         Log.e(logTAG, "Service Stopped");
     }
 
