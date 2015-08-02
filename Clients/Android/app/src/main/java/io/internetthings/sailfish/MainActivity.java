@@ -129,6 +129,11 @@ public class MainActivity extends Activity{
 
         SailfishNotificationService.socketConnect();
 
+        if (SailfishNotificationService.socketIsConnected())
+            setConnectedText();
+        else
+            setDisconnectedText();
+
         setProfileInformation();
 
     }
