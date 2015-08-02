@@ -7,7 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.app.Activity;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 
 public class DebugActivity extends Activity {
@@ -18,6 +21,13 @@ public class DebugActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        TextView status =  (TextView)findViewById(R.id.txtConnectedStatus);
+        status.setText("Status: " + SailfishSocketIO.isConnected());
     }
 
     public void onClickSocketDisconnect(View view){

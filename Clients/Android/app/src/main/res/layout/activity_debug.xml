@@ -68,6 +68,7 @@
             android:text="Notif Access"
             android:id="@+id/button5"
             android:onClick="onClickGetNotifAccess" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -104,5 +105,14 @@
             android:layout_gravity="center_horizontal"
             android:onClick="onClickSocketDisconnect" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/txtConnectedStatus"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/linearLayout" />
 
 </RelativeLayout>
