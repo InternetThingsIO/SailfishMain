@@ -24,15 +24,13 @@ public class SailfishSocketIO {
     private static Socket mSocket;
     private static final String logTAG = "SailfishSocketIO";
 
-    private static boolean isSetup = false;
-
     public static boolean isConnected(){
         return mSocket.connected();
     }
 
     public static void setupSocket(final Context context){
 
-        if (isSetup) {
+        if (mSocket != null) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");
             return;
         }
@@ -138,8 +136,6 @@ public class SailfishSocketIO {
         };
         mSocket.on("dismiss_notif_device", onNotificationRemoved);
 
-        //set this so this function can only be run once
-        isSetup = true;
     }
 
     public static void disconnect() {
@@ -183,6 +179,7 @@ public class SailfishSocketIO {
         mSocket.disconnect();
         mSocket.off();
         mSocket.close();
+        mSocket = null;
 
     }
 }

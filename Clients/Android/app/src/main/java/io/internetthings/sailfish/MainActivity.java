@@ -114,7 +114,7 @@ public class MainActivity extends Activity{
     @Override
     protected void onResume(){
         super.onResume();
-        Log.e(logTAG, "On Resume Called");
+
         loadedDebug = false;
 
         //try to connect
@@ -135,6 +135,7 @@ public class MainActivity extends Activity{
     protected void onDestroy(){
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
+        SailfishSocketIO.Close();
         super.onDestroy();
 
     }
