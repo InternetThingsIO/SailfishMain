@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Security;
 import java.util.Properties;
 
 public class EmailSender extends javax.mail.Authenticator {
@@ -36,10 +35,6 @@ public class EmailSender extends javax.mail.Authenticator {
     private String user;
     private String password;
     private Session session;
-
-    static {
-        Security.addProvider(new io.internetthings.sailfish.JSSEProvider());
-    }
 
     public EmailSender() {
 
