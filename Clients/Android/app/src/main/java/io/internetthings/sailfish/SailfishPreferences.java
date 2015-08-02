@@ -14,7 +14,6 @@ import java.util.Set;
 public class SailfishPreferences {
 
     private static SharedPreferences.Editor _editor;
-    private static SharedPreferences _reader;
 
     public static final String MY_PREFS_NAME = "SailFishPref";
 
@@ -35,12 +34,7 @@ public class SailfishPreferences {
 
     private static SharedPreferences reader(Context context){
 
-        if (_reader == null) {
-            editor(context);
-            _reader = context.getSharedPreferences(MY_PREFS_NAME, context.MODE_MULTI_PROCESS);
-        }
-
-        return _reader;
+        return context.getSharedPreferences(MY_PREFS_NAME, context.MODE_MULTI_PROCESS);
 
     }
 
@@ -71,6 +65,7 @@ public class SailfishPreferences {
 
     public static void commit(Context context){
         editor(context).commit();
+        _editor = null;
     }
 
 

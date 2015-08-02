@@ -171,7 +171,6 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
             mGoogleApiClient.disconnect();
             mGoogleApiClient.unregisterConnectionCallbacks(this);
             mGoogleApiClient.unregisterConnectionFailedListener(this);
-            mGoogleApiClient = null;
         }
     }
 }
