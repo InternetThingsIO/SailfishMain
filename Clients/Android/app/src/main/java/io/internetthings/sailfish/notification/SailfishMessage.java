@@ -1,4 +1,4 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;

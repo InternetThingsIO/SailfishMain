@@ -34,7 +34,7 @@
 
         <!-- Notification Service -->
         <service
-            android:name=".SailfishNotificationService"
+            android:name=".notification.SailfishNotificationService"
             android:enabled="true"
             android:exported="false"
             android:label="@string/notification_service_name"

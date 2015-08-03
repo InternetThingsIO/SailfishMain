@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import io.internetthings.sailfish.notification.SailfishNotificationService;
+
 /*
     Created by: Jason Maderski
     Date: 6/2/2015

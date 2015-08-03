@@ -1,12 +1,10 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -16,6 +14,10 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashSet;
+
+import io.internetthings.sailfish.GoogleAuth2Activity;
+import io.internetthings.sailfish.SailfishPreferences;
+import io.internetthings.sailfish.SailfishSocketIO;
 
 
 /*
