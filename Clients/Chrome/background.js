@@ -4,6 +4,7 @@ var currentState;
 
 var ACTION_POST = 'POST_NOTIFICATION';
 var ACTION_REMOVE = 'REMOVE_NOTIFICATION';
+var ACTION_MUTE = 'MUTE_NOTIFICATION';
 
 var authIntervalID;
 
@@ -31,8 +32,19 @@ function main(){
 function onNotificationClosed(notificationId, byUser){
   console.log('dismissing notif id: ' + notificationId);
   //emit something to the device, dismissing the notification
-  emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
+  //emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
+  emitSailfishMessage(notificationId, ACTION_REMOVE);
 
+}
+
+function emitSailfishMessage(notificationId, action){
+
+  message = {
+    Action: action,
+    ID: notificationId
+  };
+
+  emitSocket('dismiss_notif_device', user_info.emails[0].value, message);
 }
 
 function tryGoogleAuthorization(){
