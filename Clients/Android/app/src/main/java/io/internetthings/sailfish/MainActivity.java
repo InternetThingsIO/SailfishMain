@@ -29,6 +29,8 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import java.io.IOException;
 
+import io.internetthings.sailfish.notification.SailfishNotificationService;
+
 public class MainActivity extends Activity{
 
     private final String logTAG = this.getClass().getName();

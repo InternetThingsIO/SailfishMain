@@ -3,11 +3,11 @@ package io.internetthings.sailfish;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.splunk.mint.Mint;
 
 import io.internetthings.sailfish.ftue.SelectEmailActivity;
+import io.internetthings.sailfish.notification.SailfishNotificationService;
 
 /*
         Created by: Jason Maderski

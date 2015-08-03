@@ -12,6 +12,8 @@ import com.github.nkzawa.emitter.Emitter;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
+import io.internetthings.sailfish.notification.SailfishNotificationService;
+
 
 /*
         Created by: Jason Maderski

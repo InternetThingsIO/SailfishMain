@@ -7,7 +7,7 @@ import android.view.View;
 
 import io.internetthings.sailfish.NotificationActions;
 import io.internetthings.sailfish.R;
-import io.internetthings.sailfish.SailfishNotificationService;
+import io.internetthings.sailfish.notification.SailfishNotificationService;
 
 public class NotificationAccessActivity extends Activity {
 

@@ -54,13 +54,12 @@ public class SailfishPreferences {
         return reader(context).getString(EMAIL_KEY, null);
     }
 
-    public static void setMutedPackages(Context context, Set<String> value){
-        editor(context).putStringSet(MUTED_PACKAGES_KEY, value);
-
+    public static void setMutedPackages(Context context, String value){
+        editor(context).putString(MUTED_PACKAGES_KEY, value);
     }
 
-    public static Set<String> getMutedPackages(Context context){
-        return reader(context).getStringSet(MUTED_PACKAGES_KEY, null);
+    public static String getMutedPackages(Context context){
+        return reader(context).getString(MUTED_PACKAGES_KEY, null);
     }
 
     public static void commit(Context context){

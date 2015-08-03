@@ -1,4 +1,4 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
