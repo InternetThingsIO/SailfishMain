@@ -3,10 +3,8 @@ package io.internetthings.sailfish;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import io.internetthings.sailfish.NotificationTemplateType.TemplateType;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -14,7 +12,6 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,11 +33,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private static SailfishSocketIO socket;
 
-    BroadcastReceiver onNotificationDismissed;
-
     private HashSet<String> PkgWhiteList;
-
-    private boolean receiverRegistered = false;
 
     public static void restartService(Context context){
         context.stopService(new Intent(context, SailfishNotificationService.class));
@@ -79,17 +72,6 @@ public class SailfishNotificationService extends NotificationListenerService{
         PkgWhiteList.add("com.skype.android");
         PkgWhiteList.add("com.whatsapp");
 
-        if (!receiverRegistered) {
-            onNotificationDismissed = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    cancelNotification(intent.getStringExtra("pkg"), intent.getStringExtra("tag"), Integer.parseInt(intent.getStringExtra("ID")));
-                }
-            };
-            LocalBroadcastManager.getInstance(this).registerReceiver(onNotificationDismissed,
-                    new IntentFilter(Constants.NOTIFICATON_DISMISSED));
-            receiverRegistered = true;
-        }
     }
 
     //start sticky so it restarts on crash :-)
@@ -254,8 +236,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         socket.Close();
         socket = null;
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotificationDismissed);
-        receiverRegistered = false;
+
         Log.e(logTAG, "Service Stopped");
     }
 

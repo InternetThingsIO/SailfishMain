@@ -12,7 +12,6 @@ import com.github.nkzawa.emitter.Emitter;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
-import javax.net.ssl.SSLContext;
 
 /*
         Created by: Jason Maderski
@@ -30,11 +29,11 @@ public class SailfishSocketIO {
         return mSocket.connected();
     }
 
-    public SailfishSocketIO(Context context){
+    public SailfishSocketIO(SailfishNotificationService context){
         setupSocket(context);
     }
 
-    private void setupSocket(final Context context){
+    private void setupSocket(final SailfishNotificationService context){
 
         if (mSocket != null) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");
@@ -127,11 +126,7 @@ public class SailfishSocketIO {
 
                         Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
 
-                        Intent intent = new Intent(Constants.NOTIFICATON_DISMISSED);
-                        intent.putExtra("ID", id);
-                        intent.putExtra("tag", tag);
-                        intent.putExtra("pkg", packageName);
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                        context.cancelNotification(packageName, tag, Integer.parseInt(id));
 
 
                     }
