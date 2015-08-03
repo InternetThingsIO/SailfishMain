@@ -17,7 +17,7 @@ public class SailfishMessage {
     public String ID;
     public Date CreatedDate;
     public Object Payload;
-    public String messageVersion = "1.0";
+    public String MessageVersion = "1.0";
 
     public SailfishMessage(StatusBarNotification sbn, MessageActions action){
         setupMessage(sbn, action, null);
