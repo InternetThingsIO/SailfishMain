@@ -1,4 +1,4 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +8,16 @@ import android.util.Log;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.github.nkzawa.emitter.Emitter;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
+import io.internetthings.sailfish.GoogleAuth2Activity;
+import io.internetthings.sailfish.SailfishPreferences;
 import io.internetthings.sailfish.notification.SailfishNotificationService;
 
 
@@ -102,43 +108,57 @@ public class SailfishSocketIO {
 
 
         //listener for removing notification
-        Emitter.Listener onNotificationRemoved = new Emitter.Listener() {
+        Emitter.Listener onReceiveMessage = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
 
+                if (args[0] instanceof org.json.JSONObject){
+                    Log.e(logTAG, "Notif dismissed");
 
-                //get the android ID
-                String concatID = (String)args[0];
+                    Gson g = new Gson();
+                    SailfishMessage msg = g.fromJson(args[0].toString(), SailfishMessage.class);
 
-                Log.w(logTAG, "NoticeSocketIO dismiss_notif: " + concatID);
+                    Log.e(logTAG, msg.Action.toString());
+                    Log.e(logTAG, msg.ID);
 
-                String[] split = concatID.split(":");
-                String id, tag, packageName;
-
-                try {
-                    //packagename:tag:id
-                    if (split.length == 3) {
-                        packageName = URLDecoder.decode(split[0], "utf-8");
-                        id = URLDecoder.decode(split[2], "utf-8");
-                        tag = URLDecoder.decode(split[1], "utf-8");
-
-                        packageName = packageName.length() == 0 ? null : packageName;
-                        id = id.length() == 0 ? null : id;
-                        tag = tag.length() == 0? null : tag;
-
-                        Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
-
-                        context.cancelNotification(packageName, tag, Integer.parseInt(id));
-
-
+                    if (msg.Action == MessageActions.MUTE_NOTIFICATION){
+                        //add to mute list
+                    }else if (msg.Action == MessageActions.REMOVE_NOTIFICATION){
+                        dismissNotif(context, msg.ID);
                     }
-                }catch(Exception ex){
-                    Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");
+
                 }
+
             }
         };
-        mSocket.on("dismiss_notif_device", onNotificationRemoved);
+        mSocket.on("dismiss_notif_device", onReceiveMessage);
 
+    }
+
+    private void dismissNotif(SailfishNotificationService context, String concatID){
+
+        String[] split = concatID.split(":");
+        String id, tag, packageName;
+
+        try {
+            //packagename:tag:id
+            if (split.length == 3) {
+                packageName = URLDecoder.decode(split[0], "utf-8");
+                id = URLDecoder.decode(split[2], "utf-8");
+                tag = URLDecoder.decode(split[1], "utf-8");
+
+                packageName = packageName.length() == 0 ? null : packageName;
+                id = id.length() == 0 ? null : id;
+                tag = tag.length() == 0? null : tag;
+
+                Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
+
+                context.cancelNotification(packageName, tag, Integer.parseInt(id));
+                
+            }
+        }catch(Exception ex){
+            Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");
+        }
     }
 
     public void disconnect() {

@@ -17,7 +17,6 @@ import java.util.HashSet;
 
 import io.internetthings.sailfish.GoogleAuth2Activity;
 import io.internetthings.sailfish.SailfishPreferences;
-import io.internetthings.sailfish.SailfishSocketIO;
 
 
 /*
