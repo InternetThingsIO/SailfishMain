@@ -36,8 +36,12 @@ public class MutedPackages {
         reloadPackages = true;
     }
 
-    public void addPackage(String pkg){
+    public void mutePackage(String pkg){
         mutedPackages.put(pkg, true);
+    }
+
+    public void unMutePackage(String pkg){
+        mutedPackages.put(pkg, false);
     }
 
     public boolean isMuted(Context context, StatusBarNotification sbn){
