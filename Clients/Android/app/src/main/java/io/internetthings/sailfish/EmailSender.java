@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Security;
 import java.util.Properties;
 
 public class EmailSender extends javax.mail.Authenticator {
@@ -52,7 +53,7 @@ public class EmailSender extends javax.mail.Authenticator {
         props.put("mail.smtp.socketFactory.port", "8465");
         props.put("mail.smtp.socketFactory.class",
                 "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.debug", "true");
+        props.put("mail.smtp.debug", "false");
 
         session = Session.getInstance(props, this);
 

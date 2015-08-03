@@ -87,6 +87,8 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
             startActivity(i);
         }
 
+        mGoogleApiClient = null;
+
         this.finish();
 
     }
