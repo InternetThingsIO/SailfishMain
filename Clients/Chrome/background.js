@@ -41,7 +41,8 @@ function emitSailfishMessage(notificationId, action){
 
   message = {
     Action: action,
-    ID: notificationId
+    ID: notificationId,
+    MessageVersion: '1.0'
   };
 
   emitSocket('dismiss_notif_device', user_info.emails[0].value, message);
