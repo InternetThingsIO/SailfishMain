@@ -33,6 +33,7 @@ public class SailfishNotificationService extends NotificationListenerService{
     private final String logTAG = this.getClass().getName();
 
     private static SailfishSocketIO socket;
+    public static MutedPackages mutedPackages;
 
     private HashSet<String> PkgWhiteList;
 
@@ -63,6 +64,10 @@ public class SailfishNotificationService extends NotificationListenerService{
         if (socket == null){
             socket = new SailfishSocketIO(this);
             socket.connect();
+        }
+
+        if (mutedPackages == null){
+            mutedPackages = new MutedPackages(this);
         }
 
         //create white list

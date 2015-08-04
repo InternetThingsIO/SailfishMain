@@ -1,6 +1,8 @@
 package io.internetthings.sailfish.notification;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.service.notification.StatusBarNotification;
 import android.webkit.MimeTypeMap;
 
@@ -8,6 +10,7 @@ import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import io.internetthings.sailfish.SailfishPreferences;
 
@@ -16,18 +19,14 @@ import io.internetthings.sailfish.SailfishPreferences;
  */
 public class MutedPackages {
 
-    public static boolean reloadPackages = true;
-
     private HashMap<String, Boolean> mutedPackages;
-    private Iterator<String> iterator;
 
-    public MutedPackages(){
-        mutedPackages = new HashMap<String, Boolean>();
-        iterator = mutedPackages.keySet().iterator();
-    }
+    public MutedPackages(Context context){
+        mutedPackages = new HashMap<>();
 
-    public MutedPackages(String json){
+        String json = SailfishPreferences.getMutedPackages(context);
         loadHashMap(json);
+
     }
 
     private void loadHashMap(String json){
@@ -35,39 +34,53 @@ public class MutedPackages {
         mutedPackages = g.fromJson(json, HashMap.class);
     }
 
-    public static void ReloadPackages(){
-        reloadPackages = true;
+    private void saveHashMap(Context context){
+        Gson g = new Gson();
+        String json = g.toJson(mutedPackages);
+        SailfishPreferences.setMutedPackages(context, json);
     }
 
-    public String next(){
-        return iterator.next();
+    public Iterator<String> getPkgIterator(){
+        return mutedPackages.keySet().iterator();
     }
 
-    public boolean hasNext(){
-        return iterator.hasNext();
-    }
-
-    public void mutePackage(String pkg){
+    public void mutePackage(String pkg, Context context){
         mutedPackages.put(pkg, true);
+        cleanUpPackages(context, true);
     }
 
-    public void unMutePackage(String pkg){
+    public void unMutePackage(String pkg, Context context){
         mutedPackages.put(pkg, false);
+        saveHashMap(context);
     }
 
-    public boolean isMuted(Context context, StatusBarNotification sbn){
-        if (reloadPackages){
-            loadMutedPackages(context);
+    public boolean isMuted(String pkg){
+
+        if (mutedPackages.containsKey(pkg)){
+            return mutedPackages.get(pkg);
         }
 
-        return mutedPackages.containsKey(sbn.getPackageName());
+        return false;
 
     }
 
-    private void loadMutedPackages(Context context){
-       loadHashMap(SailfishPreferences.getMutedPackages(context));
-    }
+    public void cleanUpPackages(Context context, boolean savePreferences){
+        HashMap<String, Boolean> overlap = new HashMap<>();
+        List<PackageInfo> pkgAppsList = context.getPackageManager().getInstalledPackages(0);
 
+        for (PackageInfo pkg : pkgAppsList){
+            String pkgName = pkg.packageName;
+            if (mutedPackages.containsKey(pkgName)){
+                overlap.put(pkgName, mutedPackages.get(pkgName));
+            }
+        }
+
+        mutedPackages = overlap;
+
+        if (savePreferences)
+            saveHashMap(context);
+
+    }
 
     @Override
     public String toString(){

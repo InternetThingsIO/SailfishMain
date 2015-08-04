@@ -122,7 +122,7 @@ public class SailfishSocketIO {
                     Log.e(logTAG, msg.ID);
 
                     if (msg.Action == MessageActions.MUTE_NOTIFICATION){
-                        //add to mute list
+                        mutePackage(context, msg.ID);
                     }else if (msg.Action == MessageActions.REMOVE_NOTIFICATION){
                         dismissNotif(context, msg.ID);
                     }
@@ -135,30 +135,47 @@ public class SailfishSocketIO {
 
     }
 
-    private void dismissNotif(SailfishNotificationService context, String concatID){
+    private class packageDetails{
+        public String id = null;
+        public String tag = null;
+        public String packageName = null;
+    }
 
+    private packageDetails getPackageDetails(String concatID){
         String[] split = concatID.split(":");
-        String id, tag, packageName;
+        packageDetails details = new packageDetails();
 
         try {
             //packagename:tag:id
             if (split.length == 3) {
-                packageName = URLDecoder.decode(split[0], "utf-8");
-                id = URLDecoder.decode(split[2], "utf-8");
-                tag = URLDecoder.decode(split[1], "utf-8");
+                details.packageName = URLDecoder.decode(split[0], "utf-8");
+                details.id = URLDecoder.decode(split[2], "utf-8");
+                details.tag = URLDecoder.decode(split[1], "utf-8");
 
-                packageName = packageName.length() == 0 ? null : packageName;
-                id = id.length() == 0 ? null : id;
-                tag = tag.length() == 0? null : tag;
+                details.packageName = details.packageName.length() == 0 ? null : details.packageName;
+                details.id = details.id.length() == 0 ? null : details.id;
+                details.tag = details.tag.length() == 0? null : details.tag;
 
-                Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
+                return details;
 
-                context.cancelNotification(packageName, tag, Integer.parseInt(id));
-                
             }
         }catch(Exception ex){
             Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");
         }
+
+        return new packageDetails();
+    }
+
+    private void mutePackage(SailfishNotificationService context, String concatID){
+        packageDetails details = getPackageDetails(concatID);
+        SailfishNotificationService.mutedPackages.mutePackage(details.packageName, context);
+
+    }
+
+    private void dismissNotif(SailfishNotificationService context, String concatID){
+        packageDetails details = getPackageDetails(concatID);
+        context.cancelNotification(details.packageName, details.tag, Integer.parseInt(details.id));
+
     }
 
     public void disconnect() {
