@@ -7,6 +7,7 @@ import android.webkit.MimeTypeMap;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import io.internetthings.sailfish.SailfishPreferences;
 
@@ -34,6 +35,12 @@ public class MutedPackages {
 
     public static void ReloadPackages(){
         reloadPackages = true;
+    }
+
+    public boolean hasNext(){
+
+        Iterator<String> it = mutedPackages.keySet().iterator();
+        return it.hasNext();
     }
 
     public void mutePackage(String pkg){
