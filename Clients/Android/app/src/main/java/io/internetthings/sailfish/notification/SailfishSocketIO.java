@@ -113,13 +113,10 @@ public class SailfishSocketIO {
             public void call(final Object... args) {
 
                 if (args[0] instanceof org.json.JSONObject){
-                    Log.e(logTAG, "Notif dismissed");
+                    Log.i(logTAG, "Notif dismissed");
 
                     Gson g = new Gson();
                     SailfishMessage msg = g.fromJson(args[0].toString(), SailfishMessage.class);
-
-                    Log.e(logTAG, msg.Action.toString());
-                    Log.e(logTAG, msg.ID);
 
                     if (msg.Action == MessageActions.MUTE_NOTIFICATION){
                         mutePackage(context, msg.ID);
@@ -174,8 +171,11 @@ public class SailfishSocketIO {
 
     private void dismissNotif(SailfishNotificationService context, String concatID){
         packageDetails details = getPackageDetails(concatID);
-        context.cancelNotification(details.packageName, details.tag, Integer.parseInt(details.id));
-
+        try {
+            context.cancelNotification(details.packageName, details.tag, Integer.parseInt(details.id));
+        }catch(Exception e){
+            Log.e(logTAG, "Couldn't dismiss notification message: " + e.getMessage());
+        }
     }
 
     public void disconnect() {
