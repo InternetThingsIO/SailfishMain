@@ -19,9 +19,11 @@ public class MutedPackages {
     public static boolean reloadPackages = true;
 
     private HashMap<String, Boolean> mutedPackages;
+    private Iterator<String> iterator;
 
     public MutedPackages(){
         mutedPackages = new HashMap<String, Boolean>();
+        iterator = mutedPackages.keySet().iterator();
     }
 
     public MutedPackages(String json){
@@ -37,10 +39,12 @@ public class MutedPackages {
         reloadPackages = true;
     }
 
-    public boolean hasNext(){
+    public String next(){
+        return iterator.next();
+    }
 
-        Iterator<String> it = mutedPackages.keySet().iterator();
-        return it.hasNext();
+    public boolean hasNext(){
+        return iterator.hasNext();
     }
 
     public void mutePackage(String pkg){
