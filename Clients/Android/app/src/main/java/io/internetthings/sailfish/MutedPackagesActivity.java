@@ -13,29 +13,31 @@ import android.widget.LinearLayout;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import io.internetthings.sailfish.notification.MutedPackages;
+
 public class MutedPackagesActivity extends Activity {
 
-    private HashMap<String, Boolean> mutedPackages;
     private String sTAG = this.getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muted_packages);
-        getMutedPrefs();
-        createCheckboxes(this);
+        checkboxCreator(this);
     }
 
-    private void createCheckboxes(Context context){
+    private void checkboxCreator(final Context context){
         Drawable icon = null;
-        String pkgName = "No name found!";
+        String pkgName = "No name found";
 
-        Iterator<String> it = mutedPackages.keySet().iterator();
-        Log.i("itsize: ", Integer.toString(mutedPackages.size()));
+        final MutedPackages mp = new MutedPackages(context);
+        testing123(context, mp);
+        Iterator<String> it = mp.getPkgIterator();
         while(it.hasNext()){
             final String pkg = it.next();
-            boolean value = mutedPackages.get(pkg);
+            boolean value = mp.isMuted(pkg);
             ApplicationInfo appInfo;
+
             try{
                 appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
                 icon = context.getPackageManager().getApplicationIcon(appInfo);
@@ -43,7 +45,6 @@ public class MutedPackagesActivity extends Activity {
             }catch (Exception e){
                 Log.e(sTAG, e.getMessage());
             }
-
             LinearLayout ll = (LinearLayout) findViewById(R.id.checkBoxLL);
             final CheckedTextView chkBox = new CheckedTextView(this);
 
@@ -58,57 +59,21 @@ public class MutedPackagesActivity extends Activity {
             chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
                 public void onClick(View v) {
                     if(chkBox.isChecked())
-                        unMutePackage(pkg);
+                        mp.unMutePackage(pkg, context);
                     else
-                        mutePackage(pkg);
+                        mp.mutePackage(pkg, context);
                     ((CheckedTextView) v).toggle();
+                    Log.i("Muted Package: ", pkg + " " + mp.isMuted(pkg));
                 }
             });
             ll.addView(chkBox);
         }
     }
 
-    public void mutePackage(String pkg){
-        mutedPackages.put(pkg, true);
-        Log.i(pkg, "true");
+    private void testing123(Context context, MutedPackages mp){
+
+        mp.mutePackage("com.google.android.gm", context);
+        mp.mutePackage("com.google.android.talk", context);
     }
-
-    public void unMutePackage(String pkg){        
-        mutedPackages.put(pkg, false);
-        Log.i(pkg, "false");
-    }
-
-    public void setMutedPackages(){
-        //SailfishPreferences.setMutedPackages(this, mutedPackages);
-        //SailfishPreferences.commit(this);
-    }
-
-    public void getMutedPrefs(){
-        //mutedPackages  //(HashSet<String>)SailfishPreferences.getMutedPackages(this);
-        mutedPackages = new HashMap<>();
-        mutedPackages.put("com.google.android.gm", false);
-        mutedPackages.put("com.google.android.talk", true);
-        /*mutedPackages.put("com.google.android.gm", false);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);
-        mutedPackages.put("com.google.android.gm", true);*/
-
-
-    }
-
-
-
 
 }
