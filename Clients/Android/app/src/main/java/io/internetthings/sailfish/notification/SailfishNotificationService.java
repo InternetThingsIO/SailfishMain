@@ -61,14 +61,16 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private void doStartup(){
+
+        Log.w(logTAG, "Doing startup!!");
+
         if (socket == null){
             socket = new SailfishSocketIO(this);
             socket.connect();
         }
 
-        if (mutedPackages == null){
-            mutedPackages = new MutedPackages(this);
-        }
+
+        mutedPackages = new MutedPackages(this);
 
         //create white list
         PkgWhiteList = new HashSet<>();
@@ -166,6 +168,11 @@ public class SailfishNotificationService extends NotificationListenerService{
                 return false;
             }
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " IS on the white list");
+        }
+
+        if (mutedPackages.isMuted(sbn.getPackageName())) {
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " is muted");
+            return false;
         }
 
         return true;

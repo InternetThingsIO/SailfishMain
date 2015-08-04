@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
@@ -30,8 +31,10 @@ public class MutedPackages {
     }
 
     private void loadHashMap(String json){
-        Gson g = new Gson();
-        mutedPackages = g.fromJson(json, HashMap.class);
+        if (json != null && json.length() > 0) {
+            Gson g = new Gson();
+            mutedPackages = g.fromJson(json, HashMap.class);
+        }
     }
 
     private void saveHashMap(Context context){
