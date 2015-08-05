@@ -33,8 +33,7 @@ public class MutedPackagesActivity extends Activity {
         String pkgName = "No name found";
 
         MutedPackages mp = SailfishNotificationService.mutedPackages;
-        testing123(this, mp);
-        testing123(context, mp);
+        //testing123(context, mp);
         Iterator<String> it = mp.getPkgIterator();
         while(it.hasNext()){
             final String pkg = it.next();
