@@ -15,7 +15,6 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:background="@drawable/white_round_bottom_corners"
         android:layout_below="@+id/relativeLayout"
         android:paddingTop="10dp"
         android:paddingBottom="10dp" />
