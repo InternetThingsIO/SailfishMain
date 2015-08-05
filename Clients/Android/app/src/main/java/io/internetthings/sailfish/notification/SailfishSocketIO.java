@@ -125,10 +125,9 @@ public class SailfishSocketIO {
                     }
 
                 }
-
             }
         };
-        mSocket.on("dismiss_notif_device", onReceiveMessage);
+        mSocket.on("receive_message_app", onReceiveMessage);
 
     }
 
