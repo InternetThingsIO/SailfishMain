@@ -33,7 +33,7 @@ public class MutedPackagesActivity extends Activity {
         String pkgName = "No name found";
 
         MutedPackages mp = SailfishNotificationService.mutedPackages;
-        //testing123(context, mp);
+        testing123(context, mp);
         Iterator<String> it = mp.getPkgIterator();
         while(it.hasNext()){
             final String pkg = it.next();
@@ -60,11 +60,13 @@ public class MutedPackagesActivity extends Activity {
             chkBox.setPadding(0, 0, 35, 0);
             chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
                 public void onClick(View v) {
-                    if(chkBox.isChecked())
-                        SailfishNotificationService.mutedPackages.unMutePackage(pkg, context);
-                    else
+                    CheckedTextView cur = (CheckedTextView)v;
+                    cur.toggle();
+                    if(cur.isChecked())
                         SailfishNotificationService.mutedPackages.mutePackage(pkg, context);
-                    ((CheckedTextView) v).toggle();
+                    else
+                        SailfishNotificationService.mutedPackages.unMutePackage(pkg, context);
+
                     Log.i("Muted Package: ", pkg + " "
                             + SailfishNotificationService.mutedPackages.isMuted(pkg));
                 }
