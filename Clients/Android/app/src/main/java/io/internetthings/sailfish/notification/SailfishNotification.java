@@ -22,18 +22,23 @@ import java.io.ByteArrayOutputStream;
 public class SailfishNotification {
 
     //Chrome params
-    private String iconUrl;
-    private String title;
-    private String message;
+    private String iconUrl = "";
+    private String title = "";
+    private String message = "";
     private int priority;
     private double eventTime;
-    private TemplateType type;
+    private TemplateType type = TemplateType.basic;
 
     public SailfishNotification(StatusBarNotification sbn, Context context){
 
         this.iconUrl = getIconBase64(sbn, context);
-        this.title = getSubjectText(sbn);
-        this.message = getBodyText(sbn);
+
+        String tmp = getTitleText(sbn);
+        this.title = tmp == null ? "" : tmp;
+
+        tmp = getMessageText(sbn);
+        this.message = tmp == null ? "" : tmp;
+
         this.eventTime = sbn.getPostTime();
         this.priority = sbn.getNotification().priority;
         this.type = TemplateType.basic;
@@ -50,7 +55,7 @@ public class SailfishNotification {
 
     }
 
-    private String getBodyText(StatusBarNotification sbn){
+    private String getMessageText(StatusBarNotification sbn){
 
         CharSequence body = sbn.getNotification().extras.getCharSequence("android.text");
         if (body != null)
@@ -61,7 +66,7 @@ public class SailfishNotification {
 
     }
 
-    private String getSubjectText(StatusBarNotification sbn){
+    private String getTitleText(StatusBarNotification sbn){
         return sbn.getNotification().extras.getString("android.title");
     }
 

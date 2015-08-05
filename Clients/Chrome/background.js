@@ -19,6 +19,7 @@ function main(){
 
   //add notification closed listener
   chrome.notifications.onClosed.addListener(onNotificationClosed);
+  chrome.notifications.onButtonClicked.addListener(notifButtonListener);
 
   createSocket();
 
@@ -26,6 +27,14 @@ function main(){
                 'https://www.googleapis.com/plus/v1/people/me',
                 false,
                 onUserInfoFetched);
+}
+
+function notifButtonListener(notificationId, buttonIndex){
+
+  if (buttonIndex == 0){
+    emitSailfishMessage(notificationId, ACTION_MUTE);
+    console.log('Muting Notification: ' + notificationId);
+  }
 
 }
 
@@ -155,7 +164,7 @@ function handleMessage(jsonStr){
   {
     //print out a test notification
     new Notification('raw string', {
-      icon: '48.png',
+      icon: 'logo48.png',
       body: jsonStr
     });
 
@@ -196,6 +205,9 @@ function createBasicNotif(jsonObj){
       priority: jsonObj.Priority
     };
   }
+
+  //add button to notification
+  notifOptions.buttons = [{title:"Mute This App"}];
 
   chrome.notifications.create(jsonObj.ID, notifOptions);
 
