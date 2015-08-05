@@ -54,7 +54,7 @@ function emitSailfishMessage(notificationId, action){
     MessageVersion: '1.0'
   };
 
-  emitSocket('dismiss_notif_device', user_info.emails[0].value, message);
+  emitSocket('send_message_app', user_info.emails[0].value, message);
 }
 
 function tryGoogleAuthorization(){
