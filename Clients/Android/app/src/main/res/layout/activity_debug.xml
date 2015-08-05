@@ -17,17 +17,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test Muted Pkgs"
-            android:id="@+id/button2"
-            android:layout_below="@+id/sendEmailBtn"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:clickable="true"
-            android:onClick="onClickTestMutedPkg" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Test Mint UI"
             android:id="@+id/btnTestCrash"
             android:layout_alignParentTop="true"

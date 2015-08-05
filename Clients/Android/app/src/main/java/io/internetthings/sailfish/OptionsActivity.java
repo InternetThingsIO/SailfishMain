@@ -85,11 +85,16 @@ public class OptionsActivity extends Activity {
         startActivity(i);
     }
 
+    public void mutedApps(View view){
+        Intent i = new Intent(this, MutedPackagesActivity.class);
+        startActivity(i);
+        this.finish();
+    }
+
     public void backToMain(View view){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         this.finish();
     }
-
 
 }

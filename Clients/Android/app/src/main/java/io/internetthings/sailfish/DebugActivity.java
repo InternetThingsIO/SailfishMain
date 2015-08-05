@@ -66,12 +66,6 @@ public class DebugActivity extends Activity {
 
     }
 
-    public void onClickTestMutedPkg(View view){
-        Intent i = new Intent(this, MutedPackagesActivity.class);
-        startActivity(i);
-        this.finish();
-    }
-
     public void onClickRestartService(View view){
         stopService(new Intent(this, SailfishNotificationService.class));
         Log.i("Service: ", "STOPPED");
