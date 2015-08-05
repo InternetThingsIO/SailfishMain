@@ -39,12 +39,17 @@ function main(){
     }));
 
     socket.on('send message', nr.createWebTransaction('/ws/send_message', function (token, email, msg){
-      checkToken(token, email, socket, messageToClient, [msg]);
+      checkToken(token, email, socket, messageToExt, [msg]);
       nr.endTransaction();
     }));
 
+    //deprecated remove later
     socket.on('dismiss_notif_device', function(token, email, notifId){
       checkToken(token, email, socket, dismissNotification, [notifId]);
+    });
+
+    socket.on('send_message_app', function(token, email, notifId){
+      checkToken(token, email, socket, messageToApp, [notifId]);
     });
 
   });
@@ -97,14 +102,20 @@ function leaveRoom(email, socket, args){
   socket.leave(email);
 }
 
-function messageToClient(email, socket, args){
+function messageToExt(email, socket, args){
   console.log('Emitting message to: ' + email);
   io.to(email).emit('message', args[0]);
 }
 
+//deprecated remove later
 function dismissNotification(email, socket, args){
   console.log('Removing notification from device: ' + args[0]);
   io.to(email).emit('dismiss_notif_device', args[0]);
+}
+
+function messageToApp(email, socket, args){
+  console.log('Sending message to app: ' + args[0]);
+  io.to(email).emit('receive_message_app', args[0]);
 }
 
 //run the main function at the end
