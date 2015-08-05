@@ -1,17 +1,14 @@
 package io.internetthings.sailfish.notification;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.service.notification.StatusBarNotification;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.internetthings.sailfish.SailfishPreferences;
 
@@ -20,69 +17,74 @@ import io.internetthings.sailfish.SailfishPreferences;
  */
 public class MutedPackages {
 
-    private HashMap<String, Boolean> mutedPackages;
+    private final String logTag = this.getClass().getName();
+
+    private ConcurrentHashMap<String, Boolean> mutedPackages = new ConcurrentHashMap<>();
+    //private HashMap<String, Boolean> mutedPackages;
 
     public MutedPackages(Context context){
-        mutedPackages = new HashMap<>();
+            mutedPackages = new ConcurrentHashMap<>();
 
-        String json = SailfishPreferences.getMutedPackages(context);
-        loadHashMap(json);
-
+            String json = SailfishPreferences.getMutedPackages(context);
+            loadHashMap(json);
     }
 
-    private void loadHashMap(String json){
+    private synchronized void loadHashMap(String json){
         if (json != null && json.length() > 0) {
             Gson g = new Gson();
-            mutedPackages = g.fromJson(json, HashMap.class);
+            mutedPackages = g.fromJson(json, ConcurrentHashMap.class);
         }
     }
 
-    private void saveHashMap(Context context){
+    private synchronized void saveHashMap(Context context){
         Gson g = new Gson();
         String json = g.toJson(mutedPackages);
+        Log.w(logTag, "JSON:" + json);
         SailfishPreferences.setMutedPackages(context, json);
+        SailfishPreferences.commit(context);
     }
 
-    public Iterator<String> getPkgIterator(){
+    public synchronized Iterator<String> getPkgIterator(){
         return mutedPackages.keySet().iterator();
     }
 
-    public void mutePackage(String pkg, Context context){
+    public synchronized void mutePackage(String pkg, Context context){
         mutedPackages.put(pkg, true);
         cleanUpPackages(context, true);
     }
 
-    public void unMutePackage(String pkg, Context context){
+    public synchronized void unMutePackage(String pkg, Context context){
         mutedPackages.put(pkg, false);
         saveHashMap(context);
     }
 
-    public boolean isMuted(String pkg){
-
-        if (mutedPackages.containsKey(pkg)){
+    public synchronized boolean isMuted(String pkg){
+        if (mutedPackages.containsKey(pkg)) {
             return mutedPackages.get(pkg);
         }
 
         return false;
-
     }
 
-    public void cleanUpPackages(Context context, boolean savePreferences){
-        HashMap<String, Boolean> overlap = new HashMap<>();
+    public synchronized void cleanUpPackages(Context context, boolean savePreferences){
+        Log.w(logTag, "num mutedPackages: " + mutedPackages.size());
+
+        ConcurrentHashMap<String, Boolean> overlap = new ConcurrentHashMap<>();
         List<PackageInfo> pkgAppsList = context.getPackageManager().getInstalledPackages(0);
 
-        for (PackageInfo pkg : pkgAppsList){
+        for (PackageInfo pkg : pkgAppsList) {
             String pkgName = pkg.packageName;
-            if (mutedPackages.containsKey(pkgName)){
+            if (mutedPackages.containsKey(pkgName)) {
                 overlap.put(pkgName, mutedPackages.get(pkgName));
             }
         }
 
         mutedPackages = overlap;
 
+        Log.w(logTag, "num mutedPackages2: " + mutedPackages.size());
+
         if (savePreferences)
             saveHashMap(context);
-
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import io.internetthings.sailfish.notification.MutedPackages;
+import io.internetthings.sailfish.notification.SailfishNotificationService;
 
 public class MutedPackagesActivity extends Activity {
 
@@ -23,6 +24,7 @@ public class MutedPackagesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muted_packages);
+        checkNullMutedPackages();
         checkboxCreator(this);
     }
 
@@ -30,7 +32,7 @@ public class MutedPackagesActivity extends Activity {
         Drawable icon = null;
         String pkgName = "No name found";
 
-        final MutedPackages mp = new MutedPackages(context);
+        MutedPackages mp = SailfishNotificationService.mutedPackages;
         testing123(context, mp);
         Iterator<String> it = mp.getPkgIterator();
         while(it.hasNext()){
@@ -58,16 +60,24 @@ public class MutedPackagesActivity extends Activity {
             chkBox.setPadding(0, 0, 35, 0);
             chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
                 public void onClick(View v) {
-                    if(chkBox.isChecked())
-                        mp.unMutePackage(pkg, context);
+                    CheckedTextView cur = (CheckedTextView)v;
+                    cur.toggle();
+                    if(cur.isChecked())
+                        SailfishNotificationService.mutedPackages.mutePackage(pkg, context);
                     else
-                        mp.mutePackage(pkg, context);
-                    ((CheckedTextView) v).toggle();
-                    Log.i("Muted Package: ", pkg + " " + mp.isMuted(pkg));
+                        SailfishNotificationService.mutedPackages.unMutePackage(pkg, context);
+
+                    Log.i("Muted Package: ", pkg + " "
+                            + SailfishNotificationService.mutedPackages.isMuted(pkg));
                 }
             });
             ll.addView(chkBox);
         }
+    }
+
+    private void checkNullMutedPackages() {
+        if (SailfishNotificationService.mutedPackages == null)
+            SailfishNotificationService.mutedPackages = new MutedPackages(this);
     }
 
     private void testing123(Context context, MutedPackages mp){
