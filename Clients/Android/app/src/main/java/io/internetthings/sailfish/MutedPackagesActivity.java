@@ -33,7 +33,6 @@ public class MutedPackagesActivity extends Activity {
         String pkgName = "No name found";
 
         MutedPackages mp = SailfishNotificationService.mutedPackages;
-        testing123(context, mp);
         Iterator<String> it = mp.getPkgIterator();
         while(it.hasNext()){
             final String pkg = it.next();
@@ -78,12 +77,6 @@ public class MutedPackagesActivity extends Activity {
     private void checkNullMutedPackages() {
         if (SailfishNotificationService.mutedPackages == null)
             SailfishNotificationService.mutedPackages = new MutedPackages(this);
-    }
-
-    private void testing123(Context context, MutedPackages mp){
-
-        mp.mutePackage("com.google.android.gm", context);
-        mp.mutePackage("com.google.android.talk", context);
     }
 
 }

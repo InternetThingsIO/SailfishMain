@@ -33,9 +33,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_below="@+id/optionsTxt"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="51dp">
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Muted Apps"
+            android:id="@+id/mutedApps"
+            android:clickable="true"
+            android:onClick="mutedApps"
+            android:layout_below="@+id/optionsTxt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -47,7 +58,7 @@
             android:clickable="true"
             android:onClick="sendTestMSG"
             android:layout_marginBottom="30dp"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="10dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -93,4 +104,5 @@
         android:id="@+id/versionTxt"
         android:layout_alignBottom="@+id/backtoMain"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
