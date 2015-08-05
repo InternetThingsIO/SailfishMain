@@ -2,6 +2,7 @@ package io.internetthings.sailfish.notification;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -15,6 +16,8 @@ import io.internetthings.sailfish.SailfishPreferences;
  * Created by gsapp on 8/2/2015.
  */
 public class MutedPackages {
+
+    private final String logTag = this.getClass().getName();
 
     private ConcurrentHashMap<String, Boolean> mutedPackages = new ConcurrentHashMap<>();
     //private HashMap<String, Boolean> mutedPackages;
@@ -36,7 +39,9 @@ public class MutedPackages {
     private synchronized void saveHashMap(Context context){
         Gson g = new Gson();
         String json = g.toJson(mutedPackages);
+        Log.w(logTag, "JSON:" + json);
         SailfishPreferences.setMutedPackages(context, json);
+        SailfishPreferences.commit(context);
     }
 
     public synchronized Iterator<String> getPkgIterator(){
@@ -62,6 +67,8 @@ public class MutedPackages {
     }
 
     public synchronized void cleanUpPackages(Context context, boolean savePreferences){
+        Log.w(logTag, "num mutedPackages: " + mutedPackages.size());
+
         ConcurrentHashMap<String, Boolean> overlap = new ConcurrentHashMap<>();
         List<PackageInfo> pkgAppsList = context.getPackageManager().getInstalledPackages(0);
 
@@ -73,6 +80,8 @@ public class MutedPackages {
         }
 
         mutedPackages = overlap;
+
+        Log.w(logTag, "num mutedPackages2: " + mutedPackages.size());
 
         if (savePreferences)
             saveHashMap(context);
