@@ -24,6 +24,12 @@ public class MutedPackagesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muted_packages);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        SailfishNotificationService.mutedPackages.cleanUpPackages(this, true);
         checkNullMutedPackages();
         checkboxCreator(this);
     }
@@ -34,6 +40,10 @@ public class MutedPackagesActivity extends Activity {
 
         MutedPackages mp = SailfishNotificationService.mutedPackages;
         Iterator<String> it = mp.getPkgIterator();
+
+        LinearLayout ll = (LinearLayout) findViewById(R.id.checkBoxLL);
+        ll.removeAllViews();
+        
         while(it.hasNext()){
             final String pkg = it.next();
             boolean value = mp.isMuted(pkg);
@@ -46,7 +56,7 @@ public class MutedPackagesActivity extends Activity {
             }catch (Exception e){
                 Log.e(sTAG, e.getMessage());
             }
-            LinearLayout ll = (LinearLayout) findViewById(R.id.checkBoxLL);
+
             final CheckedTextView chkBox = new CheckedTextView(this);
 
             chkBox.setChecked(value);
