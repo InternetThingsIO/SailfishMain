@@ -27,7 +27,7 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
     private static final String logTAG = "GoogleAuth";
 
     //Request code used to invoke sign in user interactions.
-    private static final int RC_SIGN_IN = 0;
+    private final int RC_SIGN_IN = 0;
 
     //Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -51,6 +51,8 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
     @Override
     protected void onResume(){
 
+        super.onResume();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -62,8 +64,12 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
         mGoogleApiClient.connect();
 
-        super.onResume();
+    }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        closeGoogleClient();
     }
 
     //Method runs when user is signed on
@@ -71,17 +77,18 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
     public void onConnected(Bundle connectionHint) {
         Log.d(logTAG, "Successfully connected to Google");
 
-        restartService();
-
         boolean ftueCompleted =
                 SailfishPreferences.getFTUECompleted(this);
+
+        closeGoogleClient();
 
         if (!ftueCompleted) {
             Intent i = new Intent(this, NotificationAccessActivity.class);
             startActivity(i);
         }
 
-        //finish activity (go back if ftue is completed).
+        mGoogleApiClient = null;
+
         this.finish();
 
     }
@@ -121,7 +128,9 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
             mIntentInProgress = false;
 
-            if(!mGoogleApiClient.isConnected()){
+            if(!mGoogleApiClient.isConnecting() &&
+                    !mGoogleApiClient.isConnected()){
+
                 mGoogleApiClient.reconnect();
             }
         }
@@ -151,11 +160,11 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
     }
 
-    //Stops and Starts the SailfishNotificationService
-    private void restartService(){
-        stopService(new Intent(this, SailfishNotificationService.class));
-        Log.i("Service: ", "STOPPED");
-        startService(new Intent(this, SailfishNotificationService.class));
-        Log.i("Service: ", "STARTED");
+    private void closeGoogleClient(){
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient.unregisterConnectionCallbacks(this);
+            mGoogleApiClient.unregisterConnectionFailedListener(this);
+        }
     }
 }

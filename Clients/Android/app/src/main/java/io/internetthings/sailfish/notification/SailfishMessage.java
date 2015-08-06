@@ -1,4 +1,4 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -16,11 +16,22 @@ public class SailfishMessage {
     public MessageActions Action;
     public String ID;
     public Date CreatedDate;
+    public Object Payload;
+    public String MessageVersion = "1.0";
 
     public SailfishMessage(StatusBarNotification sbn, MessageActions action){
+        setupMessage(sbn, action, null);
+    }
+
+    public SailfishMessage(StatusBarNotification sbn, MessageActions action, Object payload){
+        setupMessage(sbn, action, payload);
+    }
+
+    private void setupMessage(StatusBarNotification sbn, MessageActions action, Object payload){
         this.ID = getMessageID(sbn);
         this.CreatedDate = new Date();
         this.Action = action;
+        this.Payload = payload;
     }
 
     private String getMessageID(StatusBarNotification sbn){

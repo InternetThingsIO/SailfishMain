@@ -1,4 +1,4 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +8,18 @@ import android.util.Log;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.github.nkzawa.emitter.Emitter;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+
+import io.internetthings.sailfish.GoogleAuth2Activity;
+import io.internetthings.sailfish.SailfishPreferences;
+import io.internetthings.sailfish.notification.SailfishNotificationService;
+
 
 /*
         Created by: Jason Maderski
@@ -21,18 +30,20 @@ import java.net.URLDecoder;
 
 public class SailfishSocketIO {
 
-    private static Socket mSocket;
+    private Socket mSocket;
     private static final String logTAG = "SailfishSocketIO";
 
-    private static boolean isSetup = false;
-
-    public static boolean isConnected(){
+    public boolean isConnected(){
         return mSocket.connected();
     }
 
-    public static void setupSocket(final SailfishNotificationService context){
+    public SailfishSocketIO(SailfishNotificationService context){
+        setupSocket(context);
+    }
 
-        if (isSetup) {
+    private void setupSocket(final SailfishNotificationService context){
+
+        if (mSocket != null) {
             Log.i(logTAG, "Socket was already setup, we won't do it again");
             return;
         }
@@ -97,56 +108,86 @@ public class SailfishSocketIO {
 
 
         //listener for removing notification
-        Emitter.Listener onNotificationRemoved = new Emitter.Listener() {
+        Emitter.Listener onReceiveMessage = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
 
+                if (args[0] instanceof org.json.JSONObject){
+                    Log.i(logTAG, "Notif dismissed");
 
-                //get the android ID
-                String concatID = (String)args[0];
+                    Gson g = new Gson();
+                    SailfishMessage msg = g.fromJson(args[0].toString(), SailfishMessage.class);
 
-                Log.w(logTAG, "NoticeSocketIO dismiss_notif: " + concatID);
-
-                String[] split = concatID.split(":");
-                String id, tag, packageName;
-
-                try {
-                    //packagename:tag:id
-                    if (split.length == 3) {
-                        packageName = URLDecoder.decode(split[0], "utf-8");
-                        id = URLDecoder.decode(split[2], "utf-8");
-                        tag = URLDecoder.decode(split[1], "utf-8");
-
-                        packageName = packageName.length() == 0 ? null : packageName;
-                        id = id.length() == 0 ? null : id;
-                        tag = tag.length() == 0? null : tag;
-
-                        Log.w(logTAG, "Dismissing notification with package: " + packageName + " tag: " + tag + " id: " + id);
-
-                        context.cancelNotification(packageName, tag, Integer.parseInt(id));
+                    if (msg.Action == MessageActions.MUTE_NOTIFICATION){
+                        mutePackage(context, msg.ID);
+                    }else if (msg.Action == MessageActions.REMOVE_NOTIFICATION){
+                        dismissNotif(context, msg.ID);
                     }
-                }catch(Exception ex){
-                    Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");
+
                 }
             }
         };
-        mSocket.on("dismiss_notif_device", onNotificationRemoved);
+        mSocket.on("receive_message_app", onReceiveMessage);
 
-        //set this so this function can only be run once
-        isSetup = true;
     }
 
-    public static void disconnect() {
+    private class packageDetails{
+        public String id = null;
+        public String tag = null;
+        public String packageName = null;
+    }
+
+    private packageDetails getPackageDetails(String concatID){
+        String[] split = concatID.split(":");
+        packageDetails details = new packageDetails();
+
+        try {
+            //packagename:tag:id
+            if (split.length == 3) {
+                details.packageName = URLDecoder.decode(split[0], "utf-8");
+                details.id = URLDecoder.decode(split[2], "utf-8");
+                details.tag = URLDecoder.decode(split[1], "utf-8");
+
+                details.packageName = details.packageName.length() == 0 ? null : details.packageName;
+                details.id = details.id.length() == 0 ? null : details.id;
+                details.tag = details.tag.length() == 0? null : details.tag;
+
+                return details;
+
+            }
+        }catch(Exception ex){
+            Log.e(logTAG, "had some encoding exception or notification didn't exist, can't dismiss notification");
+        }
+
+        return new packageDetails();
+    }
+
+    private void mutePackage(SailfishNotificationService context, String concatID){
+        packageDetails details = getPackageDetails(concatID);
+        SailfishNotificationService.mutedPackages.mutePackage(details.packageName, context);
+
+    }
+
+    private void dismissNotif(SailfishNotificationService context, String concatID){
+        packageDetails details = getPackageDetails(concatID);
+        try {
+            context.cancelNotification(details.packageName, details.tag, Integer.parseInt(details.id));
+        }catch(Exception e){
+            Log.e(logTAG, "Couldn't dismiss notification message: " + e.getMessage());
+        }
+    }
+
+    public void disconnect() {
         mSocket.disconnect();
 
     }
 
-    public static void connect(){
+    public void connect(){
         if (!mSocket.connected())
             mSocket.connect();
     }
 
-    public static void joinUsersRoom(Context context){
+    public void joinUsersRoom(Context context){
         String email = SailfishPreferences.getEmail(context);
         if (email != null) {
             Log.w(logTAG, "Joining user's room");
@@ -156,7 +197,7 @@ public class SailfishSocketIO {
             Log.e(logTAG, "email was null for some reason in joinUsersRoom");
     }
 
-    public static void attemptSend(String token, String email, String message){
+    public void attemptSend(String token, String email, String message){
 
         if(mSocket != null) {
             mSocket.emit("send message", token, email, message);
@@ -165,7 +206,7 @@ public class SailfishSocketIO {
         }
     }
 
-    public static void joinRoom(String token, String room){
+    public void joinRoom(String token, String room){
         if(mSocket != null) {
             mSocket.emit("join room", token, room);
         }else{
@@ -173,11 +214,12 @@ public class SailfishSocketIO {
         }
     }
 
-    public static void Close(){
+    public void Close(){
+
         mSocket.disconnect();
         mSocket.off();
         mSocket.close();
+        mSocket = null;
 
     }
-
 }

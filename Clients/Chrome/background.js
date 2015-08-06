@@ -4,6 +4,7 @@ var currentState;
 
 var ACTION_POST = 'POST_NOTIFICATION';
 var ACTION_REMOVE = 'REMOVE_NOTIFICATION';
+var ACTION_MUTE = 'MUTE_NOTIFICATION';
 
 var authIntervalID;
 
@@ -18,6 +19,7 @@ function main(){
 
   //add notification closed listener
   chrome.notifications.onClosed.addListener(onNotificationClosed);
+  chrome.notifications.onButtonClicked.addListener(notifButtonListener);
 
   createSocket();
 
@@ -25,14 +27,34 @@ function main(){
                 'https://www.googleapis.com/plus/v1/people/me',
                 false,
                 onUserInfoFetched);
+}
+
+function notifButtonListener(notificationId, buttonIndex){
+
+  if (buttonIndex == 0){
+    emitSailfishMessage(notificationId, ACTION_MUTE);
+    console.log('Muting Notification: ' + notificationId);
+  }
 
 }
 
 function onNotificationClosed(notificationId, byUser){
   console.log('dismissing notif id: ' + notificationId);
   //emit something to the device, dismissing the notification
-  emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
+  //emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
+  emitSailfishMessage(notificationId, ACTION_REMOVE);
 
+}
+
+function emitSailfishMessage(notificationId, action){
+
+  message = {
+    Action: action,
+    ID: notificationId,
+    MessageVersion: '1.0'
+  };
+
+  emitSocket('send_message_app', user_info.emails[0].value, message);
 }
 
 function tryGoogleAuthorization(){
@@ -113,6 +135,7 @@ function createSocket(){
   socket.on('message', function(jsonStr){
 
     handleMessage(jsonStr);
+    console.log('Transport type: ' + socket.io.engine.transport.name);
 
   });
 
@@ -121,6 +144,8 @@ function createSocket(){
     //rejoin room if we have one to join
     if (user_info)
       socketJoinRoom(user_info.emails[0].value);
+
+    console.log('Transport type: ' + socket.io.engine.transport.name);
 
   });
 
@@ -139,7 +164,7 @@ function handleMessage(jsonStr){
   {
     //print out a test notification
     new Notification('raw string', {
-      icon: '48.png',
+      icon: 'logo48.png',
       body: jsonStr
     });
 
@@ -168,15 +193,21 @@ function determineActions(jsonObj){
 //creates a basic notification. other types to come
 function createBasicNotif(jsonObj){
 
-  var notifOptions = {
-    type: 'basic', 
-    iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
-    title: jsonObj.Subject, 
-    message: jsonObj.Body,
-    eventTime: jsonObj.PostTime,
-    priority: jsonObj.Priority
-  };
+  if (jsonObj.Payload != null)
+    var notifOptions = jsonObj.Payload;
+  else{
+    var notifOptions = {
+      type: 'basic', 
+      iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
+      title: jsonObj.Subject, 
+      message: jsonObj.Body,
+      eventTime: jsonObj.PostTime,
+      priority: jsonObj.Priority
+    };
+  }
 
+  //add button to notification
+  notifOptions.buttons = [{title:"Mute This App"}];
 
   chrome.notifications.create(jsonObj.ID, notifOptions);
 

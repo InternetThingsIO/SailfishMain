@@ -37,10 +37,6 @@ public class EmailSender extends javax.mail.Authenticator {
     private String password;
     private Session session;
 
-    static {
-        Security.addProvider(new io.internetthings.sailfish.JSSEProvider());
-    }
-
     public EmailSender() {
 
         this.user = "george@internetthings.io";
@@ -57,15 +53,13 @@ public class EmailSender extends javax.mail.Authenticator {
         props.put("mail.smtp.socketFactory.port", "8465");
         props.put("mail.smtp.socketFactory.class",
                 "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.debug", "true");
+        props.put("mail.smtp.debug", "false");
 
         session = Session.getInstance(props, this);
 
-        Log.d("EmailSender", "I ran here's sessionDebug: " + session.getDebug());
     }
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
-        Log.d("PassAuth", "I ran " + user + " " + password);
         return new PasswordAuthentication(user, password);
     }
 
@@ -82,7 +76,6 @@ public class EmailSender extends javax.mail.Authenticator {
         new AsyncTask<Void, Void, Void>() {
             @Override public Void doInBackground(Void... arg) {
 
-                Log.d(logTag, "I ran " + "sent to: " + recipient);
                 sendEMailRecipient(recipient);
                 return null;
             }

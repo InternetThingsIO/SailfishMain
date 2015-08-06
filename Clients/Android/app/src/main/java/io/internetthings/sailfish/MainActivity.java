@@ -29,6 +29,8 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import java.io.IOException;
 
+import io.internetthings.sailfish.notification.SailfishNotificationService;
+
 public class MainActivity extends Activity{
 
     private final String logTAG = this.getClass().getName();
@@ -36,12 +38,22 @@ public class MainActivity extends Activity{
     BroadcastReceiver onSocketConnectReceiver;
     BroadcastReceiver onSocketDisconnectReceiver;
 
+    private Boolean loadedDebug = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupBroadcastManagers();
     }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
+    }
+
     //Changes Connection status text to "Connected", sets text color to green and
     //changes the typeface to BOLD
     private void setConnectedText(){
@@ -102,8 +114,6 @@ public class MainActivity extends Activity{
     protected void onStart(){
         super.onStart();
 
-        SailfishSocketIO.connect();
-
     }
 
     @Override
@@ -115,11 +125,13 @@ public class MainActivity extends Activity{
     protected void onResume(){
         super.onResume();
 
-        //try to connect
-        SailfishSocketIO.connect();
+        loadedDebug = false;
 
-        //get current socket status
-        if (SailfishSocketIO.isConnected())
+        setupBroadcastManagers();
+
+        SailfishNotificationService.socketConnect();
+
+        if (SailfishNotificationService.socketIsConnected())
             setConnectedText();
         else
             setDisconnectedText();
@@ -130,8 +142,6 @@ public class MainActivity extends Activity{
 
     @Override
     protected void onDestroy(){
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketConnectReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onSocketDisconnectReceiver);
         super.onDestroy();
 
     }
@@ -140,9 +150,11 @@ public class MainActivity extends Activity{
     public boolean onTouchEvent(MotionEvent event){
 
         //if 4 fingers touch at once, open debug menu
-        if (event.getPointerCount() == 4){
+        if (event.getPointerCount() == 4 && loadedDebug == false){
+
             Log.i(logTAG, "Entering debug menu");
 
+            loadedDebug = true;
             Intent i = new Intent(this, DebugActivity.class);
             startActivity(i);
 

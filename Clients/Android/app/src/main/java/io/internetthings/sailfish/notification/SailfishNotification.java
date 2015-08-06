@@ -1,4 +1,4 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.service.notification.StatusBarNotification;
 import android.util.Base64;
 import android.util.Log;
+import io.internetthings.sailfish.NotificationTemplateType.TemplateType;
 
 import java.io.ByteArrayOutputStream;
 
@@ -18,36 +19,30 @@ import java.io.ByteArrayOutputStream;
         Notes: Data model used for JSON string, also converts drawable to BASE64
 */
 
-public class SailfishNotification extends SailfishMessage implements Comparable<SailfishNotification>{
+public class SailfishNotification {
 
-    private String Base64Image;
-    private String Subject;
-    private String Body;
-    private String PackageName;
-    private long PostTime;
-    private int Priority;
+    //Chrome params
+    private String iconUrl = "";
+    private String title = "";
+    private String message = "";
+    private int priority;
+    private double eventTime;
+    private TemplateType type = TemplateType.basic;
 
-    public SailfishNotification(StatusBarNotification sbn, Context context, MessageActions action){
+    public SailfishNotification(StatusBarNotification sbn, Context context){
 
-        super(sbn, action);
+        this.iconUrl = getIconBase64(sbn, context);
 
-        this.Base64Image = getIconBase64(sbn, context);
-        this.Subject = getSubjectText(sbn);
-        this.Body = getBodyText(sbn);
-        this.PackageName = sbn.getPackageName();
-        this.PostTime = sbn.getPostTime();
-        this.Priority = sbn.getNotification().priority;
+        String tmp = getTitleText(sbn);
+        this.title = tmp == null ? "" : tmp;
 
-    }
+        tmp = getMessageText(sbn);
+        this.message = tmp == null ? "" : tmp;
 
-    public int compareTo(SailfishNotification sn){
-        return getComposite().compareTo(sn.getComposite());
-    }
+        this.eventTime = sbn.getPostTime();
+        this.priority = sbn.getNotification().priority;
+        this.type = TemplateType.basic;
 
-    @Override
-    public String toString(){
-        return "NotificationObject [Subject=" + Subject + ", Body=" + Body
-                + ", PackageName=" + PackageName + ", PostTime=" + PostTime + ", Base64Image=" + Base64Image + "]";
     }
 
     private String drawableToBase64(Drawable icon){
@@ -56,11 +51,11 @@ public class SailfishNotification extends SailfishMessage implements Comparable<
         bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
         byte[] bitmapdata = stream.toByteArray();
         //Convert bitArray data to Base64
-        return Base64.encodeToString(bitmapdata, Base64.DEFAULT);
+        return "data:image/*;base64," + Base64.encodeToString(bitmapdata, Base64.DEFAULT);
 
     }
 
-    private String getBodyText(StatusBarNotification sbn){
+    private String getMessageText(StatusBarNotification sbn){
 
         CharSequence body = sbn.getNotification().extras.getCharSequence("android.text");
         if (body != null)
@@ -71,7 +66,7 @@ public class SailfishNotification extends SailfishMessage implements Comparable<
 
     }
 
-    private String getSubjectText(StatusBarNotification sbn){
+    private String getTitleText(StatusBarNotification sbn){
         return sbn.getNotification().extras.getString("android.title");
     }
 
@@ -88,13 +83,13 @@ public class SailfishNotification extends SailfishMessage implements Comparable<
             }
         }
         if (icon != null)
-            return drawableToBase64(icon);
+            return  drawableToBase64(icon);
         else
             return "";
     }
 
     public String getComposite(){
-        return this.Subject + this.Body;
+        return this.title + this.message;
     }
 
     @Override
@@ -113,7 +108,7 @@ public class SailfishNotification extends SailfishMessage implements Comparable<
     }
 
     public void clearImage(){
-        this.Base64Image = "";
+        this.iconUrl = "";
     }
 
 }

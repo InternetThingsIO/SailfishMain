@@ -1,20 +1,23 @@
-package io.internetthings.sailfish;
+package io.internetthings.sailfish.notification;
 
+import android.content.Context;
 import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.splunk.mint.Mint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.HashSet;
+
+import io.internetthings.sailfish.GoogleAuth2Activity;
+import io.internetthings.sailfish.SailfishPreferences;
+
 
 /*
     Created by: Jason Maderski
@@ -28,30 +31,73 @@ import java.util.Iterator;
 public class SailfishNotificationService extends NotificationListenerService{
 
     private final String logTAG = this.getClass().getName();
-    public static final String MY_PREFS_NAME = "SailFishPref";
 
-    private ArrayList<SailfishNotification> issuedNotifications = new ArrayList<>();
+    private static SailfishSocketIO socket;
+    public static MutedPackages mutedPackages;
 
-    public SailfishNotificationService(){
-        SailfishSocketIO.setupSocket(this);
+    private HashSet<String> PkgWhiteList;
+
+    public static void restartService(Context context){
+        context.stopService(new Intent(context, SailfishNotificationService.class));
+        context.startService(new Intent(context, SailfishNotificationService.class));
+
+    }
+
+    public static boolean socketIsConnected(){
+        if (socket != null)
+            return socket.isConnected();
+        else
+            return false;
+    }
+
+    public static void socketConnect(){
+        if (socket != null)
+            socket.connect();
+    }
+
+    public static void socketDisconnect(){
+        if (socket != null)
+            socket.disconnect();
+    }
+
+    private void doStartup(){
+
+        Log.w(logTAG, "Doing startup!!");
+
+        if (socket == null){
+            socket = new SailfishSocketIO(this);
+            socket.connect();
+        }
+
+
+        mutedPackages = new MutedPackages(this);
+
+        //create white list
+        PkgWhiteList = new HashSet<>();
+        PkgWhiteList.add("com.google.android.dialer");
+        PkgWhiteList.add("com.skype.raider");
+        PkgWhiteList.add("com.viber.voip");
+        PkgWhiteList.add("com.skype.android");
+        PkgWhiteList.add("com.whatsapp");
+
     }
 
     //start sticky so it restarts on crash :-)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        super.onStartCommand(intent,flags, startId);
+        super.onStartCommand(intent, flags, startId);
 
-        Log.i(logTAG, "SailfishNotificationService starting");
+        doStartup();
 
-        Mint.initAndStartSession(this, Constants.MINT_API_KEY);
+        Log.e(logTAG, "Service Started");
 
         return START_STICKY;
     }
 
     private void getPrefAndConnect() {
 
-        if (SailfishSocketIO.isConnected()) {
+        if (socket.isConnected()) {
             Log.i(logTAG, "Socket is already connected");
             return;
         }
@@ -62,9 +108,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         if (email != null) {
             Log.e(logTAG, "Connecting to socket, found email: " + email);
 
-            SailfishSocketIO.connect();
-
-            Mint.setUserIdentifier(email);
+            socket.connect();
 
         }else{
             Log.e(logTAG, "Email is NULL");
@@ -91,28 +135,18 @@ public class SailfishNotificationService extends NotificationListenerService{
         );
 
         getPrefAndConnect();
+        SailfishNotification sn = new SailfishNotification(sbn, this);
+        SailfishMessage message = new SailfishMessage(sbn, MessageActions.POST_NOTIFICATION, sn);
 
-        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.POST_NOTIFICATION);
-
-        updateDuplicates(sn);
-
-
-
-        //don't issue this notification if it shouldn't be issued
-        if (!canIssueNotif(sn))
-            return;
-
-        sendMessage(sn);
-
-        //add current notif
-        //clear image to save memory
-        sn.clearImage();
-        if (!issuedNotifications.contains(sn))
-            issuedNotifications.add(sn);
+        sendMessage(message);
 
     }
 
     private Boolean isNotifValid(StatusBarNotification sbn){
+
+        if (PkgWhiteList == null)
+            return false;
+
         if (sbn == null || sbn.getNotification() == null) {
             Log.w(logTAG, "sbn was null, notification is not valid");
             return false;
@@ -127,54 +161,22 @@ public class SailfishNotificationService extends NotificationListenerService{
             return false;
         }
 
-        return true;
-
-    }
-
-    private Boolean canIssueNotif(SailfishNotification sn) {
-
-        String email = SailfishPreferences.getEmail(this);
-
-        if (email == null || email.length() == 0) {
-            Log.w(logTAG, "Email is null, can't issue notification");
-            return false;
-        }
-
-        //check to see if this is a duplicate
-        if (isDuplicate(sn))
-            return false;
-
-        return true;
-    }
-
-    private boolean isDuplicate(SailfishNotification sn){
-        if (issuedNotifications.contains(sn)){
-            Log.i(logTAG, "Duplicate notification detected");
-            return true;
-        }
-
-        return false;
-    }
-
-    private void updateDuplicates(SailfishNotification sn){
-
-        Iterator<SailfishNotification> it =  issuedNotifications.iterator();
-
-        SailfishNotification currNotif;
-        long elapsedTime;
-
-        //clear expired notifs
-        while (it.hasNext()){
-            currNotif = it.next();
-            elapsedTime = new Date().getTime() - currNotif.CreatedDate.getTime();
-
-            if (elapsedTime > Constants.NOTIF_EXPIRATION_MS) {
-                it.remove();
-                Log.i(logTAG, "Removing expired notif ID: " + currNotif.ID);
+        //if ongoing or not clearable and not on white list, return false
+        if (sbn.isClearable() == false || sbn.isOngoing() == true){
+            if (!PkgWhiteList.contains(sbn.getPackageName())) {
+                Log.i(logTAG, "Package: " + sbn.getPackageName() + " is NOT on the white list");
+                return false;
             }
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " IS on the white list");
         }
 
-        Log.i(logTAG, "Issued Notifications Size: " + issuedNotifications.size());
+        if (mutedPackages.isMuted(sbn.getPackageName())) {
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " is muted");
+            return false;
+        }
+
+        return true;
+
     }
 
     private String toBase64(String str){
@@ -210,7 +212,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         String token = GoogleAuth2Activity.getToken(this, email);
 
         if (!TextUtils.isEmpty(token))
-            SailfishSocketIO.attemptSend(token, email, json);
+            socket.attemptSend(token, email, json);
         else
             Log.e(logTAG, "Token came back empty on sendMessage");
     }
@@ -236,22 +238,19 @@ public class SailfishNotificationService extends NotificationListenerService{
                 + " Package Name: " + sbn.getPackageName() + " ID: " + sbn.getId());
 
 
-        SailfishNotification sn = new SailfishNotification(sbn, this, MessageActions.REMOVE_NOTIFICATION);
+        SailfishMessage sn = new SailfishMessage(sbn, MessageActions.REMOVE_NOTIFICATION);
 
-        if (issuedNotifications.contains(sn)) {
-            Log.i(logTAG, "Removing existing notification from issuedNotifications");
-            issuedNotifications.remove(sn);
-        }
-
-        sn.clearImage();
         sendMessage(sn);
     }
 
     @Override
     public void onDestroy(){
-
         super.onDestroy();
-        SailfishSocketIO.Close();
+
+        socket.Close();
+        socket = null;
+
+        Log.e(logTAG, "Service Stopped");
     }
 
 }
