@@ -138,7 +138,10 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
 
     public static String getToken(Context context, String email){
-        String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
+        //String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email";
+        String scopes = "audience:server:client_id:1093471737235-3kcsj89v5rrek85i2v5e0no7u9n5elu0.apps.googleusercontent.com";
+        //scopes += ":api_scope:https://www.googleapis.com/auth/userinfo.email";
+
         String token = null;
         try {
             token = GoogleAuthUtil.getToken(context, email, scopes);
@@ -155,6 +158,9 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
 
         BufferedReader in = null;
         String data = null;
+
+        if (token != null)
+            Log.e(logTAG, token);
 
         return token;
 
