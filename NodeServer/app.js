@@ -1,20 +1,32 @@
+var appClientID = "1093471737235-3kcsj89v5rrek85i2v5e0no7u9n5elu0.apps.googleusercontent.com";
+
 var nr = require('newrelic');
 
 var app = require('express')();
 var http = require('http').Server(app);
 var XMLHttpRequest = require('xhr2');
 
+//get stuff for socket.io
 var redis = require('socket.io-redis');
 var io = require('socket.io')(http);
 
-//redis is installed on load balancer
-io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
+//get stuff for decrypting google access token
+var googleIdToken = require('google-id-token');
+var request = require('request');
+//cache for google certs so we only have to get them once
+var googleCerts;
 
-http.listen(6001, function(){
-	console.log('listening on *:6001');
-});
+
 
 function main(){
+
+  //redis is installed on load balancer
+  io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
+
+  //listen on port 6001
+  http.listen(6001, function(){
+    console.log('listening on *:6001');
+  });
 
   app.get('/', function(req, res){
     res.sendFile(__dirname + '/admin.html');
@@ -56,8 +68,75 @@ function main(){
 
 }
 
+//check token with google-id-token
+function checkToken(access_token, email, socket, callback, args){
+	
+  var parser = new googleIdToken({ getKeys: getGoogleCerts });
+  parser.decode(access_token, requestComplete);
+
+  function requestComplete(err, token){
+    if (err){
+      console.log('Failed to validate token, tring old method /people/me');
+      console.log(err);
+      checkToken2(access_token, email, socket, callback, args);
+    }else{
+      console.log('Successfully decrypted token');
+      //console.log(JSON.stringify(token));
+      //console.log(JSON.stringify(token));
+
+      if (tokenIsValid(token, email, appClientID)){
+        callback(email, socket, args);
+      }else{
+        console.log('Detected fake token for user: ' + email);
+      }
+    }
+  }
+
+  function tokenIsValid(token, email, acID){
+	
+    if (token.data.email != email){
+      console.log('Token email did not match. Token: ' + token.data.email + ' Provided: ' + email);
+      return false;
+    }
+
+    if (token.data.aud != acID){
+      console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acID);
+      return false;
+    }
+
+    return true; 
+
+  }
+
+}
+
+function getGoogleCerts(kid, callback) {
+    
+  if (!googleCerts){ 
+    
+    //console.log('getting google cert from server');
+
+    request({uri: 'https://www.googleapis.com/oauth2/v1/certs'}, function(err, response, body){
+        if(err && response.statusCode !== 200) {
+            err = err || "error while retrieving the google certs";
+            console.log(err);
+            callback(err, {})
+        } else {
+	    console.log('got google cert from server');
+            googleCerts = JSON.parse(body);
+            callback(null, googleCerts[kid]);
+        }
+    });
+
+  }else{
+    //console.log('Using cached cert');
+    callback(null, googleCerts[kid]);
+  }
+
+}
+
 //gets user's info
-function checkToken(access_token, email, socket, callback, args) {
+function checkToken2(access_token, email, socket, callback, args) {
 
 
   requestStart();
@@ -118,5 +197,5 @@ function messageToApp(email, socket, args){
   io.to(email).emit('receive_message_app', args[0]);
 }
 
-//run the main function at the end
+//start main at end
 main();
