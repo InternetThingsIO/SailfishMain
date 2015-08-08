@@ -1,5 +1,6 @@
 package io.internetthings.sailfish.notification;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.NotificationListenerService;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import io.internetthings.sailfish.GoogleAuth2Activity;
@@ -132,6 +134,8 @@ public class SailfishNotificationService extends NotificationListenerService{
                         + "\n" + " isClearable: " + sbn.isClearable()
                         + "\n" + " getNumber: " + sbn.getNotification().number
                         + "\n" + " getActiveNotifications: " + getActiveNotifications().length
+                        + "\n" + " body: " + sbn.getNotification().extras.getCharSequence("android.text")
+                        + "\n" + " inboxStyle: " + Arrays.toString(sbn.getNotification().extras.getCharSequenceArray("android.textLines"))
         );
 
         getPrefAndConnect();
@@ -156,10 +160,10 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         //if we have no body, don't send notifications.
         //this rids us of grouped notifications also
-        if (bodyText == null) {
+        /*if (bodyText == null) {
             Log.w(logTAG, "Notification body text is null");
             return false;
-        }
+        }*/
 
         //if ongoing or not clearable and not on white list, return false
         if (sbn.isClearable() == false || sbn.isOngoing() == true){
