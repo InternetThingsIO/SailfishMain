@@ -11,6 +11,10 @@ import android.util.Log;
 import io.internetthings.sailfish.NotificationTemplateType.TemplateType;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 /*
         Created by: Jason Maderski
@@ -28,20 +32,43 @@ public class SailfishNotification {
     private int priority;
     private double eventTime;
     private TemplateType type = TemplateType.basic;
+    private NotificationItems[] items;
 
     public SailfishNotification(StatusBarNotification sbn, Context context){
 
+        this.type = getType(sbn);
         this.iconUrl = getIconBase64(sbn, context);
 
         String tmp = getTitleText(sbn);
         this.title = tmp == null ? "" : tmp;
+
+        if(type == TemplateType.list){
+            Log.i("TemplateType: ", "list");
+            CharSequence inboxStyle[] = sbn.getNotification().extras.getCharSequenceArray("android.textLines");
+            int arraySize = inboxStyle.length;
+
+            items = new NotificationItems[arraySize];
+
+            for(int i = 0; i < arraySize; i++){
+                items[i] = new NotificationItems();
+                items[i].title = "";
+                items[i].message = inboxStyle[i].toString();
+            }
+        }
 
         tmp = getMessageText(sbn);
         this.message = tmp == null ? "" : tmp;
 
         this.eventTime = sbn.getPostTime();
         this.priority = sbn.getNotification().priority;
-        this.type = TemplateType.basic;
+
+    }
+
+    private TemplateType getType(StatusBarNotification sbn){
+        if(sbn.getNotification().extras.getCharSequenceArray("android.textLines") == null)
+            return TemplateType.basic;
+        else
+            return TemplateType.list;
 
     }
 
@@ -111,4 +138,9 @@ public class SailfishNotification {
         this.iconUrl = "";
     }
 
+}
+
+class NotificationItems{
+    public String title;
+    public String message;
 }
