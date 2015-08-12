@@ -42,27 +42,24 @@ function main(){
 
     socket.on('join room', nr.createWebTransaction('/ws/join_room', function (token, email){
       checkToken(token, email, socket, joinRoom, null);
-      nr.endTransaction();
     }));
 
     socket.on('leave room', nr.createWebTransaction('/ws/leave_room', function (token, email){
       checkToken(token, email, socket, leaveRoom, null);
-      nr.endTransaction();
     }));
 
     socket.on('send message', nr.createWebTransaction('/ws/send_message', function (token, email, msg){
       checkToken(token, email, socket, messageToExt, [msg]);
-      nr.endTransaction();
     }));
 
     //deprecated remove later
-    socket.on('dismiss_notif_device', function(token, email, notifId){
+    socket.on('dismiss_notif_device', nr.createWebTransaction('/ws/dismiss_notif_device', function(token, email, notifId){
       checkToken(token, email, socket, dismissNotification, [notifId]);
-    });
+    }));
 
-    socket.on('send_message_app', function(token, email, notifId){
+    socket.on('send_message_app', nr.createWebTransaction('/ws/send_message_app', function(token, email, notifId){
       checkToken(token, email, socket, messageToApp, [notifId]);
-    });
+    }));
 
   });
 
@@ -174,27 +171,32 @@ function checkToken2(access_token, email, socket, callback, args) {
 function joinRoom(email, socket, args) {
   console.log('join a room');
   socket.join(email);
+  nr.endTransaction();
 }
 
 function leaveRoom(email, socket, args){
   console.log('leave a room');
   socket.leave(email);
+  nr.endTransaction();
 }
 
 function messageToExt(email, socket, args){
   console.log('Emitting message to: ' + email);
   io.to(email).emit('message', args[0]);
+  nr.endTransaction();
 }
 
 //deprecated remove later
 function dismissNotification(email, socket, args){
   console.log('Removing notification from device: ' + args[0]);
   io.to(email).emit('dismiss_notif_device', args[0]);
+  nr.endTransaction();
 }
 
 function messageToApp(email, socket, args){
   console.log('Sending message to app: ' + args[0]);
   io.to(email).emit('receive_message_app', args[0]);
+  nr.endTransaction();
 }
 
 //start main at end
