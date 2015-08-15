@@ -109,9 +109,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         //connect if we have an email
         if (email != null) {
             Log.e(logTAG, "Connecting to socket, found email: " + email);
-
             socket.connect();
-
         }else{
             Log.e(logTAG, "Email is NULL");
         }
@@ -251,8 +249,10 @@ public class SailfishNotificationService extends NotificationListenerService{
     public void onDestroy(){
         super.onDestroy();
 
-        socket.Close();
-        socket = null;
+        if (socket != null) {
+            socket.Close();
+            socket = null;
+        }
 
         Log.e(logTAG, "Service Stopped");
     }
