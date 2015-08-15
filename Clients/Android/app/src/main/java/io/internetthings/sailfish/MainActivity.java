@@ -23,9 +23,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 
 import java.io.IOException;
 
@@ -44,6 +47,13 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Display's device id
+                .addTestDevice("11A4A8E4493FAE4F9ACB340B74705DE9") //Jason's Nexus 4
+                .build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override

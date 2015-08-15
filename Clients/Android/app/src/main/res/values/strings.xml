@@ -19,5 +19,6 @@
     <string name="title_activity_google_auth2">GoogleAuth2Activity</string>
     <string name="title_activity_options">OptionsActivity</string>
     <string name="title_activity_muted_notificaitons">MutedNotificaitonsActivity</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1283835817675997/9873066662</string>
 
 </resources>

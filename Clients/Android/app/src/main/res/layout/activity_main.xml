@@ -1,70 +1,92 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MainActivity"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Notice"
-        android:id="@+id/textView14"
-        android:textSize="70dp"
-        android:textStyle="bold|italic"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:singleLine="true"
-        android:layout_below="@+id/relativeLayout"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/statusImage"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/disconnected"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:layout_marginTop="195dp"
-        android:layout_marginBottom="220dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:id="@+id/relativeLayout"
+        android:layout_alignParentTop="false"
         android:layout_alignParentStart="true"
-        android:id="@+id/relativeLayout">
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
 
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-1283835817675997/9873066662"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
+        </com.google.android.gms.ads.AdView>
     </RelativeLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:background="@drawable/settings"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="openOptions" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/relativeLayout">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/not_logged_in"
-        android:id="@+id/emailTxtView"
-        android:textAlignment="center"
-        android:textColor="@color/text"
-        android:background="@drawable/white_rounded"
-        android:paddingRight="15dp"
-        android:paddingLeft="15dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:gravity="center"
-        android:layout_marginBottom="48dp"
-        android:layout_above="@+id/imageButton"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Notice"
+            android:id="@+id/title"
+            android:textSize="70dp"
+            android:textStyle="bold|italic"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:layout_below="@+id/relativeLayout"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/statusImage"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/disconnected"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:layout_marginTop="150dp"
+            android:layout_marginBottom="220dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton"
+            android:background="@drawable/settings"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="openOptions" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/not_logged_in"
+            android:id="@+id/emailTxtView"
+            android:textAlignment="center"
+            android:textColor="@color/text"
+            android:background="@drawable/white_rounded"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center"
+            android:layout_marginBottom="48dp"
+            android:layout_above="@+id/imageButton"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
 
 </RelativeLayout>
