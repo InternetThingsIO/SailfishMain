@@ -39,10 +39,12 @@ function notifButtonListener(notificationId, buttonIndex){
 }
 
 function onNotificationClosed(notificationId, byUser){
-  console.log('dismissing notif id: ' + notificationId);
+
   //emit something to the device, dismissing the notification
-  //emitSocket('dismiss_notif_device', user_info.emails[0].value, notificationId);
-  emitSailfishMessage(notificationId, ACTION_REMOVE);
+  if (byUser){
+    console.log('dismissing notif id: ' + notificationId);
+    emitSailfishMessage(notificationId, ACTION_REMOVE);
+  }
 
 }
 
