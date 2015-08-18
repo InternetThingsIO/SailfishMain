@@ -2,6 +2,8 @@ package io.internetthings.sailfish.notification;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -17,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
 import io.internetthings.sailfish.GoogleAuth2Activity;
+import io.internetthings.sailfish.NotificationActions;
 import io.internetthings.sailfish.SailfishPreferences;
 import io.internetthings.sailfish.notification.SailfishNotificationService;
 
@@ -165,6 +168,20 @@ public class SailfishSocketIO {
     private void mutePackage(SailfishNotificationService context, String concatID){
         packageDetails details = getPackageDetails(concatID);
         SailfishNotificationService.mutedPackages.mutePackage(details.packageName, context);
+
+        String pkg = details.packageName.toString();
+        String pkgName = "No name found";
+        //Currently we are not getting the icon from the package when muted, commented out
+        //this code in case we want to overlay the package icon when muted
+        try {
+            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
+            //Drawable icon = context.getPackageManager().getApplicationIcon(appInfo);
+            pkgName = context.getPackageManager().getApplicationLabel(appInfo).toString();
+        }catch (Exception e){
+            Log.e(logTAG, e.getMessage());
+        }
+
+        NotificationActions.sendMSG(context, "Notice",  pkgName + " is now muted!");
 
     }
 
