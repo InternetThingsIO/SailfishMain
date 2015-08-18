@@ -4,7 +4,7 @@ package io.internetthings.sailfish;
     Created by: Jason Maderski
     Date: 6/2/2015
     Project Name: Sailfish
-    Version: 0.1
+    Version: 1.0.2
     Notes: Initial build of project, currently just display's login email in logcat
 
  */
