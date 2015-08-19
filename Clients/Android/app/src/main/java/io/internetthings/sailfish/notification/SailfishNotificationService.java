@@ -177,7 +177,8 @@ public class SailfishNotificationService extends NotificationListenerService{
             return false;
         }
 
-        if (hasList(sbn.getPackageName()))
+        //don't issue notifcation if app already has list and this is not a list
+        if (!notifIsList(sbn) && hasList(sbn.getPackageName()))
             return false;
 
         return true;
@@ -185,11 +186,13 @@ public class SailfishNotificationService extends NotificationListenerService{
     }
 
     private boolean hasList(String packageName){
-        StatusBarNotification[] activeNotifs = getActiveNotifications();
 
+        StatusBarNotification[] activeNotifs = getActiveNotifications();
         for (StatusBarNotification sbn : activeNotifs){
-            if (sbn.getPackageName() == packageName)
-                return notifIsList(sbn);
+            if (sbn.getPackageName().compareTo(packageName) == 0){
+                if (notifIsList(sbn))
+                        return true;
+            }
         }
 
         return false;
