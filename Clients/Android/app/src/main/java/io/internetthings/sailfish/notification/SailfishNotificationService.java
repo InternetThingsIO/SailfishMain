@@ -177,8 +177,30 @@ public class SailfishNotificationService extends NotificationListenerService{
             return false;
         }
 
+        if (hasList(sbn.getPackageName()))
+            return false;
+
         return true;
 
+    }
+
+    private boolean hasList(String packageName){
+        StatusBarNotification[] activeNotifs = getActiveNotifications();
+
+        for (StatusBarNotification sbn : activeNotifs){
+            if (sbn.getPackageName() == packageName)
+                return notifIsList(sbn);
+        }
+
+        return false;
+    }
+
+    private boolean notifIsList(StatusBarNotification sbn){
+
+        if(sbn.getNotification().extras.getCharSequenceArray("android.textLines") == null)
+            return false;
+
+        return true;
     }
 
     private String toBase64(String str){
