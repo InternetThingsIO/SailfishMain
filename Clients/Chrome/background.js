@@ -212,8 +212,10 @@ function createBasicNotif(jsonObj){
   notifOptions.buttons = [{title:"Mute This App"}];
 
   //clear existing list notif so that it is reissued and the user sees that they have a new email
-  if (notifOptions.TemplateType == "list"){
-    chrome.notification.clear(jsonObj.ID);
+  console.log("Notif TemplateType: " + notifOptions.type);
+  if (notifOptions.type == "list"){
+	console.log("Dismissing list notif: " + jsonObj.ID);
+    chrome.notifications.clear(jsonObj.ID);
   }
 
   chrome.notifications.create(jsonObj.ID, notifOptions);
