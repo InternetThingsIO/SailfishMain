@@ -159,9 +159,6 @@ public class GoogleAuth2Activity extends Activity implements GoogleApiClient.Con
         BufferedReader in = null;
         String data = null;
 
-        if (token != null)
-            Log.e(logTAG, token);
-
         return token;
 
     }

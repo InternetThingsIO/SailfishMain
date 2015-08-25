@@ -23,12 +23,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rateme.OnRatingListener;
+import com.androidsx.rateme.RateMeDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.server.converter.StringToIntConverter;
 
 import java.io.IOException;
 
@@ -52,6 +53,7 @@ public class MainActivity extends Activity{
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Display's device id
                 .addTestDevice("11A4A8E4493FAE4F9ACB340B74705DE9") //Jason's Nexus 4
+                .addTestDevice("5255A0F95E27A290B1716ADEDA70F87F") //George's Nexus 4
                 .build();
         mAdView.loadAd(adRequest);
     }
@@ -124,6 +126,7 @@ public class MainActivity extends Activity{
     protected void onStart(){
         super.onStart();
 
+        showCustomRateMeDialog();
     }
 
     @Override
@@ -238,6 +241,27 @@ public class MainActivity extends Activity{
                 NotificationActions.toastMSG(getApplication(), "Notice does not have Notification Access");
             }
 
+        }
+    }
+
+    private void showCustomRateMeDialog() {
+
+        if (!SailfishPreferences.getRatingShown(this)) {
+
+            new RateMeDialog.Builder(getPackageName(), getString(R.string.app_name))
+                    .setHeaderBackgroundColor(getResources().getColor(R.color.background))
+                    .setBodyBackgroundColor(getResources().getColor(R.color.primary_material_light))
+                    .setBodyTextColor(getResources().getColor(R.color.text))
+                    .enableFeedbackByEmail("george@internetthings.io")
+                    .showAppIcon(R.mipmap.icon_notice_logo)
+                    .setShowShareButton(true)
+                    .setRateButtonBackgroundColor(getResources().getColor(R.color.btn_green))
+                    .setRateButtonPressedBackgroundColor(getResources().getColor(R.color.btn_green_pressed))
+                    .build()
+                    .show(getFragmentManager(), "custom-dialog");
+
+            SailfishPreferences.setRatingShown(this, true);
+            SailfishPreferences.commit(this);
         }
     }
 

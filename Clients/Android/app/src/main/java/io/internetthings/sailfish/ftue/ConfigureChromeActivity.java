@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.androidsx.rateme.RateMeDialog;
+
 import io.internetthings.sailfish.EmailSender;
 import io.internetthings.sailfish.MainActivity;
 import io.internetthings.sailfish.NotificationActions;
@@ -45,7 +47,6 @@ public class ConfigureChromeActivity extends Activity {
 
         //send Test Notification
         NotificationActions.sendMSG(this, "Notice", "Yay!  Notice has been successfully setup!");
-
 
     }
 

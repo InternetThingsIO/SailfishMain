@@ -20,6 +20,7 @@ public class SailfishPreferences {
     public static final String EMAIL_KEY = "email";
     public static final String FTUE_COMPLETED_KEY = "FTUECompleted";
     public static final String MUTED_PACKAGES_KEY = "mute";
+    public static final String RATING_SHOWN_KEY = "RATING_SHOWN_KEY";
 
     private static SharedPreferences.Editor editor(Context context){
 
@@ -60,6 +61,14 @@ public class SailfishPreferences {
 
     public static String getMutedPackages(Context context){
         return reader(context).getString(MUTED_PACKAGES_KEY, null);
+    }
+
+    public static Boolean getRatingShown(Context context){
+        return reader(context).getBoolean(RATING_SHOWN_KEY, false);
+    }
+
+    public static void setRatingShown(Context context, Boolean value){
+        editor(context).putBoolean(RATING_SHOWN_KEY, value);
     }
 
     public static void commit(Context context){
