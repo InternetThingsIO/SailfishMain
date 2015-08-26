@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.androidsx.rateme.OnRatingListener;
 import com.androidsx.rateme.RateMeDialog;
+import com.androidsx.rateme.RateMeDialogTimer;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -246,12 +247,14 @@ public class MainActivity extends Activity{
 
     private void showCustomRateMeDialog() {
 
-        if (!SailfishPreferences.getRatingShown(this)) {
+        RateMeDialogTimer.onStart(getApplication());
+        if (RateMeDialogTimer.shouldShowRateDialog(getApplication(), 1, 2)) {
+            // show the dialog with the code above
 
             new RateMeDialog.Builder(getPackageName(), getString(R.string.app_name))
                     .setHeaderBackgroundColor(getResources().getColor(R.color.background))
-                    .setBodyBackgroundColor(getResources().getColor(R.color.primary_material_light))
-                    .setBodyTextColor(getResources().getColor(R.color.text))
+                    .setBodyBackgroundColor(getResources().getColor(R.color.background))
+                    .setBodyTextColor(getResources().getColor(R.color.black_overlay))
                     .enableFeedbackByEmail("george@internetthings.io")
                     .showAppIcon(R.mipmap.icon_notice_logo)
                     .setShowShareButton(true)
@@ -260,9 +263,8 @@ public class MainActivity extends Activity{
                     .build()
                     .show(getFragmentManager(), "custom-dialog");
 
-            SailfishPreferences.setRatingShown(this, true);
-            SailfishPreferences.commit(this);
         }
+
     }
 
 }
