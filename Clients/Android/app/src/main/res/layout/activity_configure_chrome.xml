@@ -9,11 +9,13 @@
         android:layout_height="wrap_content"
         android:text="Done"
         android:id="@+id/btnCompletedStep"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="false"
         android:layout_centerHorizontal="true"
         android:onClick="onClickCompletedButton"
         android:minWidth="200dp"
-        android:clickable="true" />
+        android:clickable="true"
+        android:layout_below="@+id/FTUEEmail"
+        android:layout_marginTop="60dp" />
 
     <TextView
         android:layout_width="wrap_content"
