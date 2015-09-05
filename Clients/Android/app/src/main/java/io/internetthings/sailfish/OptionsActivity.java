@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.util.DisplayMetrics;
 
 import com.google.android.gms.common.AccountPicker;
 
@@ -39,6 +40,11 @@ public class OptionsActivity extends Activity {
         }
         versionInfo = "v" + pkgInfo.versionName.toString()
                 + " build: " + pkgInfo.versionCode;
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+
+       versionInfo += " " + metrics.densityDpi + "dpi";
+
         tv.setText(versionInfo);
     }
 
