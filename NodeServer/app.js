@@ -4,9 +4,11 @@ var nr = require('newrelic');
 
 var app = require('express')();
 var https = require('https');
+var fs = require('fs');
 var XMLHttpRequest = require('xhr2');
 
-var io;var server;
+var io;
+var server;
 
 //get stuff for decrypting google access token
 var googleIdToken = require('google-id-token');
