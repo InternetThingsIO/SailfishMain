@@ -22,9 +22,9 @@ function main(){
 
 
   var options = {
-	  key: fs.readFileSync('/var/gitrepos/SailfishMain/ssl_certs/node/privatekey.pem'),
-	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/ssl_certs/node/certificate.pem'),
-	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/ssl_certs/node/intermediate.pem')
+	  key: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/privatekey.pem'),
+	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/certificate.pem'),
+	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem')
   };
 
   server = https.createServer(options, app);
