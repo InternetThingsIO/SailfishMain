@@ -6,6 +6,7 @@ var app = require('express')();
 var https = require('https');
 var fs = require('fs');
 var XMLHttpRequest = require('xhr2');
+var constants = require('constants')
 
 var io;
 var server;
@@ -24,7 +25,8 @@ function main(){
   var options = {
 	  key: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/privatekey.pem'),
 	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/certificate.pem'),
-	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem')
+	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem'),
+	  ciphers: 'TLSv1.2, TLSv1'
   };
 
   server = https.createServer(options, app);
