@@ -6,7 +6,7 @@ var app = require('express')();
 var https = require('https');
 var XMLHttpRequest = require('xhr2');
 
-var io;
+var io;var server;
 
 //get stuff for decrypting google access token
 var googleIdToken = require('google-id-token');
@@ -20,13 +20,13 @@ function main(){
 
 
   var options = {
-	  key: fs.readFileSync('ssl_certs/privatekey.pem'),
-	  cert: fs.readFileSync('ssl_certs/certificate.pem'),
-	  ca: fs.readFileSync('ssl_certs/intermediate.pem')
+	  key: fs.readFileSync('ssl_certs/node/privatekey.pem'),
+	  cert: fs.readFileSync('ssl_certs/node/certificate.pem'),
+	  ca: fs.readFileSync('ssl_certs/node/intermediate.pem')
   };
 
-  var server = https.createServer(options, app);
-  var io = require('socket.io').listen(server);
+  server = https.createServer(options, app);
+  io = require('socket.io').listen(server);
 
 server.listen(443);
 
