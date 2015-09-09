@@ -27,7 +27,17 @@ function main(){
 	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/certificate.pem'),
 	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem'),
 	  secureProtocol: 'SSLv23_method',
-	  secureOptions: constants.SSL_OP_NO_SSLv3
+	  secureOptions: constants.SSL_OP_NO_SSLv3,
+	  ciphers: [
+		    "ECDHE-RSA-AES128-SHA256",
+		    "DHE-RSA-AES128-SHA256",
+		    "AES128-GCM-SHA256",
+		    "!RC4", // RC4 be gone
+		    "HIGH",
+		    "!MD5",
+		    "!aNULL"
+	  ].join(':'),
+	  honorCipherOrder: true
   };
 
   server = https.createServer(options, app);
