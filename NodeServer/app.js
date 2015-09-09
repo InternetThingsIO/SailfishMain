@@ -26,7 +26,9 @@ function main(){
 	  key: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/privatekey.pem'),
 	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/certificate.pem'),
 	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem'),
-	  ciphers: 'TLSv1.2, TLSv1'
+	  ciphers: 'TLSv1.2, TLSv1',
+	  secureProtocol: 'SSLv23_method',
+	  secureOptions: constants.SSL_OP_NO_SSLv3
   };
 
   server = https.createServer(options, app);
