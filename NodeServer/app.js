@@ -26,7 +26,6 @@ function main(){
 	  key: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/privatekey.pem'),
 	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/certificate.pem'),
 	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem'),
-	  ciphers: 'EECDH+AES128:EECDH+3DES:EDH+3DES:!SSLv2:!MD5:!DSS:!aNULL',
 	  secureProtocol: 'SSLv23_method',
 	  secureOptions: constants.SSL_OP_NO_SSLv3
   };
