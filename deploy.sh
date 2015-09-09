@@ -1,6 +1,6 @@
 #!/bin/sh
 cd /var/gitrepos/SailfishMain
-git reset --hard
+git clean -df
 git checkout master
 git pull
 service sailfishnode restart
