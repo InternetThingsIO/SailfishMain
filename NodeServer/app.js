@@ -3,12 +3,10 @@ var appClientID = "1093471737235-3kcsj89v5rrek85i2v5e0no7u9n5elu0.apps.googleuse
 var nr = require('newrelic');
 
 var app = require('express')();
-var http = require('http').Server(app);
+var https = require('https');
 var XMLHttpRequest = require('xhr2');
 
-//get stuff for socket.io
-var redis = require('socket.io-redis');
-var io = require('socket.io')(http);
+var io;
 
 //get stuff for decrypting google access token
 var googleIdToken = require('google-id-token');
@@ -20,13 +18,17 @@ var googleCerts;
 
 function main(){
 
-  //redis is installed on load balancer
-  io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
 
-  //listen on port 6001
-  http.listen(6001, function(){
-    console.log('listening on *:6001');
-  });
+  var options = {
+	  key: fs.readFileSync('ssl_certs/privatekey.pem'),
+	  cert: fs.readFileSync('ssl_certs/certificate.pem'),
+	  ca: fs.readFileSync('ssl_certs/intermediate.pem')
+  };
+
+  var server = https.createServer(options, app);
+  var io = require('socket.io').listen(server);
+
+server.listen(443);
 
   app.get('/', function(req, res){
     res.sendFile(__dirname + '/admin.html');
