@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
@@ -18,9 +18,8 @@
         android:nestedScrollingEnabled="true"
         android:onClick="onClick"
         android:clickable="true"
-        android:layout_below="@+id/rdoEmails"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_alignParentBottom="true" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -31,7 +30,7 @@
         android:layout_alignWithParentIfMissing="false"
         android:layout_below="@+id/textView7"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_alignParentBottom="false"
         android:layout_alignParentTop="false">
 
@@ -82,16 +81,6 @@
         android:layout_below="@+id/textView5"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:id="@+id/imageView3"
-        android:scaleType="fitCenter"
-        android:src="@drawable/connected"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="30dp" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -99,8 +88,19 @@
         android:text="To get started with seamless notifications, select the email you also use with Chrome."
         android:id="@+id/textView7"
         android:gravity="center_horizontal"
-        android:layout_below="@+id/imageView3"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/imageView3" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:id="@+id/imageView3"
+        android:layout_below="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/connected"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp" />
 
 </RelativeLayout>

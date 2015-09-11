@@ -55,7 +55,7 @@ public class ConfigureChromeActivity extends Activity {
 
         String email = SailfishPreferences.getEmail(this);
         TextView ftueemail = (TextView)findViewById(R.id.FTUEEmail);
-        ftueemail.setText("To: " + email);
+        ftueemail.setText(email);
         Log.i("To: ", email);
     }
 
