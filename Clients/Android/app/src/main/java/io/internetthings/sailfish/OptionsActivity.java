@@ -90,6 +90,11 @@ public class OptionsActivity extends Activity {
         startActivity(i);
     }
 
+    public void autoDismissApps(View view){
+        Intent i = new Intent(this, AutoDismissActivity.class);
+        startActivity(i);
+    }
+
     public void backToMain(View view){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

@@ -6,5 +6,6 @@ package io.internetthings.sailfish.notification;
 public enum MessageActions {
     POST_NOTIFICATION,
     REMOVE_NOTIFICATION,
-    MUTE_NOTIFICATION
+    MUTE_NOTIFICATION,
+
 }

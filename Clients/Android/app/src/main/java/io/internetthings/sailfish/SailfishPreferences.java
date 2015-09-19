@@ -21,6 +21,7 @@ public class SailfishPreferences {
     public static final String FTUE_COMPLETED_KEY = "FTUECompleted";
     public static final String MUTED_PACKAGES_KEY = "mute";
     public static final String RATING_SHOWN_KEY = "RATING_SHOWN_KEY";
+    public static final String AUTO_DISMISS_PACKAGES_KEY = "AUTO_DISMISS_PACKAGES_KEY";
 
     private static SharedPreferences.Editor editor(Context context){
 
@@ -69,6 +70,14 @@ public class SailfishPreferences {
 
     public static void setRatingShown(Context context, Boolean value){
         editor(context).putBoolean(RATING_SHOWN_KEY, value);
+    }
+
+    public static void setAutoDismissedPackages(Context context, String value){
+        editor(context).putString(AUTO_DISMISS_PACKAGES_KEY, value);
+    }
+
+    public static String getAutoDismissedPackages(Context context){
+        return reader(context).getString(AUTO_DISMISS_PACKAGES_KEY, null);
     }
 
     public static void commit(Context context){

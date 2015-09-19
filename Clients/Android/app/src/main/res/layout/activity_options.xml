@@ -45,8 +45,30 @@
             android:onClick="mutedApps"
             android:layout_below="@+id/optionsTxt"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="20dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auto-Dismiss"
+            android:id="@+id/autoDismissApps"
+            android:clickable="true"
+            android:onClick="autoDismissApps"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/line"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:background="@color/h2_text"
+            android:src="@android:drawable/divider_horizontal_bright"
+            android:paddingLeft="90dp"
+            android:paddingRight="90dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -57,8 +79,7 @@
             android:layout_alignParentStart="true"
             android:clickable="true"
             android:onClick="sendTestMSG"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginBottom="20dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -69,8 +90,7 @@
             android:layout_alignParentStart="true"
             android:clickable="true"
             android:onClick="restartSetup"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="20dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -81,8 +101,7 @@
             android:layout_alignParentStart="true"
             android:clickable="true"
             android:onClick="startChromeSetup"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="20dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -91,7 +110,6 @@
             android:id="@+id/changeEmail"
             android:layout_below="@+id/sendChromeEmail"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
             android:clickable="true"
             android:onClick="changeACCTEmail" />
     </LinearLayout>
