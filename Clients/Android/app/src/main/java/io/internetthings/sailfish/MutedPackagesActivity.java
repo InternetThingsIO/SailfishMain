@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -59,14 +60,17 @@ public class MutedPackagesActivity extends Activity {
 
             final CheckedTextView chkBox = new CheckedTextView(this);
 
+            icon = new ScaleDrawable(icon, 0, 200f, 200f).getDrawable();
+            icon = scalableDrawable(icon);
+
             chkBox.setChecked(value);
             chkBox.setCheckMarkDrawable(R.drawable.custom_checkbox);
-            chkBox.setText(" " + pkgName);
+            chkBox.setText(" " + limitPkgNameSize(pkgName));
             chkBox.setGravity(0x10);
-            chkBox.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            chkBox.setCompoundDrawables(icon, null, null, null);
             chkBox.setTextSize(24f);
             chkBox.setTextColor(Color.WHITE);
-            chkBox.setPadding(0, 0, 35, 0);
+            chkBox.setPadding(0, 0, 35, 20);
             chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
                 public void onClick(View v) {
                     CheckedTextView cur = (CheckedTextView)v;
@@ -82,6 +86,26 @@ public class MutedPackagesActivity extends Activity {
             });
             ll.addView(chkBox);
         }
+    }
+
+    private String limitPkgNameSize(String pkgName){
+
+        if(pkgName.length() > 15) {
+            pkgName = pkgName.substring(0, 15);
+            pkgName = pkgName + "...";
+        }
+
+        return pkgName;
+    }
+
+    private Drawable scalableDrawable(Drawable drawable){
+        final float scale = this.getResources().getDisplayMetrics().density;
+        int scaledWidth = (int)(scale * 35f);
+        int scaledHeight = (int)(scale * 35f);
+
+        drawable.setBounds(0, 0, scaledWidth, scaledHeight);
+
+        return drawable;
     }
 
     private void checkNullMutedPackages() {

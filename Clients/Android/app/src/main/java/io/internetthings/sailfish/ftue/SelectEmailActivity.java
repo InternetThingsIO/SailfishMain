@@ -44,11 +44,11 @@ public class SelectEmailActivity extends Activity {
         if(rdoEmails.getCheckedRadioButtonId()!=-1){
             int id = rdoEmails.getCheckedRadioButtonId();
             RadioButton radioButton = (RadioButton) rdoEmails.findViewById(id);
-            SailfishPreferences.setEmail(this, (String) radioButton.getText());
+            SailfishPreferences.setEmail(this, radioButton.getText().toString());
             SailfishPreferences.commit(this);
             
             //set email used by mint
-            Mint.setUserIdentifier((String) radioButton.getText());
+            Mint.setUserIdentifier(radioButton.getText().toString());
 
             Intent i = new Intent(this, GoogleAuth2Activity.class);
             startActivity(i);

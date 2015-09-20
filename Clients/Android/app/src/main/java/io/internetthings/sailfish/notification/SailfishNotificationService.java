@@ -1,8 +1,10 @@
 package io.internetthings.sailfish.notification;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
@@ -36,6 +38,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private static SailfishSocketIO socket;
     public static MutedPackages mutedPackages;
+    public static AutoDismissPackages autoDismissPackages;
 
     private HashSet<String> PkgWhiteList;
 
@@ -178,6 +181,15 @@ public class SailfishNotificationService extends NotificationListenerService{
             return false;
         }
 
+        if(autoDismissPackages.isAutoDismissed(sbn.getPackageName())){
+            if(Build.VERSION.SDK_INT < 21)
+                dismissNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId(), "Empty_key");
+            else
+                dismissNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId(), sbn.getKey());
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " is auto-dismissed");
+            return false;
+        }
+
         //don't issue notifcation if app already has list and this is not a list
         if (!notifIsList(sbn) && hasList(sbn.getPackageName()))
             return false;
@@ -281,6 +293,17 @@ public class SailfishNotificationService extends NotificationListenerService{
         }
 
         Log.e(logTAG, "Service Stopped");
+    }
+
+    private void dismissNotification(String PackageName, String tag, int id, String key){
+        if(Build.VERSION.SDK_INT < 21){
+            cancelNotification(PackageName, tag, id);
+        }else{
+            cancelNotification(key);
+        }
+
+        Log.i("cancel", tag + " " + Integer.toString(id));
+
     }
 
 }
