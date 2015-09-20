@@ -41,58 +41,17 @@ public class AutoDismissActivity extends Activity {
 
     private void runBlackList(){
         PkgBlackList = new HashSet<>();
-        PkgBlackList.add("com.google.android.ears");
-        PkgBlackList.add("com.android.keyguard");
-        PkgBlackList.add("com.android.facelock");
-        PkgBlackList.add("com.android.shell");
-        PkgBlackList.add("com.android.launcher");
-        PkgBlackList.add("com.android.defcontainer");
-        PkgBlackList.add("com.android.providers.partnerbookmarks");
-        PkgBlackList.add("com.android.htmlviewer");
-        PkgBlackList.add("com.android.cellbroadcastreceiver");
+        PkgBlackList.add("io.internetthings.sailfish");
+        PkgBlackList.add("jp.co.omronsoft.iwnnime.ml.kbd.white");
         PkgBlackList.add("com.google.android.gsf");
         PkgBlackList.add("com.google.android.gsf.login");
-        PkgBlackList.add("com.android.documentsui");
-        PkgBlackList.add("com.android.sharedstoragebackup");
-        PkgBlackList.add("com.android.vpndialogs");
-        PkgBlackList.add("com.android.providers.media");
-        PkgBlackList.add("om.google.android.marvin.talkback");
-        PkgBlackList.add("jp.co.omronsoft.iwnnime.ml.kbd.white");
-        PkgBlackList.add("com.android.certinstaller");
-        PkgBlackList.add("com.google.android.setupwizard");
-        PkgBlackList.add("com.android.packageinstaller");
-        PkgBlackList.add("com.google.android.backuptransport");
-        PkgBlackList.add("com.android.noisefield");
-        PkgBlackList.add("com.android.wallpapercropper");
-        PkgBlackList.add("com.android.location.fused");
-        PkgBlackList.add("com.android.backupconfirm");
-        PkgBlackList.add("com.android.providers.settings");
         PkgBlackList.add("jp.co.omronsoft.iwnnime.ml");
-        PkgBlackList.add("com.android.browser.provider");
-        PkgBlackList.add("com.android.phasebeam");
-        PkgBlackList.add("com.google.android.inputmethod.pinyin");
-        PkgBlackList.add("com.google.android.inputmethod.hindi");
+        PkgBlackList.add("android");
+        PkgBlackList.add("com.google.android.tts");
+        PkgBlackList.add("com.google.android.backuptransport");
         PkgBlackList.add("com.google.android.onetimeinitializer");
         PkgBlackList.add("com.google.android.partnersetup");
-        PkgBlackList.add("com.android.proxyhandler");
-        PkgBlackList.add("com.android.inputdevices");
-        PkgBlackList.add("com.android.wallpaper.holospiral");
         PkgBlackList.add("com.google.android.feedback");
-        PkgBlackList.add("com.android.nfc");
-        PkgBlackList.add("com.android.stk");
-        PkgBlackList.add("com.android.providers.userdictionary");
-        PkgBlackList.add("com.google.android.inputmethod.korean");
-        PkgBlackList.add("com.google.android.configupdater");
-        PkgBlackList.add("com.android.pacprocessor");
-        PkgBlackList.add("com.android.printspooler");
-        PkgBlackList.add("android");
-        PkgBlackList.add("com.android.externalstorage");
-        PkgBlackList.add("com.android.dreams.basic");
-        PkgBlackList.add("com.android.systemui");
-        PkgBlackList.add("com.android.wallpaper.livepicker");
-        PkgBlackList.add("com.android.musicvis");
-        PkgBlackList.add("com.google.android.tts");
-        PkgBlackList.add("com.android.keychain");
     }
 
     private List<String> filteredPkgs(){
@@ -108,6 +67,8 @@ public class AutoDismissActivity extends Activity {
             String pkg = it.next().packageName;
             if(PkgBlackList.contains(pkg))
                 Log.i(sTAG, "Pkg on Blacklist: " + pkg);
+            else if(pkg.contains("com.android") || pkg.contains("com.google.android.inputmethod"))
+                Log.i(sTAG, "Pkg rejected: " + pkg);
             else
                 newPkgList.add(pkg);
         }
@@ -118,11 +79,10 @@ public class AutoDismissActivity extends Activity {
 
     private void checkboxCreator(final Context context){
         Drawable icon = null;
-        String pkgName = "No name found";
+        String appName = "No name found";
 
         AutoDismissPackages adp = SailfishNotificationService.autoDismissPackages;
 
-        List<String> packages = filteredPkgs();
         Iterator<String> it = filteredPkgs().listIterator();
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.ADLL);
@@ -138,17 +98,17 @@ public class AutoDismissActivity extends Activity {
             try{
                 appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
                 icon = context.getPackageManager().getApplicationIcon(appInfo);
-                pkgName = context.getPackageManager().getApplicationLabel(appInfo).toString();
+                appName = context.getPackageManager().getApplicationLabel(appInfo).toString();
 
 
             }catch (Exception e){
                 Log.e(sTAG, e.getMessage());
             }
 
-            if(pkgName.contains("com.")){
+            if(appName.contains("com.")){
                 Log.i(sTAG, "Not adding package: " + pkg);
             }else {
-                Log.i(sTAG, pkg + " " + pkgName);
+                Log.i(sTAG, pkg + " " + appName);
                 final CheckedTextView chkBox = new CheckedTextView(this);
 
                 icon = new ScaleDrawable(icon, 0, 200f, 200f).getDrawable();
@@ -156,7 +116,7 @@ public class AutoDismissActivity extends Activity {
 
                 chkBox.setChecked(value);
                 chkBox.setCheckMarkDrawable(R.drawable.custom_checkbox);
-                chkBox.setText(" " + limitPkgNameSize(pkgName));
+                chkBox.setText(" " + limitPkgNameSize(appName));
                 chkBox.setGravity(0x10);
                 chkBox.setCompoundDrawables(icon, null, null, null);
                 chkBox.setTextSize(24f);

@@ -94,7 +94,7 @@ public class SailfishNotification {
     }
 
     private String getTitleText(StatusBarNotification sbn){
-        return sbn.getNotification().extras.getString("android.title");
+        return sbn.getNotification().extras.getString("android.title").toString();
     }
 
     private String getIconBase64(StatusBarNotification sbn, Context context){
