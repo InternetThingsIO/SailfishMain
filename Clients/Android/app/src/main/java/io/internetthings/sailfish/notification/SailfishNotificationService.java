@@ -84,6 +84,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         PkgWhiteList.add("com.viber.voip");
         PkgWhiteList.add("com.skype.android");
         PkgWhiteList.add("com.whatsapp");
+        PkgWhiteList.add("com.android.providers.downloads");
 
     }
 

@@ -3,12 +3,13 @@ var appClientID = "1093471737235-3kcsj89v5rrek85i2v5e0no7u9n5elu0.apps.googleuse
 var nr = require('newrelic');
 
 var app = require('express')();
-var http = require('http').Server(app);
+var https = require('https');
+var fs = require('fs');
 var XMLHttpRequest = require('xhr2');
+var constants = require('constants')
 
-//get stuff for socket.io
-var redis = require('socket.io-redis');
-var io = require('socket.io')(http);
+var io;
+var server;
 
 //get stuff for decrypting google access token
 var googleIdToken = require('google-id-token');
@@ -20,13 +21,29 @@ var googleCerts;
 
 function main(){
 
-  //redis is installed on load balancer
-  io.adapter(redis({ host: '10.132.236.107', port: 6379 }));
 
-  //listen on port 6001
-  http.listen(6001, function(){
-    console.log('listening on *:6001');
-  });
+  var options = {
+	  key: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/privatekey.pem'),
+	  cert: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/certificate.pem'),
+	  ca: fs.readFileSync('/var/gitrepos/SailfishMain/NodeServer/ssl_certs/node/intermediate.pem'),
+	  secureProtocol: 'SSLv23_method',
+	  secureOptions: constants.SSL_OP_NO_SSLv3,
+	  ciphers: [
+		    "ECDHE-RSA-AES128-SHA256",
+		    "DHE-RSA-AES128-SHA256",
+		    "AES128-GCM-SHA256",
+		    "!RC4", // RC4 be gone
+		    "HIGH",
+		    "!MD5",
+		    "!aNULL"
+	  ].join(':'),
+	  honorCipherOrder: true
+  };
+
+  server = https.createServer(options, app);
+  io = require('socket.io').listen(server);
+
+server.listen(443);
 
   app.get('/', function(req, res){
     res.sendFile(__dirname + '/admin.html');

@@ -13,17 +13,19 @@
         android:onClick="onClickNext"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
+        android:clickable="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:clickable="true" />
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_above="@+id/btnDoThis"
-        android:layout_alignEnd="@+id/imageView"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_marginLeft="20dp">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:id="@+id/relativeLayout2"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/imageView4"
+        android:layout_alignStart="@+id/btnDoThis"
+        android:layout_alignEnd="@+id/btnDoThis">
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,22 +57,12 @@
             android:text="Check the box next to Notice\n\nTap the back button "
             android:id="@+id/Instructions"
             android:paddingLeft="10dp"
-            android:layout_centerHorizontal="true"
             android:singleLine="false"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/num2" />
-    </RelativeLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:id="@+id/imageView"
-        android:src="@drawable/notifmockup"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -100,7 +92,16 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="It will look something like this"
         android:id="@+id/textView"
-        android:layout_above="@+id/imageView"
+        android:layout_below="@+id/textView11"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:id="@+id/imageView4"
+        android:src="@drawable/notifmockup"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
