@@ -52,6 +52,18 @@ public class AutoDismissActivity extends Activity {
         PkgBlackList.add("com.google.android.onetimeinitializer");
         PkgBlackList.add("com.google.android.partnersetup");
         PkgBlackList.add("com.google.android.feedback");
+        PkgBlackList.add("com.google.android.webview");
+        PkgBlackList.add("com.qualcomm.qcrilmsgtunnel");
+        PkgBlackList.add("com.google.android.setupwizard ");
+        PkgBlackList.add("com.lge.update");
+        PkgBlackList.add("com.google.android.configupdater");
+        PkgBlackList.add("com.qualcomm.shutdownlistner");
+        PkgBlackList.add("com.google.android.androidforwork");
+        PkgBlackList.add("com.qualcomm.timeservice");
+        PkgBlackList.add("com.google.android.setupwizard");
+        PkgBlackList.add("com.lge.SprintHiddenMenu");
+        PkgBlackList.add("com.google.android.apps.inputmethod.hindi");
+
     }
 
     private List<String> filteredPkgs(){
