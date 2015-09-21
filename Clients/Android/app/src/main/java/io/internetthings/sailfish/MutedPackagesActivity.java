@@ -60,7 +60,6 @@ public class MutedPackagesActivity extends Activity {
 
             final CheckedTextView chkBox = new CheckedTextView(this);
 
-            icon = new ScaleDrawable(icon, 0, 200f, 200f).getDrawable();
             icon = scalableDrawable(icon);
 
             chkBox.setChecked(value);
@@ -104,7 +103,6 @@ public class MutedPackagesActivity extends Activity {
         int scaledHeight = (int)(scale * 35f);
 
         drawable.setBounds(0, 0, scaledWidth, scaledHeight);
-
         return drawable;
     }
 
