@@ -76,6 +76,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
 
         mutedPackages = new MutedPackages(this);
+        autoDismissPackages = new AutoDismissPackages(this);
 
         //create white list
         PkgWhiteList = new HashSet<>();
