@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.internetthings.sailfish.SailfishPreferences;
 
@@ -17,23 +17,23 @@ public class AutoDismissPackages {
 
     private final String logTag = this.getClass().getName();
 
-    private HashMap<String, Boolean> autoDismissedPackages = new HashMap<>();
+    private ConcurrentHashMap<String, Boolean> autoDismissedPackages = new ConcurrentHashMap<>();
 
     public AutoDismissPackages(Context context){
-        autoDismissedPackages = new HashMap<>();
+        autoDismissedPackages = new ConcurrentHashMap<>();
 
         String json = SailfishPreferences.getAutoDismissedPackages(context);
         loadHashMap(json);
     }
 
-    private void loadHashMap(String json){
+    private synchronized void loadHashMap(String json){
         if (json != null && json.length() > 0) {
             Gson g = new Gson();
-            autoDismissedPackages = g.fromJson(json, HashMap.class);
+            autoDismissedPackages = g.fromJson(json, ConcurrentHashMap.class);
         }
     }
 
-    private void saveHashMap(Context context){
+    private synchronized void saveHashMap(Context context){
         Gson g = new Gson();
         String json = g.toJson(autoDismissedPackages);
         Log.w(logTag, "JSON:" + json);
@@ -42,21 +42,21 @@ public class AutoDismissPackages {
     }
 
 
-    public Iterator<String> getPkgIterator(){
+    public synchronized Iterator<String> getPkgIterator(){
         return autoDismissedPackages.keySet().iterator();
     }
 
-    public void autoDismissPackage(String pkg, Context context){
+    public synchronized void autoDismissPackage(String pkg, Context context){
         autoDismissedPackages.put(pkg, true);
         saveHashMap(context);
     }
 
-    public void dontAutoDismissPackage(String pkg, Context context){
+    public synchronized void dontAutoDismissPackage(String pkg, Context context){
         autoDismissedPackages.put(pkg, false);
         saveHashMap(context);
     }
 
-    public boolean isAutoDismissed(String pkg){
+    public synchronized boolean isAutoDismissed(String pkg){
         if (autoDismissedPackages.containsKey(pkg)) {
             return autoDismissedPackages.get(pkg);
         }
