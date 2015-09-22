@@ -36,8 +36,12 @@ public class AutoDismissActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_dismiss);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
         checkNullMutedPackages();
-        setupLinearLayout();
         createAutoDismissList();
     }
 
@@ -78,6 +82,8 @@ public class AutoDismissActivity extends Activity {
     private void createAutoDismissList(){
         final PackageManager pm = getPackageManager();
         List<ApplicationInfo> installedPackages = pm.getInstalledApplications(0);
+
+        setupLinearLayout();
         runBlackList();
 
         for(ApplicationInfo appInfo:installedPackages){
