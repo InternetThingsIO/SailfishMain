@@ -30,13 +30,24 @@ public class AutoDismissActivity extends Activity {
 
     private String sTAG = this.getClass().getName();
     private HashSet<String> PkgBlackList;
+    private LinearLayout ll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_dismiss);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
         checkNullMutedPackages();
-        checkboxCreator(this);
+        createAutoDismissList();
+    }
+
+    private void setupLinearLayout(){
+        ll = (LinearLayout) findViewById(R.id.ADLL);
+        ll.removeAllViews();
     }
 
     private void runBlackList(){
@@ -63,97 +74,97 @@ public class AutoDismissActivity extends Activity {
         PkgBlackList.add("com.google.android.setupwizard");
         PkgBlackList.add("com.lge.SprintHiddenMenu");
         PkgBlackList.add("com.google.android.apps.inputmethod.hindi");
+        PkgBlackList.add("jp.co.omronsoft.openwnn");
+        PkgBlackList.add("com.google.android.dialer");
 
     }
 
-    private List<String> filteredPkgs(){
-        final PackageManager pm =  getPackageManager();
+    private void createAutoDismissList(){
+        final PackageManager pm = getPackageManager();
+        List<ApplicationInfo> installedPackages = pm.getInstalledApplications(0);
 
-        List<String> newPkgList = new ArrayList<String>();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-        Iterator<ApplicationInfo> it = packages.listIterator();
-
+        setupLinearLayout();
         runBlackList();
 
-        while(it.hasNext()){
-            String pkg = it.next().packageName;
-            if(PkgBlackList.contains(pkg))
-                Log.i(sTAG, "Pkg on Blacklist: " + pkg);
-            else if(pkg.contains("com.android") || pkg.contains("com.google.android.inputmethod"))
-                Log.i(sTAG, "Pkg rejected: " + pkg);
-            else
-                newPkgList.add(pkg);
-        }
+        for(ApplicationInfo appInfo:installedPackages){
+            String pkg = appInfo.packageName;
 
-        return newPkgList;
+            if(isValid(pkg)) {
+                Log.i(sTAG, "VALID Package Name: " + pkg);
+                checkboxCreator(pkg, this);
+            }
+        }
 
     }
 
-    private void checkboxCreator(final Context context){
+    private Boolean isValid(String pkg){
+        runBlackList();
+
+        if(PkgBlackList.contains(pkg)) {
+            Log.i(sTAG, "Pkg on Blacklist: " + pkg);
+            return false;
+        }
+        else if(pkg.contains("com.android") || pkg.contains("com.google.android.inputmethod")) {
+            Log.i(sTAG, "Pkg rejected: " + pkg);
+            return false;
+        }
+        else
+            return true;
+    }
+
+    private void checkboxCreator(final String pkg, final Context context){
         Drawable icon = null;
         String appName = "No name found";
+        ApplicationInfo appInfo;
 
         AutoDismissPackages adp = SailfishNotificationService.autoDismissPackages;
 
-        Iterator<String> it = filteredPkgs().listIterator();
-
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ADLL);
-        ll.removeAllViews();
-
-        while(it.hasNext()){
-            final String packageName = it.next();
-            final String pkg = packageName;
-
-            boolean value = adp.isAutoDismissed(pkg);
-            ApplicationInfo appInfo;
-
-            try{
-                appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
-                icon = context.getPackageManager().getApplicationIcon(appInfo);
-                appName = context.getPackageManager().getApplicationLabel(appInfo).toString();
+        try{
+            appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
+            icon = context.getPackageManager().getApplicationIcon(appInfo);
+            appName = context.getPackageManager().getApplicationLabel(appInfo).toString();
 
 
-            }catch (Exception e){
-                Log.e(sTAG, e.getMessage());
-            }
-
-            if(appName.contains("com.")){
-                Log.i(sTAG, "Not adding package: " + pkg);
-            }else {
-                Log.i(sTAG, pkg + " " + appName);
-                final CheckedTextView chkBox = new CheckedTextView(this);
-
-                icon = new ScaleDrawable(icon, 0, 200f, 200f).getDrawable();
-                icon = scalableDrawable(icon);
-
-                chkBox.setChecked(value);
-                chkBox.setCheckMarkDrawable(R.drawable.custom_checkbox);
-                chkBox.setText(" " + limitPkgNameSize(appName));
-                chkBox.setGravity(0x10);
-                chkBox.setCompoundDrawables(icon, null, null, null);
-                chkBox.setTextSize(24f);
-                chkBox.setTextColor(Color.WHITE);
-                chkBox.setPadding(0, 0, 35, 20);
-
-                chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
-                    public void onClick(View v) {
-                        CheckedTextView cur = (CheckedTextView) v;
-                        cur.toggle();
-                        if (cur.isChecked()) {
-                            Log.i("Auto-Dismissed:", "CHECKED");
-                            SailfishNotificationService.autoDismissPackages.autoDismissPackage(pkg, context);
-                        } else {
-                            Log.i("Auto-Dismissed:", "UNCHECKED");
-                            SailfishNotificationService.autoDismissPackages.dontAutoDismissPackage(pkg, context);
-
-                            Log.i("Auto-D Package: ", pkg + " "
-                                    + SailfishNotificationService.autoDismissPackages.isAutoDismissed(pkg));
-                        }
-                    }
-                });
-                ll.addView(chkBox);
-            }
+        }catch (Exception e){
+            Log.e(sTAG, e.getMessage());
         }
+
+        if(appName.contains("com.")){
+            Log.i(sTAG, "Not adding package: " + pkg);
+        }else {
+            Log.i(sTAG, pkg + " " + appName);
+            final CheckedTextView chkBox = new CheckedTextView(this);
+
+            icon = scalableDrawable(icon);
+
+            chkBox.setChecked(adp.isAutoDismissed(pkg));
+            chkBox.setCheckMarkDrawable(R.drawable.custom_checkbox);
+            chkBox.setText(" " + limitPkgNameSize(appName));
+            chkBox.setGravity(0x10);
+            chkBox.setCompoundDrawables(icon, null, null, null);
+            chkBox.setTextSize(24f);
+            chkBox.setTextColor(Color.WHITE);
+            chkBox.setPadding(0, 0, 35, 20);
+
+            chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
+                public void onClick(View v) {
+                    CheckedTextView cur = (CheckedTextView) v;
+                    cur.toggle();
+                    if (cur.isChecked()) {
+                        Log.i("Auto-Dismissed:", "CHECKED");
+                        SailfishNotificationService.autoDismissPackages.autoDismissPackage(pkg, context);
+                    } else {
+                        Log.i("Auto-Dismissed:", "UNCHECKED");
+                        SailfishNotificationService.autoDismissPackages.dontAutoDismissPackage(pkg, context);
+
+                        Log.i("Auto-D Package: ", pkg + " "
+                                + SailfishNotificationService.autoDismissPackages.isAutoDismissed(pkg));
+                    }
+                }
+            });
+            ll.addView(chkBox);
+        }
+
     }
 
     private String limitPkgNameSize(String pkgName){
@@ -172,7 +183,6 @@ public class AutoDismissActivity extends Activity {
         int scaledHeight = (int)(scale * 35f);
 
         drawable.setBounds(0, 0, scaledWidth, scaledHeight);
-
         return drawable;
     }
 

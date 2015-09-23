@@ -76,6 +76,7 @@ public class SailfishNotificationService extends NotificationListenerService{
 
 
         mutedPackages = new MutedPackages(this);
+        autoDismissPackages = new AutoDismissPackages(this);
 
         //create white list
         PkgWhiteList = new HashSet<>();
@@ -135,7 +136,6 @@ public class SailfishNotificationService extends NotificationListenerService{
                         + "\n" + " onGoing: " + sbn.isOngoing()
                         + "\n" + " isClearable: " + sbn.isClearable()
                         + "\n" + " getNumber: " + sbn.getNotification().number
-                        + "\n" + " getActiveNotifications: " + getActiveNotifications().length
                         + "\n" + " body: " + sbn.getNotification().extras.getCharSequence("android.text")
                         + "\n" + " inboxStyle: " + Arrays.toString(sbn.getNotification().extras.getCharSequenceArray("android.textLines"))
         );
@@ -182,10 +182,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         }
 
         if(autoDismissPackages.isAutoDismissed(sbn.getPackageName())){
-            if(Build.VERSION.SDK_INT < 21)
-                dismissNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId(), "Empty_key");
-            else
-                dismissNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId(), sbn.getKey());
+            dismissNotification(sbn);
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " is auto-dismissed");
             return false;
         }
@@ -200,15 +197,15 @@ public class SailfishNotificationService extends NotificationListenerService{
 
     private boolean hasList(String packageName){
 
-        StatusBarNotification[] activeNotifs = getActiveNotifications();
-        for (StatusBarNotification sbn : activeNotifs){
-            if (sbn.getPackageName().compareTo(packageName) == 0){
-                if (notifIsList(sbn))
+            StatusBarNotification[] activeNotifs = getActiveNotifications();
+            for (StatusBarNotification sbn : activeNotifs) {
+                if (sbn.getPackageName().compareTo(packageName) == 0) {
+                    if (notifIsList(sbn))
                         return true;
+                }
             }
-        }
 
-        return false;
+            return false;
     }
 
     private boolean notifIsList(StatusBarNotification sbn){
@@ -295,7 +292,7 @@ public class SailfishNotificationService extends NotificationListenerService{
         Log.e(logTAG, "Service Stopped");
     }
 
-    private void dismissNotification(String PackageName, String tag, int id, String key){
+    private void dismissNotificationOld(String PackageName, String tag, int id, String key){
         if(Build.VERSION.SDK_INT < 21){
             cancelNotification(PackageName, tag, id);
         }else{
@@ -304,6 +301,16 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         Log.i("cancel", tag + " " + Integer.toString(id));
 
+    }
+
+    private void dismissNotification(StatusBarNotification sbn){
+        if(Build.VERSION.SDK_INT < 21){
+            cancelNotification(sbn.getPackageName(), sbn.getTag(), sbn.getId());
+        }else{
+            cancelNotification(sbn.getKey());
+        }
+
+        Log.i("cancel", sbn.getTag() + " " + Integer.toString(sbn.getId()));
     }
 
 }
