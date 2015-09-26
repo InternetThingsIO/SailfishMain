@@ -99,8 +99,11 @@ public class SailfishNotification {
 
     private String getIconBase64(StatusBarNotification sbn, Context context){
         Drawable icon = null;
+        IconWithOverlay overlay = new IconWithOverlay();
+
         if (sbn.getNotification().largeIcon != null) {
-            icon = new BitmapDrawable(context.getResources(), sbn.getNotification().largeIcon);
+            //icon = new BitmapDrawable(context.getResources(), sbn.getNotification().largeIcon);
+            icon = overlay.overlayedIcon(sbn, context);
         }else {
             try {
                 icon = context.getPackageManager().getApplicationIcon(sbn.getPackageName());
