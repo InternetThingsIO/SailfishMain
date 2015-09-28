@@ -29,7 +29,6 @@ import io.internetthings.sailfish.notification.SailfishNotificationService;
 public class AutoDismissActivity extends Activity {
 
     private String sTAG = this.getClass().getName();
-    private HashSet<String> PkgBlackList;
     private LinearLayout ll;
 
     @Override
@@ -50,94 +49,42 @@ public class AutoDismissActivity extends Activity {
         ll.removeAllViews();
     }
 
-    private void runBlackList(){
-        PkgBlackList = new HashSet<>();
-        PkgBlackList.add("io.internetthings.sailfish");
-        PkgBlackList.add("jp.co.omronsoft.iwnnime.ml.kbd.white");
-        PkgBlackList.add("com.google.android.gsf");
-        PkgBlackList.add("com.google.android.gsf.login");
-        PkgBlackList.add("jp.co.omronsoft.iwnnime.ml");
-        PkgBlackList.add("android");
-        PkgBlackList.add("com.google.android.tts");
-        PkgBlackList.add("com.google.android.backuptransport");
-        PkgBlackList.add("com.google.android.onetimeinitializer");
-        PkgBlackList.add("com.google.android.partnersetup");
-        PkgBlackList.add("com.google.android.feedback");
-        PkgBlackList.add("com.google.android.webview");
-        PkgBlackList.add("com.qualcomm.qcrilmsgtunnel");
-        PkgBlackList.add("com.google.android.setupwizard ");
-        PkgBlackList.add("com.lge.update");
-        PkgBlackList.add("com.google.android.configupdater");
-        PkgBlackList.add("com.qualcomm.shutdownlistner");
-        PkgBlackList.add("com.google.android.androidforwork");
-        PkgBlackList.add("com.qualcomm.timeservice");
-        PkgBlackList.add("com.google.android.setupwizard");
-        PkgBlackList.add("com.lge.SprintHiddenMenu");
-        PkgBlackList.add("com.google.android.apps.inputmethod.hindi");
-        PkgBlackList.add("jp.co.omronsoft.openwnn");
-        PkgBlackList.add("com.google.android.dialer");
-
-    }
-
     private void createAutoDismissList(){
-        final PackageManager pm = getPackageManager();
-        List<ApplicationInfo> installedPackages = pm.getInstalledApplications(0);
+        List<String> installedPackages = new ArrayList(SailfishNotificationService.autoDismissPackages.getPackages().keySet());
 
         setupLinearLayout();
-        runBlackList();
+        //runBlackList();
 
-        for(ApplicationInfo appInfo:installedPackages){
-            String pkg = appInfo.packageName;
-
-            if(isValid(pkg)) {
-                Log.i(sTAG, "VALID Package Name: " + pkg);
-                checkboxCreator(pkg, this);
-            }
-        }
-
-    }
-
-    private Boolean isValid(String pkg){
-        runBlackList();
-
-        if(PkgBlackList.contains(pkg)) {
-            Log.i(sTAG, "Pkg on Blacklist: " + pkg);
-            return false;
-        }
-        else if(pkg.contains("com.android") || pkg.contains("com.google.android.inputmethod")) {
-            Log.i(sTAG, "Pkg rejected: " + pkg);
-            return false;
-        }
-        else
-            return true;
-    }
-
-    private void checkboxCreator(final String pkg, final Context context){
         Drawable icon = null;
         String appName = "No name found";
+        PackageManager pm = getApplicationContext().getPackageManager();
         ApplicationInfo appInfo;
 
-        AutoDismissPackages adp = SailfishNotificationService.autoDismissPackages;
+        for(String packageName : installedPackages){
 
-        try{
-            appInfo = context.getPackageManager().getApplicationInfo(pkg, 0);
-            icon = context.getPackageManager().getApplicationIcon(appInfo);
-            appName = context.getPackageManager().getApplicationLabel(appInfo).toString();
+            try{
+                appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+                icon = pm.getApplicationIcon(packageName);
+                appName = pm.getApplicationLabel(appInfo).toString();
+                checkboxCreator(packageName, icon, appName);
+            }catch (Exception e){
+                Log.e(sTAG, e.getMessage());
+            }
 
-
-        }catch (Exception e){
-            Log.e(sTAG, e.getMessage());
         }
 
+    }
+
+    private void checkboxCreator(final String packageName, Drawable icon, String appName){
+
         if(appName.contains("com.")){
-            Log.i(sTAG, "Not adding package: " + pkg);
+            Log.i(sTAG, "Not adding package: " + packageName);
         }else {
-            Log.i(sTAG, pkg + " " + appName);
-            final CheckedTextView chkBox = new CheckedTextView(this);
+            CheckedTextView chkBox = new CheckedTextView(this);
 
             icon = scalableDrawable(icon);
 
-            chkBox.setChecked(adp.isAutoDismissed(pkg));
+            chkBox.setChecked(SailfishNotificationService.autoDismissPackages.isAutoDismissed(packageName, this));
             chkBox.setCheckMarkDrawable(R.drawable.custom_checkbox);
             chkBox.setText(" " + limitPkgNameSize(appName));
             chkBox.setGravity(0x10);
@@ -146,19 +93,18 @@ public class AutoDismissActivity extends Activity {
             chkBox.setTextColor(Color.WHITE);
             chkBox.setPadding(0, 0, 35, 20);
 
+            final Context context = this;
+
             chkBox.setOnClickListener(new CheckedTextView.OnClickListener() {
                 public void onClick(View v) {
                     CheckedTextView cur = (CheckedTextView) v;
                     cur.toggle();
                     if (cur.isChecked()) {
-                        Log.i("Auto-Dismissed:", "CHECKED");
-                        SailfishNotificationService.autoDismissPackages.autoDismissPackage(pkg, context);
+                        Log.d("Auto-Dismissed:", "CHECKED");
+                        SailfishNotificationService.autoDismissPackages.setPackage(packageName, context, true);
                     } else {
-                        Log.i("Auto-Dismissed:", "UNCHECKED");
-                        SailfishNotificationService.autoDismissPackages.dontAutoDismissPackage(pkg, context);
-
-                        Log.i("Auto-D Package: ", pkg + " "
-                                + SailfishNotificationService.autoDismissPackages.isAutoDismissed(pkg));
+                        Log.d("Auto-Dismissed:", "UNCHECKED");
+                        SailfishNotificationService.autoDismissPackages.setPackage(packageName, context, false);
                     }
                 }
             });

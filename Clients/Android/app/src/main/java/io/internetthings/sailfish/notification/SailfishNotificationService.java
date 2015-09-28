@@ -181,7 +181,7 @@ public class SailfishNotificationService extends NotificationListenerService{
             return false;
         }
 
-        if(autoDismissPackages.isAutoDismissed(sbn.getPackageName())){
+        if(autoDismissPackages.isAutoDismissed(sbn.getPackageName(), this)){
             dismissNotification(sbn);
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " is auto-dismissed");
             return false;
