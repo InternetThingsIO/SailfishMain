@@ -43,22 +43,33 @@ public class IconWithOverlay {
     }
 
     private Drawable makeIconSmall(Drawable drawable, Context context){
-        Bitmap b = ((BitmapDrawable)drawable).getBitmap();
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 20, 20, false);
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, 32, 32, false);
+
         return new BitmapDrawable(context.getResources(), bitmapResized);
+    }
+
+    private Drawable getIconLarge(Drawable drawable, Context context){
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, 128, 128, false);
+
+        return new BitmapDrawable(context.getResources(), bitmapResized);
+
     }
 
     public Drawable overlayedIcon(StatusBarNotification sbn, Context context) {
         Drawable smallIcon = makeIconSmall(getPackageIcon(sbn, context), context);
-        Drawable largeIcon = getNotificationIcon(sbn, context);
+        Drawable largeIcon = getIconLarge(getNotificationIcon(sbn, context), context);
 
-        int left = 300;
-        int top = 200;
-        int right = 1;
-        int bottom = 1;
+        int left = 80;
+        int top = 80;
+        int right = 0;
+        int bottom = 0;
 
         int getWidth = largeIcon.getIntrinsicWidth();
         int getHeight = largeIcon.getIntrinsicHeight();
+
+        Log.i("IconINFO: ", "Width: " + Integer.toString(getWidth) + " Height: " + Integer.toString(getHeight));
 
         Bitmap bitmap = Bitmap.createBitmap(getWidth, getHeight, Bitmap.Config.ARGB_8888);
 
@@ -71,10 +82,7 @@ public class IconWithOverlay {
         layerDrawable.setBounds(0, 0, getWidth, getHeight);
         layerDrawable.draw(new Canvas(bitmap));
 
-        BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
-        //bitmapDrawable.setBounds(0, 0, getWidth, getHeight);
-
-        return bitmapDrawable;
+        return new BitmapDrawable(context.getResources(), bitmap);
     }
 
 }
