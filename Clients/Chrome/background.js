@@ -11,19 +11,23 @@ var authIntervalID;
 //this is called at the bottom of this file.  Everything here is executed on startup
 function main(){
 
-  console.log('Notice Chrome Extension');
+    console.log('Notice Chrome Extension');
 
-  //if we have been idle for an hour, we are idle hour = 3600 seconds. Also idle on computer locked
-  chrome.idle.setDetectionInterval(3600);
-  chrome.idle.onStateChanged.addListener(chromeStateListener);
+    //if we have been idle for an hour, we are idle hour = 3600 seconds. Also idle on computer locked
+    chrome.idle.setDetectionInterval(3600);
+    chrome.idle.onStateChanged.addListener(chromeStateListener);
 
-  //add notification closed listener
-  chrome.notifications.onClosed.addListener(onNotificationClosed);
-  chrome.notifications.onButtonClicked.addListener(notifButtonListener);
+    //add notification closed listener
+    chrome.notifications.onClosed.addListener(onNotificationClosed);
+    chrome.notifications.onButtonClicked.addListener(notifButtonListener);
 
-  createSocket();
+    createSocket();
 
-  xhrWithAuth('GET',
+    getUserInfo();
+}
+
+function getUserInfo(){
+    xhrWithAuth('GET',
                 'https://www.googleapis.com/plus/v1/people/me',
                 false,
                 onUserInfoFetched);
@@ -31,10 +35,10 @@ function main(){
 
 function notifButtonListener(notificationId, buttonIndex){
 
-  if (buttonIndex == 0){
-    emitSailfishMessage(notificationId, ACTION_MUTE);
-    console.log('Muting Notification: ' + notificationId);
-  }
+    if (buttonIndex == 0){
+        emitSailfishMessage(notificationId, ACTION_MUTE);
+        console.log('Muting Notification: ' + notificationId);
+    }
 
 }
 
@@ -61,23 +65,18 @@ function emitSailfishMessage(notificationId, action){
 
 function tryGoogleAuthorization(){
 
-  var authorized  = localStorage["authorized"];
+    var authorized  = localStorage["authorized"];
 
-  console.log('Storage Authorized value: ' + localStorage["authorized"]);
+    console.log('Storage Authorized value: ' + localStorage["authorized"]);
 
-  if (authorized != null && authorized == "true"){
+    if (authorized != null && authorized == "true"){
 
-    xhrWithAuth('GET',
-                'https://www.googleapis.com/plus/v1/people/me',
-                false,
-                onUserInfoFetched);
+        getUserInfo();
 
-    if (authIntervalID)
-      clearInterval(authIntervalID);
+        if (authIntervalID)
+            clearInterval(authIntervalID);
 
-  }
-
-
+    }
 }
 
 function chromeStateListener(newState){
@@ -132,24 +131,27 @@ function onUserInfoFetched(error, status, response) {
 
 function createSocket(){
 
-  socket = io('https://api.internetthings.io');
+    socket = io('https://api.internetthings.io');
 
-  socket.on('message', function(jsonStr){
+    socket.on('message', function(jsonStr){
 
-    handleMessage(jsonStr);
-    console.log('Transport type: ' + socket.io.engine.transport.name);
+        handleMessage(jsonStr);
+        console.log('Transport type: ' + socket.io.engine.transport.name);
 
-  });
+    });
 
-  socket.on('connect', function () { 
+    socket.on('connect', function () { 
 
-    //rejoin room if we have one to join
-    if (user_info)
-      socketJoinRoom(user_info.emails[0].value);
+        //get userinfo incase we don't have it
+        //getUserInfo joins room when complete
+        if (!user_info)
+            getUserInfo();
+        else
+            socketJoinRoom(user_info.emails[0].value);
 
-    console.log('Transport type: ' + socket.io.engine.transport.name);
+        console.log('Transport type: ' + socket.io.engine.transport.name);
 
-  });
+    });
 
 }
 
