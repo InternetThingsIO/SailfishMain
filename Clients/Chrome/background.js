@@ -281,7 +281,7 @@ function socketLeaveRoom(room){
 //Emits to the socket with a token
 function emitSocket(name, arg1, arg2){
 
-  chrome.identity.getAuthToken({ interactive: false }, function(token) {
+  chrome.identity.getAuthToken({ interactive: true }, function(token) {
     socket.emit(name, token, arg1, arg2);
   });
 
