@@ -35,9 +35,8 @@ public class IconWithOverlay {
     }
 
     private Drawable getNotificationIcon(StatusBarNotification sbn, Context context){
-        Drawable icon = null;
 
-        icon = new BitmapDrawable(context.getResources(), sbn.getNotification().largeIcon);
+        Drawable icon = new BitmapDrawable(context.getResources(), sbn.getNotification().largeIcon);
 
         return icon;
     }
@@ -49,7 +48,7 @@ public class IconWithOverlay {
         return new BitmapDrawable(context.getResources(), bitmapResized);
     }
 
-    private Drawable getIconLarge(Drawable drawable, Context context){
+    private Drawable scaleIconLarge(Drawable drawable, Context context){
         Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, 128, 128, false);
 
@@ -59,7 +58,7 @@ public class IconWithOverlay {
 
     public Drawable overlayedIcon(StatusBarNotification sbn, Context context) {
         Drawable smallIcon = makeIconSmall(getPackageIcon(sbn, context), context);
-        Drawable largeIcon = getIconLarge(getNotificationIcon(sbn, context), context);
+        Drawable largeIcon = scaleIconLarge(getNotificationIcon(sbn, context), context);
 
         int left = 80;
         int top = 80;
@@ -68,8 +67,6 @@ public class IconWithOverlay {
 
         int getWidth = largeIcon.getIntrinsicWidth();
         int getHeight = largeIcon.getIntrinsicHeight();
-
-        Log.i("IconINFO: ", "Width: " + Integer.toString(getWidth) + " Height: " + Integer.toString(getHeight));
 
         Bitmap bitmap = Bitmap.createBitmap(getWidth, getHeight, Bitmap.Config.ARGB_8888);
 
