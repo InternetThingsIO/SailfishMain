@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.widget.Toast;
 
 import io.internetthings.sailfish.notification.SailfishNotificationService;
+import io.internetthings.sailfish.notification.SendSMS;
 
 
 public class DebugActivity extends Activity {
@@ -72,5 +73,10 @@ public class DebugActivity extends Activity {
         startService(new Intent(this, SailfishNotificationService.class));
         Log.i("Service: ", "STARTED");
         Toast.makeText(getApplication(), "SailfishNotification Service Restarted",Toast.LENGTH_LONG).show();
+    }
+
+    public void onClickSendSMS(View view){
+        SendSMS sendMsg = new SendSMS();
+        sendMsg.testSMSSending(this);
     }
 }

@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:layout_width="110dp"
         android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/button2"
+        android:layout_toStartOf="@+id/sendSMS"
         android:layout_alignParentBottom="true"
         android:id="@+id/linearLayout">
 
@@ -58,6 +58,14 @@
             android:id="@+id/button5"
             android:onClick="onClickGetNotifAccess" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send SMS"
+            android:id="@+id/sendSMS"
+            android:clickable="true"
+            android:onClick="onClickSendSMS" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -72,8 +80,8 @@
             android:layout_height="wrap_content"
             android:text="Restart Service"
             android:id="@+id/restartServ"
-            android:layout_below="@+id/button2"
-            android:layout_alignEnd="@+id/button2"
+            android:layout_below="@+id/sendSMS"
+            android:layout_alignEnd="@+id/sendSMS"
             android:onClick="onClickRestartService"
             android:clickable="true"
             android:layout_marginTop="10dp" />
