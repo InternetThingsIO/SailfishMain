@@ -7,6 +7,7 @@ import android.view.View;
 import android.app.Activity;
 import android.widget.Toast;
 
+import io.internetthings.sailfish.notification.Hyperlink;
 import io.internetthings.sailfish.notification.SailfishNotificationService;
 import io.internetthings.sailfish.notification.SendSMS;
 
@@ -79,4 +80,9 @@ public class DebugActivity extends Activity {
         SendSMS sendMsg = new SendSMS();
         sendMsg.testSMSSending(this);
     }
+    public void hyperlinkText(View view){
+        Hyperlink hl = new Hyperlink();
+        hl.testHyperlink();
+    }
+
 }
