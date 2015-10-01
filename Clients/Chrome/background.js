@@ -19,7 +19,6 @@ function main(){
 
     //add notification closed listener
     chrome.notifications.onClosed.addListener(onNotificationClosed);
-    chrome.notifications.onButtonClicked.addListener(notifButtonListener);
 
     createSocket();
 
@@ -31,15 +30,6 @@ function getUserInfo(){
                 'https://www.googleapis.com/plus/v1/people/me',
                 false,
                 onUserInfoFetched);
-}
-
-function notifButtonListener(notificationId, buttonIndex){
-
-    if (buttonIndex == 0){
-        emitSailfishMessage(notificationId, ACTION_MUTE);
-        console.log('Muting Notification: ' + notificationId);
-    }
-
 }
 
 function onNotificationClosed(notificationId, byUser){
@@ -184,7 +174,7 @@ function determineActions(jsonObj){
 
     if (jsonObj.Action == ACTION_POST){
 
-      createBasicNotif(jsonObj);
+      createNotif(jsonObj);
 
     }else if (jsonObj.Action == ACTION_REMOVE) {
 
@@ -195,35 +185,66 @@ function determineActions(jsonObj){
 }
 
 //creates a basic notification. other types to come
-function createBasicNotif(jsonObj){
+function createNotif(jsonObj){
 
-  if (jsonObj.Payload != null)
-    var notifOptions = jsonObj.Payload;
-  else{
-    var notifOptions = {
-      type: 'basic', 
-      iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
-      title: jsonObj.Subject, 
-      message: jsonObj.Body,
-      eventTime: jsonObj.PostTime,
-      priority: jsonObj.Priority
-    };
-  }
+    if (jsonObj.Payload != null)
+        var notifOptions = jsonObj.Payload;
+    else{
+        var notifOptions = {
+            type: 'basic', 
+            iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
+            title: jsonObj.Subject, 
+            message: jsonObj.Body,
+            eventTime: jsonObj.PostTime,
+            priority: jsonObj.Priority
+        };
+    }
 
-  //add button to notification
-  notifOptions.buttons = [{title:"Mute This App"}];
+    //add button1 to notification
+    setButtons(getPackageID(jsonObj.ID), notifOptions);
 
-  //clear existing list notif so that it is reissued and the user sees that they have a new email
-  console.log("Notif TemplateType: " + notifOptions.type);
-  if (notifOptions.type == "list"){
-	console.log("Dismissing list notif: " + jsonObj.ID);
-    chrome.notifications.clear(jsonObj.ID);
-  }
+    //clear existing list notif so that it is reissued and the user sees that they have a new email
+    console.log("Notif TemplateType: " + notifOptions.type);
+    if (notifOptions.type == "list"){
+        console.log("Dismissing list notif: " + jsonObj.ID);
+        chrome.notifications.clear(jsonObj.ID);
+    }
+ 
+    chrome.notifications.create(jsonObj.ID, notifOptions);
+    chrome.notifications.update(jsonObj.ID, notifOptions);
 
-  chrome.notifications.create(jsonObj.ID, notifOptions);
+}
 
-  chrome.notifications.update(jsonObj.ID, notifOptions);
+function setButtons(pkg, notifOptions){
+    
+    chrome.notifications.onButtonClicked.removeAllListeners();
+    
+    if (pkg == 'io.internetthings.sailfish'){
+        notifOptions.buttons = [{title:"Rate This App"}];
+        chrome.notifications.onButtonClicked.addListener(notifButtonListenerRate);
+    }else{
+        notifOptions.buttons = [{title:"Mute This App"}];
+        chrome.notifications.onButtonClicked.addListener(notifButtonListenerMute);
+    }
+}
 
+function notifButtonListenerMute(notificationId, buttonIndex){
+
+    if (buttonIndex == 0){
+        emitSailfishMessage(notificationId, ACTION_MUTE);
+        console.log('Muting Notification: ' + notificationId);
+    }
+
+}
+
+function notifButtonListenerRate(notificationId, buttonIndex){
+    chrome.tabs.create({ 'url': 'http://notice.internetthings.io' });
+}
+
+function getPackageID(ID){
+ 
+    return ID.split(':')[0];
+    
 }
 
 function isJSON(jsonString){
