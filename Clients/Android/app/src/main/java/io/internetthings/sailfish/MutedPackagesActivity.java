@@ -47,7 +47,7 @@ public class MutedPackagesActivity extends Activity {
         
         while(it.hasNext()){
             final String pkg = it.next();
-            boolean value = mp.isMuted(pkg);
+            boolean value = mp.isMuted(pkg, context);
             ApplicationInfo appInfo;
 
             try{
@@ -80,7 +80,7 @@ public class MutedPackagesActivity extends Activity {
                         SailfishNotificationService.mutedPackages.unMutePackage(pkg, context);
 
                     Log.i("Muted Package: ", pkg + " "
-                            + SailfishNotificationService.mutedPackages.isMuted(pkg));
+                            + SailfishNotificationService.mutedPackages.isMuted(pkg, context));
                 }
             });
             ll.addView(chkBox);
