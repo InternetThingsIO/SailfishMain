@@ -288,7 +288,7 @@ function socketJoinRoom(room){
 
   console.trace();
 
-  showSimpleNotification('subscribe','Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
+  //showSimpleNotification('subscribe','Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
 
 }
 
