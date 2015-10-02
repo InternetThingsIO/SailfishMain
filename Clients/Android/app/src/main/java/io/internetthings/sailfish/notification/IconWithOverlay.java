@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
@@ -17,6 +17,8 @@ import android.util.Log;
 public class IconWithOverlay {
 
     private String logTAG = this.getClass().getName();
+    private static final int IMAGE_SIZE_PX = 80;
+    private static final int OVERLAY_SIZE_PX = 30;
 
     private Drawable getPackageIcon(StatusBarNotification sbn, Context context){
         Drawable icon = null;
@@ -41,45 +43,47 @@ public class IconWithOverlay {
         return icon;
     }
 
-    private Drawable makeIconSmall(Drawable drawable, Context context){
-        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, 32, 32, false);
-
-        return new BitmapDrawable(context.getResources(), bitmapResized);
+    private Bitmap getBitmapBackground(){
+        return Bitmap.createBitmap(IMAGE_SIZE_PX, IMAGE_SIZE_PX, Bitmap.Config.ARGB_8888);
     }
 
-    private Drawable scaleIconLarge(Drawable drawable, Context context){
+    //Scales a drawable maintaining it's aspect ratio
+    private Bitmap scaleDrawable(Drawable drawable, Context context, float maxBound){
+        float scaledHeight, scaledWidth;
+
         Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, 128, 128, false);
 
-        return new BitmapDrawable(context.getResources(), bitmapResized);
+        if(bitmap.getHeight() > bitmap.getWidth()){
+            scaledHeight = maxBound;
+            scaledWidth = (maxBound / new Float(bitmap.getHeight())) * bitmap.getWidth();
 
+        }else{
+            scaledHeight = (maxBound / new Float(bitmap.getWidth())) * bitmap.getHeight();
+            scaledWidth = maxBound;
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, (int) scaledWidth, (int) scaledHeight, false);
     }
 
-    public Drawable overlayedIcon(StatusBarNotification sbn, Context context) {
-        Drawable smallIcon = makeIconSmall(getPackageIcon(sbn, context), context);
-        Drawable largeIcon = scaleIconLarge(getNotificationIcon(sbn, context), context);
+    private Bitmap overlay(Bitmap bmp1, Bitmap bmp2, Bitmap bmp3) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        int dx, dy;
+        dx = (bmp1.getWidth()/2) - (bmp2.getWidth()/2);
+        dy = (bmp1.getHeight()/2) - (bmp2.getHeight()/2);
+        canvas.drawBitmap(bmp2, dx, dy, null);
+        dx = canvas.getWidth() - bmp3.getWidth() - 1;
+        dy = canvas.getHeight() - bmp3.getHeight() - 1;
+        canvas.drawBitmap(bmp3,dx,dy, null);
+        return bmOverlay;
+    }
 
-        int left = 80;
-        int top = 80;
-        int right = 0;
-        int bottom = 0;
+    public Bitmap overlayedIcon(StatusBarNotification sbn, Context context) {
+        Bitmap notifBitmap =  scaleDrawable(getNotificationIcon(sbn, context), context, IMAGE_SIZE_PX);
+        Bitmap appBitmap =  scaleDrawable(getPackageIcon(sbn, context), context, OVERLAY_SIZE_PX);
 
-        int getWidth = largeIcon.getIntrinsicWidth();
-        int getHeight = largeIcon.getIntrinsicHeight();
-
-        Bitmap bitmap = Bitmap.createBitmap(getWidth, getHeight, Bitmap.Config.ARGB_8888);
-
-        Drawable[] layers = new Drawable[2];
-        layers[0] = largeIcon;
-        layers[1] = smallIcon;
-
-        LayerDrawable layerDrawable = new LayerDrawable(layers);
-        layerDrawable.setLayerInset(1, left, top, right, bottom);
-        layerDrawable.setBounds(0, 0, getWidth, getHeight);
-        layerDrawable.draw(new Canvas(bitmap));
-
-        return new BitmapDrawable(context.getResources(), bitmap);
+        return overlay(getBitmapBackground(), notifBitmap, appBitmap);
     }
 
 }

@@ -176,7 +176,7 @@ public class SailfishNotificationService extends NotificationListenerService{
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " IS on the white list");
         }
 
-        if (mutedPackages.isMuted(sbn.getPackageName())) {
+        if (mutedPackages.isMuted(sbn.getPackageName(), this)) {
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " is muted");
             return false;
         }
