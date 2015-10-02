@@ -19,10 +19,24 @@ function main(){
 
     //add notification closed listener
     chrome.notifications.onClosed.addListener(onNotificationClosed);
+    chrome.notifications.onButtonClicked.addListener(notifButtonListener);
 
     createSocket();
 
     getUserInfo();
+}
+
+function notifButtonListener(notificationId, buttonIndex){
+
+    if (buttonIndex == 0){
+        if (getPackageID(notificationId) == 'io.internetthings.sailfish'){
+            chrome.tabs.create({ 'url': 'http://notice.internetthings.io' });
+        }else{
+            emitSailfishMessage(notificationId, ACTION_MUTE);
+            console.log('Muting Notification: ' + notificationId);
+        }    
+    }
+
 }
 
 function getUserInfo(){
@@ -217,28 +231,13 @@ function createNotif(jsonObj){
 
 function setButtons(pkg, notifOptions){
     
-    chrome.notifications.onButtonClicked.removeAllListeners();
+    //chrome.notifications.onButtonClicked.removeAllListeners();
     
     if (pkg == 'io.internetthings.sailfish'){
         notifOptions.buttons = [{title:"Rate This App"}];
-        chrome.notifications.onButtonClicked.addListener(notifButtonListenerRate);
     }else{
         notifOptions.buttons = [{title:"Mute This App"}];
-        chrome.notifications.onButtonClicked.addListener(notifButtonListenerMute);
     }
-}
-
-function notifButtonListenerMute(notificationId, buttonIndex){
-
-    if (buttonIndex == 0){
-        emitSailfishMessage(notificationId, ACTION_MUTE);
-        console.log('Muting Notification: ' + notificationId);
-    }
-
-}
-
-function notifButtonListenerRate(notificationId, buttonIndex){
-    chrome.tabs.create({ 'url': 'http://notice.internetthings.io' });
 }
 
 function getPackageID(ID){
