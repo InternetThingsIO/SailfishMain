@@ -1,6 +1,6 @@
 #!/bin/sh
-cd /var/gitrepos/SailfishMain
+cd /opt/gitrepos/SailfishMain
 git clean -df
 git checkout master
 git pull
-service sailfishnode restart
+service notice restart
