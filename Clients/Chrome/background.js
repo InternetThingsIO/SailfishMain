@@ -109,15 +109,20 @@ function onUserInfoFetched(error, status, response) {
     socketJoinRoom(user_info.email);
 
   } else {
+      
+    if (status){
 
-    console.log('Failed to make request with error: ' + error + ' status: ' + status);
+        console.log('Failed to make request with error: ' + JSON.stringify(error) + ' status: ' + status);
 
-    //set interval to pickup auth once user has finished with settings
-    authIntervalID = setInterval(tryGoogleAuthorization, 2000);
+        //set interval to pickup auth once user has finished with settings
+        authIntervalID = setInterval(tryGoogleAuthorization, 2000);
 
-    //we need to re-authorize this junk
-    localStorage["authorized"] = "false";
-    chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+        //we need to re-authorize this junk
+        localStorage["authorized"] = "false";
+        chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+    }else{
+        console.log('We had no status, probably internet is disconnected');
+    }
 
   }
 }
