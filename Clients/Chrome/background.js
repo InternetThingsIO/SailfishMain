@@ -23,7 +23,7 @@ function main(){
 
     createSocket();
 
-    getUserInfo();
+    getUserInfo(onUserInfoFetched);
 }
 
 function notifButtonListener(notificationId, buttonIndex){
@@ -37,13 +37,6 @@ function notifButtonListener(notificationId, buttonIndex){
         }    
     }
 
-}
-
-function getUserInfo(){
-    xhrWithAuth('GET',
-                'https://www.googleapis.com/plus/v1/people/me',
-                false,
-                onUserInfoFetched);
 }
 
 function onNotificationClosed(notificationId, byUser){
@@ -64,7 +57,7 @@ function emitSailfishMessage(notificationId, action){
     MessageVersion: '1.0'
   };
 
-  emitSocket('send_message_app', user_info.emails[0].value, message);
+  emitSocket('send_message_app', user_info.email, message);
 }
 
 function tryGoogleAuthorization(){
@@ -75,7 +68,7 @@ function tryGoogleAuthorization(){
 
     if (authorized != null && authorized == "true"){
 
-        getUserInfo();
+        getUserInfo(onUserInfoFetched);
 
         if (authIntervalID)
             clearInterval(authIntervalID);
@@ -90,13 +83,13 @@ function chromeStateListener(newState){
   //if we are idle, leave the room
   if (isComputerIdle(currentState)){
       console.log('Computer is idle, leaving room');
-      socketLeaveRoom(user_info.emails[0].value);
+      socketLeaveRoom(user_info.email);
   }else
   {
     //if we are not idle join the room
     if (user_info != null){
       console.log('Computer is no longer idle, joining room');
-      socketJoinRoom(user_info.emails[0].value);
+      socketJoinRoom(user_info.email);
     }
   }
 
@@ -111,13 +104,9 @@ function onUserInfoFetched(error, status, response) {
     console.log(response);
     user_info = JSON.parse(response);
     
-    console.log('Using email: ' + user_info.emails[0].value);
+    console.log('Using email: ' + user_info.email);
 
-    if (user_info.image && user_info.image.url){
-      localStorage["userImageURL"] = user_info.image.url;
-    }
-
-    socketJoinRoom(user_info.emails[0].value);
+    socketJoinRoom(user_info.email);
 
   } else {
 
@@ -149,9 +138,9 @@ function createSocket(){
         //get userinfo incase we don't have it
         //getUserInfo joins room when complete
         if (!user_info)
-            getUserInfo();
+            getUserInfo(onUserInfoFetched);
         else
-            socketJoinRoom(user_info.emails[0].value);
+            socketJoinRoom(user_info.email);
 
         console.log('Transport type: ' + socket.io.engine.transport.name);
 
@@ -303,7 +292,7 @@ function socketLeaveRoom(room){
 //Emits to the socket with a token
 function emitSocket(name, arg1, arg2){
 
-  chrome.identity.getAuthToken({ interactive: true }, function(token) {
+  getIDToken(function(token) {
     socket.emit(name, token, arg1, arg2);
   });
 
