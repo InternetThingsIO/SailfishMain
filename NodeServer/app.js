@@ -102,7 +102,6 @@ function checkToken(access_token, email, socket, callback, args){
     acIDs.forEach(function(acID) {
         if (token.data.aud == acID)
             returnVal = true;
-        console.log(token.data.aud + ':::' + acID);
     });
     
     if (!returnVal)
