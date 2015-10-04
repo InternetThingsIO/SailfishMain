@@ -91,20 +91,24 @@ function checkToken(access_token, email, socket, callback, args){
   }
 
   function tokenIsValid(token, email, acIDs){
-	
+      
     if (token.data.email != email){
       console.log('Token email did not match. Token: ' + token.data.email + ' Provided: ' + email);
       return false;
     }
-    
-    for (var acID in appClientID) {
+      
+    var returnVal = false;
+      
+    acIDs.forEach(function(acID) {
         if (token.data.aud == acID)
-            return true;
-        console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acID);
-     }
- 
-    console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acIDs.join());
-    return false;
+            returnVal = true;
+        console.log(token.data.aud + ':::' + acID);
+    });
+    
+    if (!returnVal)
+        console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acIDs.join);
+                    
+    return returnVal;
 
   }
 
