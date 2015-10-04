@@ -96,8 +96,8 @@ function checkToken(access_token, email, socket, callback, args){
       console.log('Token email did not match. Token: ' + token.data.email + ' Provided: ' + email);
       return false;
     }
-
-    for (var acID in acIDs) {
+    
+    for (var acID in appClientID) {
         if (token.data.aud == acID)
             return true;
         console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acID);
