@@ -1,4 +1,5 @@
-var appClientID = "1093471737235-3kcsj89v5rrek85i2v5e0no7u9n5elu0.apps.googleusercontent.com";
+var appClientID = ["1093471737235-3kcsj89v5rrek85i2v5e0no7u9n5elu0.apps.googleusercontent.com",
+                   "1093471737235-frq9mvlpdsv14dcuvcatvun6jq6ti0ku.apps.googleusercontent.com"];
 
 var nr = require('newrelic');
 
@@ -96,12 +97,13 @@ function checkToken(access_token, email, socket, callback, args){
       return false;
     }
 
-    if (token.data.aud != acID){
-      console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acID);
-      return false;
-    }
-
-    return true; 
+    for (var id in acID) {
+        if (token.data.aud == id)
+            return true;
+     }
+ 
+    console.log('Token clientID did not match. Token: ' + token.data.aud + 'In Node: ' + acID.join());
+    return false;
 
   }
 
