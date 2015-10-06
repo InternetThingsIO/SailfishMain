@@ -44,7 +44,7 @@ public class IconWithOverlay {
     }
 
     private Bitmap getBitmapBackground(){
-        return Bitmap.createBitmap(IMAGE_SIZE_PX, IMAGE_SIZE_PX, Bitmap.Config.ARGB_8888);
+        return Bitmap.createBitmap(IMAGE_SIZE_PX+8, IMAGE_SIZE_PX+8, Bitmap.Config.ARGB_8888);
     }
 
     //Scales a drawable maintaining it's aspect ratio
