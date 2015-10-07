@@ -12,11 +12,11 @@ var url = 'https://accounts.google.com/o/oauth2/auth' +
           '&redirect_uri=' + redirectUri + 
           '&scope=' + scopes;
 
-function getUserInfo(callback){
+function getUserInfo(interactive, callback){
 
   xhrWithAuth('GET',
               'https://www.googleapis.com/oauth2/v1/tokeninfo',
-              true,
+              interactive,
               callback);
 
 }
@@ -26,7 +26,7 @@ function getIDToken(callback) {
     chrome.identity.launchWebAuthFlow(
         {
             'url': this.url, 
-            'interactive':true
+            'interactive':false
         }, 
         function(redirectedTo) {
             if (chrome.runtime.lastError) {
@@ -57,12 +57,12 @@ function xhrWithAuth(method, url, interactive, callback) {
         chrome.identity.launchWebAuthFlow(
             {
                 'url': this.url, 
-                'interactive':true
+                'interactive':interactive
             }, 
             function(redirectedTo) {
                 if (chrome.runtime.lastError) {
                     // Example: Authorization page could not be loaded.
-                    callback(chrome.runtime.lastError);
+                    callback(chrome.runtime.lastError, 500);
                     return;
                 }
                 else {

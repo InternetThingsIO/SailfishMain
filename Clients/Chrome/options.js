@@ -9,7 +9,7 @@ function authorizeInteractive(){
 
   localStorage["authorized"] = "false";
 
-  getUserInfo(callback);
+  getUserInfo(true, callback);
     
 }
 

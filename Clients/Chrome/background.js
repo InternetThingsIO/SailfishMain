@@ -23,7 +23,7 @@ function main(){
 
     createSocket();
 
-    getUserInfo(onUserInfoFetched);
+    //getUserInfo(false, onUserInfoFetched);
 }
 
 function notifButtonListener(notificationId, buttonIndex){
@@ -68,7 +68,7 @@ function tryGoogleAuthorization(){
 
     if (authorized != null && authorized == "true"){
 
-        getUserInfo(onUserInfoFetched);
+        getUserInfo(false, onUserInfoFetched);
 
         if (authIntervalID)
             clearInterval(authIntervalID);
@@ -110,9 +110,9 @@ function onUserInfoFetched(error, status, response) {
 
   } else {
       
-    if (status){
-
-        console.log('Failed to make request with error: ' + JSON.stringify(error) + ' status: ' + status);
+    console.log('Failed to make request with error: ' + JSON.stringify(error) + ' status: ' + status);
+      
+    if (error.message == "User interaction required."){
 
         //set interval to pickup auth once user has finished with settings
         authIntervalID = setInterval(tryGoogleAuthorization, 2000);
@@ -120,10 +120,7 @@ function onUserInfoFetched(error, status, response) {
         //we need to re-authorize this junk
         localStorage["authorized"] = "false";
         chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
-    }else{
-        console.log('We had no status, probably internet is disconnected');
     }
-
   }
 }
 
@@ -143,7 +140,7 @@ function createSocket(){
         //get userinfo incase we don't have it
         //getUserInfo joins room when complete
         if (!user_info)
-            getUserInfo(onUserInfoFetched);
+            getUserInfo(false, onUserInfoFetched);
         else
             socketJoinRoom(user_info.email);
 

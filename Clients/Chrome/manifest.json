@@ -18,7 +18,7 @@
   "oauth2": {
     "client_id": "1093471737235-frq9mvlpdsv14dcuvcatvun6jq6ti0ku.apps.googleusercontent.com",
     "scopes": [
-      "openid", "email", "profile"
+      "email"
     ]
   },
   "web_accessible_resources": [
