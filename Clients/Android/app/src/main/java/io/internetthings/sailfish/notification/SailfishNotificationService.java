@@ -160,20 +160,17 @@ public class SailfishNotificationService extends NotificationListenerService{
 
         String bodyText = getBodyText(sbn);
 
-        //if we have no body, don't send notifications.
-        //this rids us of grouped notifications also
-        /*if (bodyText == null) {
-            Log.w(logTAG, "Notification body text is null");
-            return false;
-        }*/
-
         //if ongoing or not clearable and not on white list, return false
         if (sbn.isClearable() == false || sbn.isOngoing() == true){
+
             if (!PkgWhiteList.contains(sbn.getPackageName())) {
                 Log.i(logTAG, "Package: " + sbn.getPackageName() + " is NOT on the white list");
                 return false;
             }
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " IS on the white list");
+        }else{
+            autoDismissPackages.addList(sbn.getPackageName(), this);
+            mutedPackages.addList(sbn.getPackageName(), this);
         }
 
         if (mutedPackages.isMuted(sbn.getPackageName(), this)) {

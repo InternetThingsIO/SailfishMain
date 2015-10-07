@@ -50,13 +50,17 @@ public class AutoDismissPackages {
         saveHashMap(context);
     }
 
+    public synchronized void addList(String pkg, Context context){
+        if (!autoDismissedPackages.containsKey(pkg) && !context.getPackageName().equals(pkg)) {
+            //add to list of packages the user can select from
+            setPackage(pkg, context, false);
+        }
+    }
+
     public synchronized boolean isAutoDismissed(String pkg, Context context){
         if (autoDismissedPackages.containsKey(pkg)) {
             return autoDismissedPackages.get(pkg);
         }
-
-        //add to list of packages the user can select from
-        setPackage(pkg, context, false);
 
         return false;
     }
