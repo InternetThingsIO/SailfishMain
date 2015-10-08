@@ -78,7 +78,7 @@ public class DebugActivity extends Activity {
 
     public void onClickSendSMS(View view){
         SendSMS sendMsg = new SendSMS();
-        sendMsg.testSMSSending(this);
+        //sendMsg.testSMSSending(this);
     }
     public void hyperlinkText(View view){
         Hyperlink hl = new Hyperlink();
