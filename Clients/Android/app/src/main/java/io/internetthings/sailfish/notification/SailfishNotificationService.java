@@ -173,14 +173,14 @@ public class SailfishNotificationService extends NotificationListenerService{
             mutedPackages.addList(sbn.getPackageName(), this);
         }
 
-        if (mutedPackages.isMuted(sbn.getPackageName(), this)) {
-            Log.i(logTAG, "Package: " + sbn.getPackageName() + " is muted");
-            return false;
-        }
-
         if(autoDismissPackages.isAutoDismissed(sbn.getPackageName(), this)){
             dismissNotification(sbn);
             Log.i(logTAG, "Package: " + sbn.getPackageName() + " is auto-dismissed");
+            return false;
+        }
+        
+        if (mutedPackages.isMuted(sbn.getPackageName(), this)) {
+            Log.i(logTAG, "Package: " + sbn.getPackageName() + " is muted");
             return false;
         }
 
