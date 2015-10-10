@@ -72,8 +72,7 @@ public class SailfishNotification {
 
     }
 
-    private String drawableToBase64(Drawable icon){
-        Bitmap bitmap = ((BitmapDrawable)icon).getBitmap();
+    private String drawableToBase64(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
         byte[] bitmapdata = stream.toByteArray();
@@ -98,19 +97,23 @@ public class SailfishNotification {
     }
 
     private String getIconBase64(StatusBarNotification sbn, Context context){
-        Drawable icon = null;
+        Bitmap bitmap = null;
+        IconWithOverlay overlay = new IconWithOverlay();
+
         if (sbn.getNotification().largeIcon != null) {
-            icon = new BitmapDrawable(context.getResources(), sbn.getNotification().largeIcon);
+            //icon = new BitmapDrawable(context.getResources(), sbn.getNotification().largeIcon);
+            bitmap = overlay.overlayedIcon(sbn, context);
         }else {
             try {
-                icon = context.getPackageManager().getApplicationIcon(sbn.getPackageName());
+                Drawable icon = context.getPackageManager().getApplicationIcon(sbn.getPackageName());
+                bitmap = ((BitmapDrawable)icon).getBitmap();
             }catch(PackageManager.NameNotFoundException ex){
                 Log.e(this.getClass().getName(), "Name of the package wasn't found for some reason");
-                icon = null;
+                bitmap = null;
             }
         }
-        if (icon != null)
-            return  drawableToBase64(icon);
+        if (bitmap != null)
+            return  drawableToBase64(bitmap);
         else
             return "";
     }

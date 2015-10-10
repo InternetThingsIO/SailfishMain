@@ -33,30 +33,31 @@ public class AutoDismissPackages {
         }
     }
 
+    public ConcurrentHashMap<String, Boolean> getPackages(){
+        return autoDismissedPackages;
+    }
+
     private synchronized void saveHashMap(Context context){
         Gson g = new Gson();
         String json = g.toJson(autoDismissedPackages);
-        Log.w(logTag, "JSON:" + json);
+
         SailfishPreferences.setAutoDismissedPackages(context, json);
         SailfishPreferences.commit(context);
     }
 
-
-    public synchronized Iterator<String> getPkgIterator(){
-        return autoDismissedPackages.keySet().iterator();
-    }
-
-    public synchronized void autoDismissPackage(String pkg, Context context){
-        autoDismissedPackages.put(pkg, true);
+    public synchronized void setPackage(String pkg, Context context, boolean autoDismiss){
+        autoDismissedPackages.put(pkg, autoDismiss);
         saveHashMap(context);
     }
 
-    public synchronized void dontAutoDismissPackage(String pkg, Context context){
-        autoDismissedPackages.put(pkg, false);
-        saveHashMap(context);
+    public synchronized void addList(String pkg, Context context){
+        if (!autoDismissedPackages.containsKey(pkg) && !context.getPackageName().equals(pkg)) {
+            //add to list of packages the user can select from
+            setPackage(pkg, context, false);
+        }
     }
 
-    public synchronized boolean isAutoDismissed(String pkg){
+    public synchronized boolean isAutoDismissed(String pkg, Context context){
         if (autoDismissedPackages.containsKey(pkg)) {
             return autoDismissedPackages.get(pkg);
         }

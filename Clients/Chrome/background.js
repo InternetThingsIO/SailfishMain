@@ -11,30 +11,31 @@ var authIntervalID;
 //this is called at the bottom of this file.  Everything here is executed on startup
 function main(){
 
-  console.log('Notice Chrome Extension');
+    console.log('Notice Chrome Extension');
 
-  //if we have been idle for an hour, we are idle hour = 3600 seconds. Also idle on computer locked
-  chrome.idle.setDetectionInterval(3600);
-  chrome.idle.onStateChanged.addListener(chromeStateListener);
+    //if we have been idle for an hour, we are idle hour = 3600 seconds. Also idle on computer locked
+    chrome.idle.setDetectionInterval(3600);
+    chrome.idle.onStateChanged.addListener(chromeStateListener);
 
-  //add notification closed listener
-  chrome.notifications.onClosed.addListener(onNotificationClosed);
-  chrome.notifications.onButtonClicked.addListener(notifButtonListener);
+    //add notification closed listener
+    chrome.notifications.onClosed.addListener(onNotificationClosed);
+    chrome.notifications.onButtonClicked.addListener(notifButtonListener);
 
-  createSocket();
+    createSocket();
 
-  xhrWithAuth('GET',
-                'https://www.googleapis.com/plus/v1/people/me',
-                false,
-                onUserInfoFetched);
+    //getUserInfo(false, onUserInfoFetched);
 }
 
 function notifButtonListener(notificationId, buttonIndex){
 
-  if (buttonIndex == 0){
-    emitSailfishMessage(notificationId, ACTION_MUTE);
-    console.log('Muting Notification: ' + notificationId);
-  }
+    if (buttonIndex == 0){
+        if (getPackageID(notificationId) == 'io.internetthings.sailfish'){
+            chrome.tabs.create({ 'url': 'http://notice.internetthings.io' });
+        }else{
+            emitSailfishMessage(notificationId, ACTION_MUTE);
+            console.log('Muting Notification: ' + notificationId);
+        }    
+    }
 
 }
 
@@ -56,28 +57,23 @@ function emitSailfishMessage(notificationId, action){
     MessageVersion: '1.0'
   };
 
-  emitSocket('send_message_app', user_info.emails[0].value, message);
+  emitSocket('send_message_app', user_info.email, message);
 }
 
 function tryGoogleAuthorization(){
 
-  var authorized  = localStorage["authorized"];
+    var authorized  = localStorage["authorized"];
 
-  console.log('Storage Authorized value: ' + localStorage["authorized"]);
+    console.log('Storage Authorized value: ' + localStorage["authorized"]);
 
-  if (authorized != null && authorized == "true"){
+    if (authorized != null && authorized == "true"){
 
-    xhrWithAuth('GET',
-                'https://www.googleapis.com/plus/v1/people/me',
-                false,
-                onUserInfoFetched);
+        getUserInfo(false, onUserInfoFetched);
 
-    if (authIntervalID)
-      clearInterval(authIntervalID);
+        if (authIntervalID)
+            clearInterval(authIntervalID);
 
-  }
-
-
+    }
 }
 
 function chromeStateListener(newState){
@@ -87,13 +83,13 @@ function chromeStateListener(newState){
   //if we are idle, leave the room
   if (isComputerIdle(currentState)){
       console.log('Computer is idle, leaving room');
-      socketLeaveRoom(user_info.emails[0].value);
+      socketLeaveRoom(user_info.email);
   }else
   {
     //if we are not idle join the room
     if (user_info != null){
       console.log('Computer is no longer idle, joining room');
-      socketJoinRoom(user_info.emails[0].value);
+      socketJoinRoom(user_info.email);
     }
   }
 
@@ -108,48 +104,49 @@ function onUserInfoFetched(error, status, response) {
     console.log(response);
     user_info = JSON.parse(response);
     
-    console.log('Using email: ' + user_info.emails[0].value);
+    console.log('Using email: ' + user_info.email);
 
-    if (user_info.image && user_info.image.url){
-      localStorage["userImageURL"] = user_info.image.url;
-    }
-
-    socketJoinRoom(user_info.emails[0].value);
+    socketJoinRoom(user_info.email);
 
   } else {
+      
+    console.log('Failed to make request with error: ' + JSON.stringify(error) + ' status: ' + status);
+      
+    if (error.message == "User interaction required."){
 
-    console.log('Failed to make request with error: ' + error + ' status: ' + status);
+        //set interval to pickup auth once user has finished with settings
+        authIntervalID = setInterval(tryGoogleAuthorization, 2000);
 
-    //set interval to pickup auth once user has finished with settings
-    authIntervalID = setInterval(tryGoogleAuthorization, 2000);
-
-    //we need to re-authorize this junk
-    localStorage["authorized"] = "false";
-    chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
-
+        //we need to re-authorize this junk
+        localStorage["authorized"] = "false";
+        chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
+    }
   }
 }
 
 function createSocket(){
 
-  socket = io('https://api.internetthings.io');
+    socket = io('https://api.internetthings.io');
 
-  socket.on('message', function(jsonStr){
+    socket.on('message', function(jsonStr){
 
-    handleMessage(jsonStr);
-    console.log('Transport type: ' + socket.io.engine.transport.name);
+        handleMessage(jsonStr);
+        console.log('Transport type: ' + socket.io.engine.transport.name);
 
-  });
+    });
 
-  socket.on('connect', function () { 
+    socket.on('connect', function () { 
 
-    //rejoin room if we have one to join
-    if (user_info)
-      socketJoinRoom(user_info.emails[0].value);
+        //get userinfo incase we don't have it
+        //getUserInfo joins room when complete
+        if (!user_info)
+            getUserInfo(false, onUserInfoFetched);
+        else
+            socketJoinRoom(user_info.email);
 
-    console.log('Transport type: ' + socket.io.engine.transport.name);
+        console.log('Transport type: ' + socket.io.engine.transport.name);
 
-  });
+    });
 
 }
 
@@ -182,7 +179,7 @@ function determineActions(jsonObj){
 
     if (jsonObj.Action == ACTION_POST){
 
-      createBasicNotif(jsonObj);
+      createNotif(jsonObj);
 
     }else if (jsonObj.Action == ACTION_REMOVE) {
 
@@ -193,35 +190,51 @@ function determineActions(jsonObj){
 }
 
 //creates a basic notification. other types to come
-function createBasicNotif(jsonObj){
+function createNotif(jsonObj){
 
-  if (jsonObj.Payload != null)
-    var notifOptions = jsonObj.Payload;
-  else{
-    var notifOptions = {
-      type: 'basic', 
-      iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
-      title: jsonObj.Subject, 
-      message: jsonObj.Body,
-      eventTime: jsonObj.PostTime,
-      priority: jsonObj.Priority
-    };
-  }
+    if (jsonObj.Payload != null)
+        var notifOptions = jsonObj.Payload;
+    else{
+        var notifOptions = {
+            type: 'basic', 
+            iconUrl: 'data:image/*;base64,' + jsonObj.Base64Image, 
+            title: jsonObj.Subject, 
+            message: jsonObj.Body,
+            eventTime: jsonObj.PostTime,
+            priority: jsonObj.Priority
+        };
+    }
 
-  //add button to notification
-  notifOptions.buttons = [{title:"Mute This App"}];
+    //add button1 to notification
+    setButtons(getPackageID(jsonObj.ID), notifOptions);
 
-  //clear existing list notif so that it is reissued and the user sees that they have a new email
-  console.log("Notif TemplateType: " + notifOptions.type);
-  if (notifOptions.type == "list"){
-	console.log("Dismissing list notif: " + jsonObj.ID);
-    chrome.notifications.clear(jsonObj.ID);
-  }
+    //clear existing list notif so that it is reissued and the user sees that they have a new email
+    console.log("Notif TemplateType: " + notifOptions.type);
+    if (notifOptions.type == "list"){
+        console.log("Dismissing list notif: " + jsonObj.ID);
+        chrome.notifications.clear(jsonObj.ID);
+    }
+ 
+    chrome.notifications.create(jsonObj.ID, notifOptions);
+    chrome.notifications.update(jsonObj.ID, notifOptions);
 
-  chrome.notifications.create(jsonObj.ID, notifOptions);
+}
 
-  chrome.notifications.update(jsonObj.ID, notifOptions);
+function setButtons(pkg, notifOptions){
+    
+    //chrome.notifications.onButtonClicked.removeAllListeners();
+    
+    if (pkg == 'io.internetthings.sailfish'){
+        notifOptions.buttons = [{title:"Rate This App"}];
+    }else{
+        notifOptions.buttons = [{title:"Mute This App"}];
+    }
+}
 
+function getPackageID(ID){
+ 
+    return ID.split(':')[0];
+    
 }
 
 function isJSON(jsonString){
@@ -266,7 +279,7 @@ function socketJoinRoom(room){
 
   console.trace();
 
-  showSimpleNotification('subscribe','Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
+  //showSimpleNotification('subscribe','Subscribed', localStorage['userImageURL'], 'Subscribed to your feed ' + room);
 
 }
 
@@ -281,7 +294,7 @@ function socketLeaveRoom(room){
 //Emits to the socket with a token
 function emitSocket(name, arg1, arg2){
 
-  chrome.identity.getAuthToken({ interactive: false }, function(token) {
+  getIDToken(function(token) {
     socket.emit(name, token, arg1, arg2);
   });
 

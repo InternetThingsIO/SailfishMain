@@ -55,6 +55,7 @@ public class MainActivity extends Activity{
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Display's device id
                 .addTestDevice("11A4A8E4493FAE4F9ACB340B74705DE9") //Jason's Nexus 4
                 .addTestDevice("5255A0F95E27A290B1716ADEDA70F87F") //George's Nexus 4
+                .addTestDevice("CC064DE98EA3E9CCF4B56F1E8874B928") //George's Nexus 5
                 .build();
         mAdView.loadAd(adRequest);
     }

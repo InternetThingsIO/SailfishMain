@@ -48,6 +48,11 @@ public class MutedPackages {
         return mutedPackages.keySet().iterator();
     }
 
+    public synchronized void setPackage(String pkg, Context context, boolean muted){
+        mutedPackages.put(pkg, false);
+        saveHashMap(context);
+    }
+
     public synchronized void mutePackage(String pkg, Context context){
         mutedPackages.put(pkg, true);
         cleanUpPackages(context, true);
@@ -58,12 +63,18 @@ public class MutedPackages {
         saveHashMap(context);
     }
 
-    public synchronized boolean isMuted(String pkg){
+    public synchronized boolean isMuted(String pkg, Context context){
         if (mutedPackages.containsKey(pkg)) {
             return mutedPackages.get(pkg);
         }
 
         return false;
+    }
+
+    public synchronized void addList(String pkg, Context context){
+        if (!mutedPackages.containsKey(pkg) && !context.getPackageName().equals(pkg)) {
+            setPackage(pkg, context, false);
+        }
     }
 
     public synchronized void cleanUpPackages(Context context, boolean savePreferences){
