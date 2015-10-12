@@ -23,76 +23,58 @@ function getUserInfo(interactive, callback){
 
 function getIDToken(callback) {
 
-    chrome.identity.launchWebAuthFlow(
-        {
-            'url': this.url, 
-            'interactive':false
-        }, 
-        function(redirectedTo) {
-            if (chrome.runtime.lastError) {
-                // Example: Authorization page could not be loaded.
-                callback(chrome.runtime.lastError);
-                return;
-            }
-            else {
-                var response = redirectedTo.split('#', 2)[1];
-                callback(getQueryVariable('id_token', response));
-            }
-        }
-    );
-
+    chrome.identity.getAuthToken({ interactive: false }, function(token) {
+      if (chrome.runtime.lastError) {
+        callback(chrome.runtime.lastError);
+        return;
+      }
+      
+      callback(token);
+    });
 }
 
 //logs into the google identity service and clears any expired tokens.  Also makes a request :-)
 // @corecode_begin getProtectedData
 function xhrWithAuth(method, url, interactive, callback) {
-  var id_token;
+    var id_token;
 
-  var retry = true;
+    var retry = true;
 
-  getToken();
+    console.log(interactive);
+    
+    getToken();
+    
 
     function getToken() {
-
-        chrome.identity.launchWebAuthFlow(
-            {
-                'url': this.url, 
-                'interactive':interactive
-            }, 
-            function(redirectedTo) {
-                if (chrome.runtime.lastError) {
-                    // Example: Authorization page could not be loaded.
-                    callback(chrome.runtime.lastError, 500);
-                    return;
-                }
-                else {
-                    var response = redirectedTo.split('#', 2)[1];
-                    id_token = getQueryVariable('id_token', response);
-                    requestStart();
-                }
+        chrome.identity.getAuthToken({ interactive: interactive }, function(token) {
+            if (chrome.runtime.lastError) {
+                callback(chrome.runtime.lastError);
+                return;
             }
-        );
-
+            console.log(id_token);
+            id_token = token;
+            requestStart();
+        });
     }
 
     function requestStart() {
-        console.log(url + "?id_token=" + id_token);
+
         var xhr = new XMLHttpRequest();
-        xhr.open(method, url + "?id_token=" + id_token);
+        xhr.open(method, url + "?access_token=" + id_token);
         xhr.onload = requestComplete;
         xhr.send();
     }
 
     function requestComplete() {
-    if (this.status == 401 && retry) {
-        retry = false;
-        requestStart();
-    } else {
-        callback(null, this.status, this.response);
+        if (this.status == 401 && retry) {
+            retry = false;
+            requestStart();
+        } else {
+            callback(null, this.status, this.response);
+        }
+
     }
-        
-    }
-    
+
 }
 
 function getQueryVariable(variable, query) {
