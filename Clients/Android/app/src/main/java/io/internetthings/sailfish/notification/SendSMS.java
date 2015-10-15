@@ -11,9 +11,11 @@ import android.widget.Toast;
 public class SendSMS {
 
     private String logTAG = this.getClass().getName();
-/*
+    private String jason = "9049828835";
+    private String george = "8505299238";
+
     public void testSMSSending(Context context){
-        String phoneNumber = "8505299238";
+        String phoneNumber = jason;
         String message = "SMS test message, sent from Notice that works only with phones that have an active SIM card";
 
         try {
@@ -32,5 +34,5 @@ public class SendSMS {
 
     }
 
-*/
+
 }
